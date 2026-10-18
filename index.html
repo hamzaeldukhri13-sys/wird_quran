@@ -6,26 +6,18 @@
     <title>تطبيق وِرْد - القرآن الكريم</title>
     
     <meta name="theme-color" content="#1b4332">
-    <meta name="description" content="تطبيق وِرْد لقراءة وتلاوة القرآن الكريم بالرسم العثماني المصحفي">
+    <meta name="description" content="تطبيق وِرْد لقراءة وتلاوة القرآن الكريم بالرسم العثماني بصور مصحفية ثابتة">
     <link rel="manifest" href="data:application/json,{%22name%22:%22%D9%88%D9%92%D8%B1%D9%92%D8%AF%22,%22short_name%22:%22%D9%88%D9%92%D8%B1%D9%92%D8%AF%22,%22start_url%22:%22./%22,%22display%22:%22standalone%22,%22background_color%22:%22#1b4332%22,%22theme_color%22:%22#1b4332%22}">
 
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* استدعاء خط مصحف المدينة المنورة (مجمع الملك فهد) المعتمد */
-        @font-family {
-            font-family: 'KFGQPCUthmanicScriptHAFS';
-            src: url('https://cdn.jsdelivr.net/gh/mustafa0x/quran-fonts/fonts/KFGQPCUthmanicScriptHAFS.woff2') format('woff2');
-            font-display: swap;
-        }
-
         :root {
             --primary: #1b4332;
             --secondary: #2d6a4f;
             --accent: #d4af37;
-            --highlight: #e63946; /* اللون الأحمر للتتبع */
             --bg: #f8f9fa;
             --card-bg: #ffffff;
             --text: #2b2b2b;
@@ -59,7 +51,7 @@
         }
 
         header h1 {
-            font-family: 'KFGQPCUthmanicScriptHAFS', 'Tajawal', serif;
+            font-family: 'Amiri', serif;
             color: var(--accent);
             font-size: 2.2rem;
             margin-bottom: 0.2rem;
@@ -155,8 +147,8 @@
         }
 
         .surah-name {
-            font-family: 'KFGQPCUthmanicScriptHAFS', serif;
-            font-size: 1.5rem;
+            font-family: 'Amiri', serif;
+            font-size: 1.4rem;
             font-weight: bold;
             color: var(--primary);
         }
@@ -166,7 +158,7 @@
             color: var(--text-muted);
         }
 
-        /* شاشة القراءة والتلاوة */
+        /* شاشة عرض صور الآيات والمشغل الصوتي */
         #readerSection {
             display: none;
         }
@@ -203,7 +195,7 @@
             padding: 0.8rem;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             text-align: center;
             position: sticky;
             top: 75px;
@@ -214,54 +206,52 @@
             width: 100%;
         }
 
-        /* نص القراءة بخط مصحف المدينة */
-        .quran-text {
+        /* عرض صور الآيات الثابتة عالية الدقة */
+        .quran-images-container {
             background: white;
-            padding: 2rem;
+            padding: 1.5rem 1rem;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            font-family: 'KFGQPCUthmanicScriptHAFS', serif;
-            font-size: 2.2rem;
-            line-height: 3.2;
-            text-align: justify;
+            text-align: center;
         }
 
-        .word {
-            display: inline-block;
-            padding: 0 2px;
-            border-radius: 4px;
-            transition: color 0.1s ease;
+        .ayah-card {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* تلوين الكلمة باللون الأحمر أثنآء القراءة */
-        .word.active-word {
-            color: var(--highlight) !important;
-            font-weight: bold;
+        .ayah-img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto 0.5rem auto;
+            /* تأثير فلتر لضمان وضوح رسم الخط العثماني */
+            filter: contrast(120%);
         }
 
-        .ayah-container {
-            display: inline;
-        }
-
-        .ayah-number {
-            color: var(--accent);
-            font-size: 1.5rem;
-            font-family: 'KFGQPCUthmanicScriptHAFS', serif;
-            margin: 0 0.3rem;
+        .ayah-tools {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-top: 0.3rem;
         }
 
         .tafsir-btn {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             background: #e9ecef;
             border: none;
-            padding: 0.2rem 0.5rem;
+            padding: 0.3rem 0.8rem;
             border-radius: 6px;
             cursor: pointer;
             color: var(--primary);
-            margin: 0 0.3rem;
             font-family: 'Tajawal', sans-serif;
         }
 
+        /* نافذة التفسير */
         .modal {
             display: none;
             position: fixed;
@@ -303,10 +293,11 @@
 
     <header>
         <h1 onclick="goHome()">تطبيق وِرْد</h1>
-        <p>القرآن الكريم بالرسم العثماني لمصحف المدينة المنورة</p>
+        <p>القرآن الكريم بصور الآيات العثمانية الثابتة</p>
     </header>
 
     <div class="container">
+        <!-- الفهرس الرئيسي -->
         <div id="homeSection">
             <div class="top-actions">
                 <div class="controls" style="margin-bottom:0;">
@@ -322,17 +313,18 @@
             </div>
         </div>
 
+        <!-- شاشة عرض صور الآيات والتلاوة -->
         <div id="readerSection">
             <div class="reader-header">
                 <button class="back-btn" onclick="goHome()"><i class="fa fa-arrow-right"></i> عودة للفهرس</button>
                 <select id="reciterSelect" class="reciter-select" onchange="changeReciter()">
-                    <option value="afs">مشاري العفاسي (مع التتبع)</option>
+                    <option value="afs">مشاري العفاسي</option>
                     <option value="abdulsamad">عبد الباسط عبد الصمد</option>
                     <option value="minsh">محمد صديق المنشاوي</option>
                 </select>
             </div>
 
-            <h2 id="currentSurahTitle" style="font-family: 'KFGQPCUthmanicScriptHAFS', serif; color: var(--primary); margin-bottom: 1rem; text-align: center; font-size: 2.2rem;"></h2>
+            <h2 id="currentSurahTitle" style="font-family: 'Amiri', serif; color: var(--primary); margin-bottom: 1rem; text-align: center; font-size: 2.2rem;"></h2>
             
             <div class="audio-player-box">
                 <audio id="audioPlayer" controls>
@@ -340,12 +332,13 @@
                 </audio>
             </div>
 
-            <div class="quran-text" id="versesContainer">
-                <p style="text-align: center; font-family: 'Tajawal';">جاري تحميل آيات المصحف...</p>
+            <div class="quran-images-container" id="versesContainer">
+                <p style="text-align: center; font-family: 'Tajawal';">جاري تحميل صور الآيات...</p>
             </div>
         </div>
     </div>
 
+    <!-- نافذة التفسير المنبثقة -->
     <div class="modal" id="tafsirModal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeTafsir()">&times;</span>
@@ -361,7 +354,6 @@
     <script>
         let allSurahs = [];
         let currentSurahNum = 1;
-        let wordTimings = [];
         let audioPlayer = document.getElementById('audioPlayer');
 
         async function fetchSurahs() {
@@ -397,7 +389,7 @@
             surahs.forEach(surah => {
                 const card = document.createElement('div');
                 card.className = 'surah-card';
-                card.onclick = () => loadSurahDetails(surah.number, surah.name);
+                card.onclick = () => loadSurahDetails(surah.number, surah.name, surah.numberOfAyahs);
                 card.innerHTML = `
                     <div class="surah-info">
                         <div class="surah-number">${surah.number}</div>
@@ -412,65 +404,44 @@
             });
         }
 
-        async function loadSurahDetails(surahNumber, surahName) {
+        async function loadSurahDetails(surahNumber, surahName, totalAyahs) {
             currentSurahNum = surahNumber;
-            wordTimings = [];
             document.getElementById('homeSection').style.display = 'none';
             document.getElementById('readerSection').style.display = 'block';
             document.getElementById('currentSurahTitle').innerText = `سورة ${surahName}`;
-            document.getElementById('versesContainer').innerHTML = '<p style="text-align: center; font-family: \'Tajawal\';">جاري جلب الآيات بخط المصحف...</p>';
+            document.getElementById('versesContainer').innerHTML = '<p style="text-align: center; font-family: \'Tajawal\';">جاري جلب صور الآيات بالرسم العثماني...</p>';
 
             let paddedSurah = String(surahNumber).padStart(3, '0');
             audioPlayer.src = `https://server8.mp3quran.net/afs/${paddedSurah}.mp3`;
 
             try {
-                const res = await fetch(`https://api.quran.com/api/v4/verses/by_chapter/${surahNumber}?language=ar&words=true&word_fields=text_uthmani&per_page=300`);
-                const data = await res.json();
-
+                // جلب التفسير الميسر
                 const tafsirRes = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/ar.muyassar`);
                 const tafsirData = await tafsirRes.json();
 
-                let versesHTML = '';
-                let globalWordIndex = 0;
-
-                data.verses.forEach((verse, vIdx) => {
-                    let tafsirText = tafsirData.data.ayahs[vIdx] ? tafsirData.data.ayahs[vIdx].text : '';
-                    versesHTML += `<span class="ayah-container">`;
+                let imagesHTML = '';
+                
+                for (let i = 1; i <= totalAyahs; i++) {
+                    let tafsirText = tafsirData.data.ayahs[i - 1] ? tafsirData.data.ayahs[i - 1].text : '';
                     
-                    verse.words.forEach(word => {
-                        if (word.char_type_name === 'word') {
-                            versesHTML += `<span class="word" id="word-${globalWordIndex}">${word.text_uthmani}</span> `;
-                            wordTimings.push({ index: globalWordIndex });
-                            globalWordIndex++;
-                        }
-                    });
+                    // استدعاء صور الآيات الثابتة بجودة عالية بالخط العثماني من CDN Quran.com
+                    let imgUrl = `https://cdn.islamic.network/quran/images/high-resolution/${surahNumber}_${i}.png`;
 
-                    versesHTML += `
-                        <span class="ayah-number">﴿${verse.verse_number}﴾</span>
-                        <button class="tafsir-btn" onclick="showTafsir('${encodeURIComponent(tafsirText)}', '${surahName}', ${verse.verse_number})">تفسير</button>
-                    </span> `;
-                });
+                    imagesHTML += `
+                        <div class="ayah-card">
+                            <img src="${imgUrl}" alt="آية ${i}" class="ayah-img" loading="lazy">
+                            <div class="ayah-tools">
+                                <button class="tafsir-btn" onclick="showTafsir('${encodeURIComponent(tafsirText)}', '${surahName}', ${i})"><i class="fa fa-book-open"></i> تفسير الآية (${i})</button>
+                            </div>
+                        </div>
+                    `;
+                }
 
-                document.getElementById('versesContainer').innerHTML = versesHTML;
+                document.getElementById('versesContainer').innerHTML = imagesHTML;
             } catch (e) {
-                document.getElementById('versesContainer').innerHTML = '<p style="color:red; text-align:center;">تعذر تحميل الآيات.</p>';
+                document.getElementById('versesContainer').innerHTML = '<p style="color:red; text-align:center;">تعذر تحميل صور الآيات.</p>';
             }
         }
-
-        audioPlayer.ontimeupdate = function() {
-            if (!audioPlayer.duration || wordTimings.length === 0) return;
-
-            let progress = audioPlayer.currentTime / audioPlayer.duration;
-            let currentWordIndex = Math.floor(progress * wordTimings.length);
-
-            document.querySelectorAll('.word.active-word').forEach(el => el.classList.remove('active-word'));
-
-            let activeEl = document.getElementById(`word-${currentWordIndex}`);
-            if (activeEl) {
-                activeEl.classList.add('active-word');
-                activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        };
 
         function changeReciter() {
             let paddedSurah = String(currentSurahNum).padStart(3, '0');
@@ -506,5 +477,5 @@
         fetchSurahs();
     </script>
 </body>
-        </html>
-                
+            </html>
+    
