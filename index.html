@@ -1,261 +1,36 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق وِرْد - القرآن الكريم</title>
-    
-    <meta name="theme-color" content="#1b4332">
-    <meta name="description" content="تطبيق وِرْد لقراءة وتلاوة القرآن الكريم بصور آيات مصحف المدينة المنورة">
-    <link rel="manifest" href="data:application/json,{%22name%22:%22%D9%88%D9%92%D8%B1%D9%92%D8%AF%22,%22short_name%22:%22%D9%88%D9%92%D8%B1%D9%92%D8%AF%22,%22start_url%22:%22./%22,%22display%22:%22standalone%22,%22background_color%22:%22#1b4332%22,%22theme_color%22:%22#1b4332%22}">
+أنشئ تطبيقًا قرآنيًا باللغة العربية باسم "وِرْد" في ملف واحد index.html (HTML + CSS + JavaScript خام، بدون إطار عمل أو أدوات بناء)، بنفس بنية وتصميم الملف المرفق، مع إضافة الميزات والإصلاحات أدناه.
 
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+## الصيغة المطلوبة
+- ملف واحد، dir="rtl" و lang="ar"، يعمل بفتحه مباشرة وعلى GitHub Pages.
+- الخطوط: Amiri للعناوين وTajawal للنص. الأيقونات: Font Awesome عبر CDN.
+- الألوان: --primary:#1b4332 ، --secondary:#2d6a4f ، --accent:#d4af37 ، خلفية #f8f9fa.
+- الهيكل: ترويسة ثابتة بتدرج أخضر، قسم الفهرس (بحث + شبكة بطاقات السور)، قسم القراءة (مشغل صوتي ثابت + آيات)، نافذة منبثقة للتفسير، تذييل.
+- تصميم جوال أولًا، متجاوب، بحاوية بعرض أقصى 800px.
 
-    <style>
-        :root {
-            --primary: #1b4332;
-            --secondary: #2d6a4f;
-            --accent: #d4af37;
-            --bg: #f8f9fa;
-            --card-bg: #ffffff;
-            --text: #2b2b2b;
-            --text-muted: #6c757d;
-        }
+## المصادر (لا تكتب نص القرآن يدويًا)
+- فهرس السور: api.alquran.cloud/v1/surah (مصدر رئيسي) مع بديل احتياطي، ووحّد حقول المصدرين في دالة واحدة (name, numberOfAyahs, revelationType).
+- نص الآيات بالرسم العثماني: quran-uthmani من alquran.cloud، وخيار عرض صور الآيات من cdn.islamic.network كبديل.
+- التفسير: ar.muyassar من alquran.cloud.
+- الصوت: روابط mp3quran.net لسور كاملة، مع قارئين على الأقل (العفاسي، عبدالباسط، المنشاوي)، واستخدم قائمة القرّاء من api.mp3quran.net بدل كتابة الروابط يدويًا.
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Tajawal', sans-serif;
-        }
+## الميزات
+1. بحث عن سورة (مع تجاهل التشكيل والهمزات) وفلترة مكية/مدنية.
+2. قراءة السورة آية بآية مع زر تفسير يفتح النافذة المنبثقة.
+3. مشغل صوتي: اختيار القارئ، تكرار السورة، سرعة التشغيل، ومتابعة تلقائية للسورة التالية.
+4. حفظ آخر موضع قراءة، والمفضلة، والوضع الليلي، وحجم الخط في localStorage.
+5. PWA: manifest وservice worker في ملف منفصل sw.js لتخزين الواجهة مؤقتًا.
+6. زر "تحميل APK" الحقيقي: اجعله زر "تثبيت التطبيق" (beforeinstallprompt) بدل alert وهمي.
 
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+## إصلاحات مطلوبة (أخطاء في الملف المرفق)
+- بطاقة السورة تقارن revelationType بـ 'Meccan' بينما المصدر الأول يحوّلها لـ 'مكية'، فتظهر كل السور "مدنية". وحّد القيم.
+- تمرير نص التفسير داخل onclick يكسر الصفحة مع علامات الاقتباس. استخدم addEventListener وdata-attributes.
+- عالج فشل تحميل الصور والصوت برسائل واضحة وزر إعادة المحاولة.
+- أضف تحميلًا كسولًا وتجزئة عرض الآيات في السور الطويلة (مثل البقرة).
+- أكمل الملف بالكامل (النسخة المرفقة مقطوعة عند دالة showTafsir) وأغلق وسوم script وbody وhtml.
 
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 1.5rem 1rem;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+## الجودة
+- ARIA وتنقل بلوحة المفاتيح وتباين ألوان جيد.
+- كود منظم بدوال صغيرة وتعليقات عربية مختصرة.
+- README بالعربية يشرح التشغيل والنشر والمصادر والتراخيص.
 
-        header h1 {
-            font-family: 'Amiri', serif;
-            color: var(--accent);
-            font-size: 2.2rem;
-            margin-bottom: 0.2rem;
-            cursor: pointer;
-        }
-
-        header p {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 1.5rem auto;
-            padding: 0 1rem;
-            flex: 1;
-            width: 100%;
-        }
-
-        .top-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .apk-btn {
-            background-color: var(--accent);
-            color: var(--primary);
-            font-weight: bold;
-            padding: 0.7rem 1.2rem;
-            border-radius: 12px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            font-size: 0.95rem;
-        }
-
-        .controls {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            flex: 1;
-        }
-
-        input[type="search"] {
-            flex: 1;
-            padding: 0.8rem 1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        .surah-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 1rem;
-        }
-
-        .surah-card {
-            background: var(--card-bg);
-            padding: 1rem 1.2rem;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            cursor: pointer;
-        }
-
-        .surah-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .surah-number {
-            background-color: rgba(212, 175, 55, 0.15);
-            color: var(--primary);
-            font-weight: bold;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-        }
-
-        .surah-name {
-            font-family: 'Amiri', serif;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .surah-type {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        #readerSection {
-            display: none;
-        }
-
-        .reader-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .back-btn {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.95rem;
-        }
-
-        .select-box {
-            padding: 0.6rem;
-            border-radius: 8px;
-            border: 2px solid #ccc;
-            font-family: 'Tajawal', sans-serif;
-            background: white;
-            outline: none;
-        }
-
-        .audio-player-box {
-            background: white;
-            padding: 1rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-bottom: 1.5rem;
-            text-align: center;
-            position: sticky;
-            top: 75px;
-            z-index: 90;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-
-        .audio-controls-row {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        audio {
-            width: 100%;
-        }
-
-        /* حاوية صور الآيات الثابتة */
-        .quran-images-container {
-            background: white;
-            padding: 1.5rem 1rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            text-align: center;
-        }
-
-        .ayah-card {
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px dashed #e0e0e0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .ayah-img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 0 auto 0.6rem auto;
-            filter: contrast(115%);
-        }
-
-        .tafsir-btn {
-            font-size: 0.85rem;
-            background: #e9ecef;
-            border: none;
-            padding: 0.3rem 0.8rem;
-            border-radius: 6px;
-            cursor: pointer;
-            color: var(--primary);
-            font-family: 'Tajawal', sans-serif;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 1
-    
+ابدأ بإنشاء index.html كاملًا يعمل، ثم أضف sw.js وREADME.md.
