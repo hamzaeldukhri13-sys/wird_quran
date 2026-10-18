@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تطبيق وِرْد - القرآن الكريم</title>
     
-    <!-- PWA Primary Meta Tags -->
     <meta name="theme-color" content="#1b4332">
     <meta name="description" content="تطبيق وِرْد لقراءة وتلاوة القرآن الكريم">
     <link rel="manifest" href="data:application/json,{%22name%22:%22%D9%88%D9%92%D8%B1%D9%92%D8%AF%22,%22short_name%22:%22%D9%88%D9%92%D8%B1%D9%92%D8%AF%22,%22start_url%22:%22./%22,%22display%22:%22standalone%22,%22background_color%22:%22#1b4332%22,%22theme_color%22:%22#1b4332%22}">
 
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -56,6 +54,7 @@
             color: var(--accent);
             font-size: 2.2rem;
             margin-bottom: 0.2rem;
+            cursor: pointer;
         }
 
         header p {
@@ -107,6 +106,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             text-decoration: none;
             color: inherit;
+            cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
@@ -146,6 +146,46 @@
             color: var(--text-muted);
         }
 
+        /* صفحة عرض الآيات */
+        #readerSection {
+            display: none;
+        }
+
+        .back-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quran-text {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            font-family: 'Amiri', serif;
+            font-size: 1.6rem;
+            line-height: 2.4;
+            text-align: justify;
+        }
+
+        .ayah {
+            margin-bottom: 0.8rem;
+        }
+
+        .ayah-number {
+            color: var(--accent);
+            font-size: 1.2rem;
+            margin-right: 0.4rem;
+        }
+
         footer {
             text-align: center;
             padding: 1rem;
@@ -159,17 +199,28 @@
 <body>
 
     <header>
-        <h1>تطبيق وِرْد</h1>
+        <h1 onclick="goHome()">تطبيق وِرْد</h1>
         <p>القرآن الكريم - قراءة وتلاوة</p>
     </header>
 
     <div class="container">
-        <div class="controls">
-            <input type="search" id="searchInput" placeholder="ابحث عن سورة..." onkeyup="filterSurahs()">
+        <!-- شاشة القائمة الرئيسية -->
+        <div id="homeSection">
+            <div class="controls">
+                <input type="search" id="searchInput" placeholder="ابحث عن سورة..." onkeyup="filterSurahs()">
+            </div>
+            <div class="surah-list" id="surahContainer">
+                <p style="text-align: center; grid-column: 1/-1;">جاري تحميل السور...</p>
+            </div>
         </div>
 
-        <div class="surah-list" id="surahContainer">
-            <p style="text-align: center; grid-column: 1/-1;">جاري تحميل السور...</p>
+        <!-- شاشة قراءة السورة -->
+        <div id="readerSection">
+            <button class="back-btn" onclick="goHome()"><i class="fa fa-arrow-right"></i> عودة لقائمة السور</button>
+            <h2 id="currentSurahTitle" style="font-family: 'Amiri', serif; color: var(--primary); margin-bottom: 1rem; text-align: center; font-size: 2rem;"></h2>
+            <div class="quran-text" id="versesContainer">
+                <p style="text-align: center; font-family: 'Tajawal';">جاري تحميل الآيات...</p>
+            </div>
         </div>
     </div>
 
@@ -188,7 +239,7 @@
                 allSurahs = result.data.map(item => ({
                     number: item.number,
                     name: item.name.short,
-                    revelationType: item.revelation.id === 'Makkiyyah' ? 'Meccan' : 'Medinan',
+                    revelationType: item.revelation.id === 'Makkiyyah' ? 'مكية' : 'مدنية',
                     numberOfAyahs: item.numberOfVerses
                 }));
                 
@@ -213,6 +264,7 @@
             surahs.forEach(surah => {
                 const card = document.createElement('div');
                 card.className = 'surah-card';
+                card.onclick = () => loadSurahDetails(surah.number, surah.name);
                 card.innerHTML = `
                     <div class="surah-info">
                         <div class="surah-number">${surah.number}</div>
@@ -221,9 +273,36 @@
                             <div class="surah-type">${surah.revelationType === 'Meccan' ? 'مكية' : 'مدنية'} - ${surah.numberOfAyahs} آية</div>
                         </div>
                     </div>
+                    <i class="fa fa-angle-left" style="color: var(--text-muted);"></i>
                 `;
                 container.appendChild(card);
             });
+        }
+
+        async function loadSurahDetails(surahNumber, surahName) {
+            document.getElementById('homeSection').style.display = 'none';
+            document.getElementById('readerSection').style.display = 'block';
+            document.getElementById('currentSurahTitle').innerText = `سورة ${surahName}`;
+            document.getElementById('versesContainer').innerHTML = '<p style="text-align: center; font-family: \'Tajawal\';">جاري تحميل الآيات...</p>';
+
+            try {
+                const response = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}`);
+                const data = await response.json();
+                
+                let versesHTML = '';
+                data.data.ayahs.forEach(ayah => {
+                    versesHTML += `<span class="ayah">${ayah.text} <span class="ayah-number">﴿${ayah.numberInSurah}﴾</span></span> `;
+                });
+                
+                document.getElementById('versesContainer').innerHTML = versesHTML;
+            } catch (e) {
+                document.getElementById('versesContainer').innerHTML = '<p style="color:red; text-align:center;">تعذر تحميل الآيات، تحقق من الاتصال.</p>';
+            }
+        }
+
+        function goHome() {
+            document.getElementById('readerSection').style.display = 'none';
+            document.getElementById('homeSection').style.display = 'block';
         }
 
         function filterSurahs() {
@@ -238,5 +317,4 @@
         fetchSurahs();
     </script>
 </body>
-    </html>
-            
+</html>
