@@ -6,7 +6,7 @@
     <title>تطبيق وِرْد - القرآن الكريم</title>
     
     <meta name="theme-color" content="#1b4332">
-    <meta name="description" content="تطبيق وِرْد لقراءة وتلاوة القرآن الكريم بالرسم العثماني لمصحف المدينة المنورة مع ميزة تكرار التلاوة">
+    <meta name="description" content="تطبيق وِرْد لقراءة وتلاوة القرآن الكريم بالرسم العثماني لمصحف المدينة المنورة">
     <link rel="manifest" href="data:application/json,{%22name%22:%22%D9%88%D9%92%D8%B1%D9%92%D8%AF%22,%22short_name%22:%22%D9%88%D9%92%D8%B1%D9%92%D8%AF%22,%22start_url%22:%22./%22,%22display%22:%22standalone%22,%22background_color%22:%22#1b4332%22,%22theme_color%22:%22#1b4332%22}">
 
     <!-- Fonts & Icons -->
@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* خط مصحف المدينة المنورة (مجمع الملك فهد) */
         @font-face {
             font-family: 'KFGQPCUthmanicScriptHAFS';
             src: url('https://cdn.jsdelivr.net/gh/mustafa0x/quran-fonts/fonts/KFGQPCUthmanicScriptHAFS.woff2') format('woff2');
@@ -165,7 +164,6 @@
             color: var(--text-muted);
         }
 
-        /* شاشة القراءة والتلاوة */
         #readerSection {
             display: none;
         }
@@ -225,7 +223,6 @@
             width: 100%;
         }
 
-        /* حاوية الآيات بخط مصحف المدينة */
         .quran-text-container {
             background: white;
             padding: 2rem 1.5rem;
@@ -261,7 +258,6 @@
             vertical-align: middle;
         }
 
-        /* نافذة التفسير */
         .modal {
             display: none;
             position: fixed;
@@ -307,7 +303,6 @@
     </header>
 
     <div class="container">
-        <!-- الفهرس الرئيسي -->
         <div id="homeSection">
             <div class="top-actions">
                 <div class="controls" style="margin-bottom:0;">
@@ -323,7 +318,6 @@
             </div>
         </div>
 
-        <!-- شاشة القراءة والتلاوة -->
         <div id="readerSection">
             <div class="reader-header">
                 <button class="back-btn" onclick="goHome()"><i class="fa fa-arrow-right"></i> عودة للفهرس</button>
@@ -343,7 +337,6 @@
                     متصفحك لا يدعم مشغل الصوت.
                 </audio>
                 
-                <!-- خيارات التكرار -->
                 <div class="audio-controls-row">
                     <label for="repeatSelect" style="font-size: 0.95rem; color: var(--primary); font-weight: bold;">
                         <i class="fa fa-redo"></i> وضع التكرار:
@@ -356,12 +349,11 @@
             </div>
 
             <div class="quran-text-container" id="versesContainer">
-                <p style="text-align: center; font-family: 'Tajawal';">جاري جلب الآيات...</p>
+                <p style="text-align: center; font-family: 'Tajawal';">جاري تحميل آيات السورة...</p>
             </div>
         </div>
     </div>
 
-    <!-- نافذة التفسير -->
     <div class="modal" id="tafsirModal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeTafsir()">&times;</span>
@@ -437,7 +429,6 @@
             updateAudioSource();
 
             try {
-                // جلب الآيات برواية حفص والتفسير الميسر
                 const response = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}`);
                 const data = await response.json();
                 
@@ -477,7 +468,6 @@
             audioPlayer.play();
         }
 
-        // إدارة التكرار الذكي للتلاوة
         audioPlayer.onended = function() {
             const repeatMode = document.getElementById('repeatSelect').value;
             if (repeatMode === 'one') {
