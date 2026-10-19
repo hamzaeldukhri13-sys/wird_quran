@@ -41,7 +41,6 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            transition: background 0.3s, color 0.3s;
         }
 
         header {
@@ -51,7 +50,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -245,23 +243,19 @@
         <div id="quran-section" class="section active">
             <input type="text" id="search-input" class="search-box" placeholder="ابحث عن اسم السورة..." oninput="filterSurahs()">
             <div id="surah-list" class="surah-list">
-                <p style="text-align: center; color: gray; margin-top: 20px;">جاري تحميل الفهرس...</p>
+                <!-- سيتم تعبئة الفهرس فوراً -->
             </div>
         </div>
 
         <!-- قسم القراءة والتلاوة -->
         <div id="surah-detail-section" class="section">
             <button class="back-btn" onclick="showSurahList()">➔ العودة لفهرس السور</button>
-            
             <div class="audio-player-container">
-                <p style="font-size: 0.8rem; margin-bottom: 4px; color: gray;">الاستماع للتلاوة (القارئ: مشاري العفاسي):</p>
+                <p style="font-size: 0.8rem; margin-bottom: 4px; color: gray;">الاستماع للتلاوة:</p>
                 <audio id="audio-player" controls></audio>
             </div>
-
             <div class="ayah-container">
-                <div id="surah-content" class="othmani-text">
-                    جاري تحميل الآيات بالخط العثماني...
-                </div>
+                <div id="surah-content" class="othmani-text">جاري تحميل الآيات...</div>
             </div>
         </div>
 
@@ -284,7 +278,7 @@
         <div id="settings-section" class="section">
             <div class="game-card">
                 <h3>حول التطبيق</h3>
-                <p style="margin-top: 10px; line-height: 1.6;">تطبيق ويب متقدم (PWA) للقرآن الكريم يعمل بالخط العثماني مع تلاوات صوتية مباشرة.</p>
+                <p style="margin-top: 10px; line-height: 1.6;">تطبيق القرآن الكريم يعمل بالخط العثماني والتلاوات الصوتية المباشرة.</p>
             </div>
         </div>
     </main>
@@ -305,10 +299,7 @@
     </nav>
 
     <script>
-        let allSurahs = [];
-
-        // قائمة السور ثابتة ومضمونة 100% لتجنب مشاكل الشبكة، مع ربطها برقم السورة الصحيح
-        const staticSurahs = [
+        const allSurahs = [
             {number: 1, name: "الفاتحة", type: "مكية", ayahs: 7}, {number: 2, name: "البقرة", type: "مدنية", ayahs: 286},
             {number: 3, name: "آل عمران", type: "مدنية", ayahs: 200}, {number: 4, name: "النساء", type: "مدنية", ayahs: 176},
             {number: 5, name: "المائدة", type: "مدنية", ayahs: 120}, {number: 6, name: "الأنعام", type: "مكية", ayahs: 165},
@@ -369,7 +360,6 @@
         ];
 
         window.onload = function() {
-            allSurahs = staticSurahs;
             renderSurahList(allSurahs);
         };
 
@@ -388,7 +378,7 @@
                             <div style="font-size: 0.75rem; color: gray;">${surah.type} - ${surah.ayahs} آية</div>
                         </div>
                     </div>
-                    <span style="font-size: 0.8rem; color: var(--primary-color);">قراءة واستماع ➔</span>
+                    <span style="font-size: 0.8rem; color: var(--primary-color);">قراءة ➔</span>
                 `;
                 listContainer.appendChild(card);
             });
@@ -406,12 +396,10 @@
             document.getElementById('header-title').innerText = 'سورة ' + surahName;
             document.getElementById('surah-content').innerHTML = 'جاري جلب الآيات...';
 
-            // تلاوة الصوت من سرفر القرآن الكريم المباشر
             const audioPlayer = document.getElementById('audio-player');
             const paddedNum = surahNumber.toString().padStart(3, '0');
             audioPlayer.src = `https://server8.mp3quran.net/afs/${paddedNum}.mp3`;
 
-            // جلب النص العثماني الموثوق من API موثوق
             fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/quran-uthmani`)
                 .then(res => res.json())
                 .then(data => {
@@ -429,8 +417,21 @@
                         });
                         document.getElementById('surah-content').innerHTML = textHtml;
                     } else {
-                        document.getElementById('surah-content').innerHTML = '<p style="color:red; text-align:center;">تعذر جلب الآيات، تأكد من الاتصال بالإنترنت.</p>';
+                        document.getElementById('surah-content').innerHTML = '<p style="color:red; text-align:center;">تعذر جلب الآيات.</p>';
                     }
                 })
                 .catch(() => {
-                    document.getElementById('surah-content').innerHTML = '<p style="color:red; text-align:center;">حدث خطأ في الاتصال بالخاد
+                    document.getElementById('surah-content').innerHTML = '<p style="color:red; text-align:center;">خطأ في الاتصال بالشبكة.</p>';
+                });
+        }
+
+        function showSurahList() {
+            document.getElementById('surah-detail-section').classList.remove('active');
+            document.getElementById('quran-section').classList.add('active');
+            document.getElementById('header-title').innerText = 'القرآن الكريم';
+            document.getElementById('audio-player').pause();
+        }
+
+        function switchTab(tabName, btnElement) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySel
