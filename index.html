@@ -31,8 +31,11 @@
         main { padding: 15px; max-width: 600px; margin: 0 auto; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        
+        .search-input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; background: var(--card); color: var(--text); outline: none; }
+        
         .surah-item { background: var(--card); padding: 12px 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-right: 4px solid var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .surah-num { background: var(--primary); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem; }
+        .surah-num { background: var(--primary); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem; }
         .othmani { font-family: 'Amiri Quran', serif; font-size: 1.6rem; line-height: 2.4; text-align: justify; }
         .card { background: var(--card); padding: 18px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); margin-bottom: 15px; }
         select, audio { width: 100%; margin-top: 10px; }
@@ -52,23 +55,13 @@
     </header>
 
     <main>
-        <!-- 1. قسم الفهرس الرئيسي (أزرار مباشرة تفتح فوراً) -->
+        <!-- 1. قسم الفهرس الكامل (114 سورة) -->
         <div id="tab-index" class="tab-content active">
-            <div id="surah-container">
-                <div class="surah-item" onclick="openSurah(1, 'الفاتحة')"><div style="display:flex; gap:10px; align-items:center;"><div class="surah-num">1</div><strong>سورة الفاتحة</strong></div><span>قراءة ➔</span></div>
-                <div class="surah-item" onclick="openSurah(2, 'البقرة')"><div style="display:flex; gap:10px; align-items:center;"><div class="surah-num">2</div><strong>سورة البقرة</strong></div><span>قراءة ➔</span></div>
-                <div class="surah-item" onclick="openSurah(3, 'آل عمران')"><div style="display:flex; gap:10px; align-items:center;"><div class="surah-num">3</div><strong>سورة آل عمران</strong></div><span>قراءة ➔</span></div>
-                <div class="surah-item" onclick="openSurah(18, 'الكهف')"><div style="display:flex; gap:10px; align-items:center;"><div class="surah-num">18</div><strong>سورة الكهف</strong></div><span>قراءة ➔</span></div>
-                <div class="surah-item" onclick="openSurah(36, 'يس')"><div style="display:flex; gap:10px; align-items:center;"><div class="surah-num">36</div><strong>سورة يس</strong></div><span>قراءة ➔</span></div>
-                <div class="surah-item" onclick="openSurah(55, 'الرحمن')"><div style="display:flex; gap:10px; align-items:center;"><div class="surah-num">55</div><strong>سورة الرحمن</strong></div><span>قراءة ➔</span></div>
-                <div class="surah-item" onclick="openSurah(67, 'الملك')"><div style="display:flex; gap:10px; align-items:center;"><div class="surah-num">67</div><strong>سورة الملك</strong></div><span>قراءة ➔</span></div>
-                <div class="surah-item" onclick="openSurah(112, 'الإخلاص')"><div style="display:flex; gap:10px; align-items:center;"><div class="surah-num">112</div><strong>سورة الإخلاص</strong></div><span>قراءة ➔</span></div>
-                <div class="surah-item" onclick="openSurah(113, 'الفلق')"><div style="display:flex; gap:10px; align-items:center;"><div class="surah-num">113</div><strong>سورة الفلق</strong></div><span>قراءة ➔</span></div>
-                <div class="surah-item" onclick="openSurah(114, 'الناس')"><div style="display:flex; gap:10px; align-items:center;"><div class="surah-num">114</div><strong>سورة الناس</strong></div><span>قراءة ➔</span></div>
-            </div>
+            <input type="text" class="search-input" id="search-box" placeholder="🔍 ابحث عن اسم السورة..." oninput="filterSurahs()">
+            <div id="surah-container"></div>
         </div>
 
-        <!-- 2. قسم عرض السورة مع الاستماع بـ 4 قراء -->
+        <!-- 2. قسم عرض السورة والقراء -->
         <div id="tab-read" class="tab-content">
             <button class="btn-back" onclick="goBack()">➔ العودة للفهرس</button>
             <div class="card">
@@ -86,7 +79,7 @@
             </div>
         </div>
 
-        <!-- 3. قسم المسابقات المتعددة -->
+        <!-- 3. قسم المسابقات -->
         <div id="tab-quiz" class="tab-content">
             <div class="card">
                 <h3 id="q-title">اختبار الحفظ</h3>
@@ -101,12 +94,12 @@
         <div id="tab-info" class="tab-content">
             <div class="card">
                 <h3>عن التطبيق</h3>
-                <p style="margin-top: 10px; line-height: 1.6;">تطبيق القرآن الكريم المباشر بالخط العثماني والتلاوات الصوتية مع مسابقات ممتعة.</p>
+                <p style="margin-top: 10px; line-height: 1.6;">تطبيق القرآن الكريم بالخط العثماني الرسمي مع فهرس كامل وتلاوات صوتية لمختلف القراء ومسابقات تفاعلية.</p>
             </div>
         </div>
     </main>
 
-    <!-- شريط التنقل السفلي المباشر -->
+    <!-- شريط التنقل السفلي -->
     <nav>
         <button class="nav-btn active" id="btn-n1" onclick="showTab('tab-index', 'btn-n1', 'القرآن الكريم')">📖 المصحف</button>
         <button class="nav-btn" id="btn-n2" onclick="showTab('tab-quiz', 'btn-n2', 'المسابقات والأنشطة')">🎮 المسابقات</button>
@@ -114,7 +107,54 @@
     </nav>
 
     <script>
+        // أسماء السور الـ 114 بالترتيب
+        const surahNames = [
+            "الفاتحة", "البقرة", "آل عمران", "النساء", "المائدة", "الأنعام", "الأعراف", "الأنفال", "التوبة", "يونس",
+            "هود", "يوسف", "الرعد", "إبراهيم", "الحجر", "النحل", "الإسراء", "الكهف", "مريم", "طه",
+            "الأنبياء", "الحج", "المؤمنون", "النور", "الفرقان", "الشعراء", "النمل", "القصص", "العنكبوت", "الروم",
+            "لقمان", "السجدة", "الأحزاب", "سبأ", "فاطر", "يس", "الصافات", "ص", "الزمر", "غافر",
+            "فصلت", "الشورى", "الزخرف", "الدخان", "الجاثية", "الأحقاف", "محمد", "الفتح", "الحجرات", "ق",
+            "الذاريات", "الطور", "النجم", "القمر", "الرحمن", "الواقعة", "الحديد", "المجادلة", "الحشر", "الممتحنة",
+            "الصف", "الجمعة", "المنافقون", "التغابن", "الطلاق", "التحريم", "الملك", "القلم", "الحاقة", "المعارج",
+            "نوح", "الجن", "المزمل", "المدثر", "القيامة", "الإنسان", "المرسلات", "النبأ", "النازعات", "عبس",
+            "التكوير", "الانفطار", "المطففين", "الانشقاق", "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد",
+            "الشمس", "الليل", "الضحى", "الشرح", "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات",
+            "القارعة", "التكاثر", "العصر", "الهمزة", "الفيل", "قريش", "الماعون", "الكوثر", "الكافرون", "النصر",
+            "المسد", "الإخلاص", "الفلق", "الناس"
+        ];
+
         let currentS = 1;
+
+        // بناء الفهرس فور التحميل
+        window.onload = function() {
+            renderSurahList(surahNames);
+            renderQ();
+        };
+
+        function renderSurahList(list) {
+            const container = document.getElementById('surah-container');
+            container.innerHTML = '';
+            list.forEach((name) => {
+                const num = surahNames.indexOf(name) + 1;
+                const item = document.createElement('div');
+                item.className = 'surah-item';
+                item.onclick = function() { openSurah(num, name); };
+                item.innerHTML = `
+                    <div style="display:flex; gap:12px; align-items:center;">
+                        <div class="surah-num">${num}</div>
+                        <strong>سورة ${name}</strong>
+                    </div>
+                    <span>قراءة ➔</span>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function filterSurahs() {
+            const query = document.getElementById('search-box').value.trim();
+            const filtered = surahNames.filter(name => name.includes(query));
+            renderSurahList(filtered);
+        }
 
         function showTab(tabId, btnId, title) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -168,7 +208,7 @@
             b.setAttribute('data-theme', b.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
         }
 
-        // أسئلة المسابقات
+        // المسابقات
         const qList = [
             { t: "أكمل الآية: \"إِنَّا أَعْطَيْنَاكَ ...\"", o: ["الْكَوْثَرَ", "الْفَلَقَ", "النَّصْرَ"], c: 0 },
             { t: "ما السورة التي تسمى \"قلب القرآن\"؟", o: ["سورة البقرة", "سورة يس", "سورة الملك"], c: 1 },
@@ -198,9 +238,7 @@
             qIdx = (qIdx + 1) % qList.length;
             renderQ();
         }
-
-        renderQ();
     </script>
 </body>
-                                                                                                                                                                                       </html>
-                                                                                                                                       
+                    </html>
+                    
