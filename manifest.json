@@ -1,16 +1,21 @@
 {
-  "name": "تطبيق ورد للقرآن الكريم",
-  "short_name": "ورد",
-  "description": "تطبيق ورد بالخط العثماني والتلاوات الصوتية والمسابقات",
-  "start_url": "./index.html",
+  "background_color": "#ffffff",
+  "description": "تطبيق القرآن الكريم بالخط العثماني والتلاوات الصوتية والمسابقات",
+  "dir": "auto",
   "display": "standalone",
-  "background_color": "#f4f6f8",
+  "name": "hamzaeldukhri13-sys.github",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "hamzaeldukhri13-sys.github",
+  "start_url": "/https://hamzaeldukhri13-sys.github.io/wird_quran/",
   "theme_color": "#1b4d3e",
-  "icons": [
-    {
-      "src": "https://cdn-icons-png.flaticon.com/512/3076/3076753.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
+  "id": "quran-app",
+  "lang": "ar",
+  "categories": [
+    "books",
+    "books &amp; reference",
+    "lifestyle",
+    "reference",
+    "utilities"
   ]
 }
