@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق القرآن الكريم والأنشطة التفاعلية</title>
+    <title>تطبيق القرآن الكريم</title>
     <meta name="theme-color" content="#1b4d3e">
     
-    <!-- خط العرض المريح للقراءة -->
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- خط القاهرة للواجهات وخط حفص العثماني للقرآن -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --primary-color: #1b4d3e;
             --secondary-color: #2e7d32;
-            --bg-color: #f9f9f9;
+            --bg-color: #f4f6f8;
             --card-bg: #ffffff;
-            --text-color: #333333;
+            --text-color: #222222;
             --accent-color: #d4af37;
         }
 
@@ -52,31 +53,32 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         header h1 {
             font-size: 1.2rem;
-            font-family: 'Amiri', serif;
         }
 
-        .header-controls button {
-            background: none;
-            border: 1px solid white;
+        .theme-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
             color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
+            padding: 6px 12px;
+            border-radius: 20px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
-        /* المحتوى الرئيسي */
         main {
             flex: 1;
-            padding: 20px;
-            max-width: 600px;
+            padding: 15px;
+            max-width: 650px;
             width: 100%;
             margin: 0 auto;
-            padding-bottom: 80px;
+            padding-bottom: 90px;
         }
 
         .section {
@@ -87,25 +89,102 @@
             display: block;
         }
 
-        /* الأقسام والبطاقات */
-        .card {
-            background-color: var(--card-bg);
-            padding: 15px;
-            border-radius: 10px;
+        /* شريط البحث */
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
             margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            font-size: 1rem;
+            outline: none;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        /* قائمة السور */
+        .surah-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .surah-card {
+            background-color: var(--card-bg);
+            padding: 12px 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
             border-right: 4px solid var(--accent-color);
+            transition: transform 0.1s;
         }
 
-        .quran-text {
-            font-family: 'Amiri', serif;
-            font-size: 1.5rem;
-            text-align: center;
-            line-height: 2.2;
-            margin: 20px 0;
+        .surah-card:active {
+            transform: scale(0.99);
         }
 
-        /* أزرار الخيارات للعبة */
+        .surah-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .surah-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        /* الخط العثماني للقرآن */
+        .othmani-text {
+            font-family: 'Amiri Quran', serif;
+            font-size: 1.6rem;
+            line-height: 2.3;
+            text-align: justify;
+            direction: rtl;
+        }
+
+        .ayah-container {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+        }
+
+        /* مشغل الصوت */
+        .audio-player-container {
+            position: sticky;
+            top: 60px;
+            background: var(--card-bg);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        audio {
+            width: 100%;
+            height: 40px;
+        }
+
+        /* الألعاب */
+        .game-card {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
         .options-grid {
             display: grid;
             gap: 10px;
@@ -120,23 +199,9 @@
             border-radius: 8px;
             font-size: 1rem;
             cursor: pointer;
-            transition: 0.2s;
-            text-align: center;
         }
 
-        .option-btn:hover {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-
-        #quiz-result {
-            text-align: center;
-            margin-top: 15px;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        /* شريط التنقل السفلي */
+        /* Navigation */
         nav.bottom-nav {
             position: fixed;
             bottom: 0;
@@ -147,21 +212,18 @@
             justify-content: space-around;
             padding: 10px 0;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            border-top: 1px solid rgba(0,0,0,0.05);
         }
 
         .nav-item {
             background: none;
             border: none;
             color: var(--text-color);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 3px;
             opacity: 0.7;
-            transition: 0.2s;
         }
 
         .nav-item.active {
@@ -169,53 +231,73 @@
             color: var(--primary-color);
             font-weight: bold;
         }
+
+        .back-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body data-theme="light">
 
     <header>
-        <h1>القرآن الكريم والأنشطة</h1>
-        <div class="header-controls">
-            <button onclick="toggleTheme()">🌙 الوضع</button>
-        </div>
+        <h1 id="header-title">القرآن الكريم</h1>
+        <button class="theme-btn" onclick="toggleTheme()">🌙 الوضع</button>
     </header>
 
     <main>
-        <!-- قسم القراءة / المصحف -->
+        <!-- قسم قائمة السور -->
         <div id="quran-section" class="section active">
-            <div class="card">
-                <h3>مرحباً بك في تطبيقك</h3>
-                <p style="margin-top: 10px; line-height: 1.6;">هذا هو قسم تلاوة القرآن الكريم. يمكنك إضافة سور القرآن أو الفهارس هنا لتظهر بشكل أنيق وسهل التصفح.</p>
-            </div>
-            <div class="card">
-                <p class="quran-text">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
-                <p style="text-align: center; color: gray; font-size: 0.9rem;">الفاتحة - آية 1</p>
+            <input type="text" id="search-input" class="search-box" placeholder="بحث عن سورة..." oninput="filterSurahs()">
+            <div id="surah-list" class="surah-list">
+                <p style="text-align: center; color: gray;">جاري تحميل السور...</p>
             </div>
         </div>
 
-        <!-- قسم الألعاب والمسابقات (الاضافة الجديدة) -->
+        <!-- قسم عرض السورة والتلاوة -->
+        <div id="surah-detail-section" class="section">
+            <button class="back-btn" onclick="showSurahList()">➔ العودة لقائمة السور</button>
+            
+            <div class="audio-player-container">
+                <p id="audio-title" style="font-size: 0.85rem; margin-bottom: 5px; color: gray;">التلاوة الصوتية:</p>
+                <audio id="audio-player" controls autoplay></audio>
+            </div>
+
+            <div class="ayah-container">
+                <div id="surah-content" class="othmani-text">
+                    <!-- سيتم تحميل الآيات بالخط العثماني هنا -->
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم الألعاب والمسابقات -->
         <div id="games-section" class="section">
-            <div class="card">
-                <h3>⭐ اختبر حفظك وفهمك</h3>
-                <p style="margin-top: 5px; font-size: 0.9rem; color: gray;">أكمل الآية الكريمة التالية بشكل صحيح:</p>
+            <div class="game-card">
+                <h3>⭐ اختبر حفظك</h3>
+                <p style="margin-top: 5px; font-size: 0.9rem; color: gray;">أكمل الآية الكريمة التالية:</p>
                 
-                <div class="quran-text" id="ayah-prompt">"إِنَّا أَعْطَيْنَاكَ ... *"</div>
+                <div class="othmani-text" style="text-align: center; margin: 20px 0;">"إِنَّا أَعْطَيْنَاكَ ... *"</div>
                 
                 <div class="options-grid">
-                    <button class="option-btn" onclick="checkQuizAnswer(true)">الْكَوْثَرَ</button>
-                    <button class="option-btn" onclick="checkQuizAnswer(false)">الْفَلَقَ</button>
-                    <button class="option-btn" onclick="checkQuizAnswer(false)">النَّصْرَ</button>
+                    <button class="option-btn" onclick="checkAnswer(true)">الْكَوْثَرَ</button>
+                    <button class="option-btn" onclick="checkAnswer(false)">الْفَلَقَ</button>
+                    <button class="option-btn" onclick="checkAnswer(false)">النَّصْرَ</button>
                 </div>
-                
-                <p id="quiz-result"></p>
+                <p id="quiz-result" style="text-align: center; margin-top: 15px; font-weight: bold;"></p>
             </div>
         </div>
 
         <!-- قسم الإعدادات -->
         <div id="settings-section" class="section">
-            <div class="card">
-                <h3>الإعدادات ومعلومات التطبيق</h3>
-                <p style="margin-top: 10px;">تطبيق ويب تقدمي (PWA) مصمم خصيصاً ليعمل بسلاسة وبدون إنترنت.</p>
+            <div class="game-card">
+                <h3>معلومات التطبيق</h3>
+                <p style="margin-top: 10px; line-height: 1.6;">تطبيق القرآن الكريم يعمل بالخط العثماني الرسمي مع خدمة استماع السور مباشرة بدون إشغال مساحة الهاتف.</p>
             </div>
         </div>
     </main>
@@ -223,50 +305,29 @@
     <!-- شريط التنقل السفلي -->
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="switchTab('quran', this)">
-            <span>📖</span>
+            <span style="font-size: 1.2rem;">📖</span>
             <span>القرآن</span>
         </button>
         <button class="nav-item" onclick="switchTab('games', this)">
-            <span>🎮</span>
-            <span>الألعاب والمسابقات</span>
+            <span style="font-size: 1.2rem;">🎮</span>
+            <span>المسابقات</span>
         </button>
         <button class="nav-item" onclick="switchTab('settings', this)">
-            <span>⚙️</span>
+            <span style="font-size: 1.2rem;">⚙️</span>
             <span>الإعدادات</span>
         </button>
     </nav>
 
     <script>
-        // التبديل بين الأقسام
-        function switchTab(tabName, btnElement) {
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+        let allSurahs = [];
 
-            document.getElementById(tabName + '-section').classList.add('active');
-            btnElement.classList.add('active');
-        }
-
-        // تبديل الوضع الداكن والفاتح
-        function toggleTheme() {
-            const body = document.body;
-            if (body.getAttribute('data-theme') === 'light') {
-                body.setAttribute('data-theme', 'dark');
-            } else {
-                body.setAttribute('data-theme', 'light');
-            }
-        }
-
-        // التحقق من إجابة المسابقة
-        function checkQuizAnswer(isCorrect) {
-            const resultElement = document.getElementById('quiz-result');
-            if (isCorrect) {
-                resultElement.innerHTML = "إجابة صحيحة وموفقة! أحسنت 🌟";
-                resultElement.style.color = "#2e7d32";
-            } else {
-                resultElement.innerHTML = "إجابة خاطئة، حاول مرة أخرى!";
-                resultElement.style.color = "#d32f2f";
-            }
-        }
-    </script>
-</body>
-</html>
+        // جلب قائمة السور فور فتح التطبيق
+        window.onload = function() {
+            fetch('https://api.alquran.cloud/v1/surah')
+                .then(response => response.json())
+                .then(data => {
+                    allSurahs = data.data;
+                    renderSurahList(allSurahs);
+                })
+                .catch(
+    
