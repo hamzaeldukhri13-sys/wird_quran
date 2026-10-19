@@ -113,6 +113,8 @@
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             border-right: 4px solid var(--accent-color);
+            text-decoration: none;
+            color: var(--text-color);
         }
 
         .surah-info {
@@ -237,10 +239,39 @@
     </header>
 
     <main>
-        <!-- قسم الفهرس -->
+        <!-- قسم الفهرس (مكتوب مباشرة ليظهر فوراً بدون مشاكل تحميل) -->
         <div id="quran-section" class="section active">
             <input type="text" id="search-input" class="search-box" placeholder="ابحث عن اسم السورة..." oninput="filterSurahs()">
-            <div id="surah-list" class="surah-list"></div>
+            <div id="surah-list" class="surah-list">
+                <div class="surah-card" onclick="loadSurah(1, 'الفاتحة')">
+                    <div class="surah-info"><div class="surah-number">1</div><div><strong>سورة الفاتحة</strong><div style="font-size: 0.75rem; color: gray;">مكية - 7 آية</div></div></div>
+                    <span style="font-size: 0.8rem; color: var(--primary-color);">قراءة ➔</span>
+                </div>
+                <div class="surah-card" onclick="loadSurah(2, 'البقرة')">
+                    <div class="surah-info"><div class="surah-number">2</div><div><strong>سورة البقرة</strong><div style="font-size: 0.75rem; color: gray;">مدنية - 286 آية</div></div></div>
+                    <span style="font-size: 0.8rem; color: var(--primary-color);">قراءة ➔</span>
+                </div>
+                <div class="surah-card" onclick="loadSurah(3, 'آل عمران')">
+                    <div class="surah-info"><div class="surah-number">3</div><div><strong>سورة آل عمران</strong><div style="font-size: 0.75rem; color: gray;">مدنية - 200 آية</div></div></div>
+                    <span style="font-size: 0.8rem; color: var(--primary-color);">قراءة ➔</span>
+                </div>
+                <div class="surah-card" onclick="loadSurah(18, 'الكهف')">
+                    <div class="surah-info"><div class="surah-number">18</div><div><strong>سورة الكهف</strong><div style="font-size: 0.75rem; color: gray;">مكية - 110 آية</div></div></div>
+                    <span style="font-size: 0.8rem; color: var(--primary-color);">قراءة ➔</span>
+                </div>
+                <div class="surah-card" onclick="loadSurah(36, 'يس')">
+                    <div class="surah-info"><div class="surah-number">36</div><div><strong>سورة يس</strong><div style="font-size: 0.75rem; color: gray;">مكية - 83 آية</div></div></div>
+                    <span style="font-size: 0.8rem; color: var(--primary-color);">قراءة ➔</span>
+                </div>
+                <div class="surah-card" onclick="loadSurah(67, 'الملك')">
+                    <div class="surah-info"><div class="surah-number">67</div><div><strong>سورة الملك</strong><div style="font-size: 0.75rem; color: gray;">مكية - 30 آية</div></div></div>
+                    <span style="font-size: 0.8rem; color: var(--primary-color);">قراءة ➔</span>
+                </div>
+                <div class="surah-card" onclick="loadSurah(112, 'الإخلاص')">
+                    <div class="surah-info"><div class="surah-number">112</div><div><strong>سورة الإخلاص</strong><div style="font-size: 0.75rem; color: gray;">مكية - 4 آية</div></div></div>
+                    <span style="font-size: 0.8rem; color: var(--primary-color);">قراءة ➔</span>
+                </div>
+            </div>
         </div>
 
         <!-- قسم قراءة السورة والاستماع -->
@@ -295,104 +326,11 @@
     </nav>
 
     <script>
-        const allSurahs = [
-            {number: 1, name: "الفاتحة", type: "مكية", ayahs: 7}, {number: 2, name: "البقرة", type: "مدنية", ayahs: 286},
-            {number: 3, name: "آل عمران", type: "مدنية", ayahs: 200}, {number: 4, name: "النساء", type: "مدنية", ayahs: 176},
-            {number: 5, name: "المائدة", type: "مدنية", ayahs: 120}, {number: 6, name: "الأنعام", type: "مكية", ayahs: 165},
-            {number: 7, name: "الأعراف", type: "مكية", ayahs: 206}, {number: 8, name: "الأنفال", type: "مدنية", ayahs: 75},
-            {number: 9, name: "التوبة", type: "مدنية", ayahs: 129}, {number: 10, name: "يونس", type: "مكية", ayahs: 109},
-            {number: 11, name: "هود", type: "مكية", ayahs: 123}, {number: 12, name: "يوسف", type: "مكية", ayahs: 111},
-            {number: 13, name: "الرعد", type: "مدنية", ayahs: 43}, {number: 14, name: "إبراهيم", type: "مكية", ayahs: 52},
-            {number: 15, name: "الحجر", type: "مكية", ayahs: 99}, {number: 16, name: "النحل", type: "مكية", ayahs: 128},
-            {number: 17, name: "الإسراء", type: "مكية", ayahs: 111}, {number: 18, name: "الكهف", type: "مكية", ayahs: 110},
-            {number: 19, name: "مريم", type: "مكية", ayahs: 98}, {number: 20, name: "طه", type: "مكية", ayahs: 135},
-            {number: 21, name: "الأنبياء", type: "مكية", ayahs: 112}, {number: 22, name: "الحج", type: "مدنية", ayahs: 78},
-            {number: 23, name: "المؤمنون", type: "مكية", ayahs: 118}, {number: 24, name: "النور", type: "مدنية", ayahs: 64},
-            {number: 25, name: "الفرقان", type: "مكية", ayahs: 77}, {number: 26, name: "الشعراء", type: "مكية", ayahs: 227},
-            {number: 27, name: "النمل", type: "مكية", ayahs: 93}, {number: 28, name: "القصص", type: "مكية", ayahs: 88},
-            {number: 29, name: "العنكبوت", type: "مكية", ayahs: 69}, {number: 30, name: "الروم", type: "مكية", ayahs: 60},
-            {number: 31, name: "لقمان", type: "مكية", ayahs: 34}, {number: 32, name: "السجدة", type: "مكية", ayahs: 30},
-            {number: 33, name: "الأحزاب", type: "مدنية", ayahs: 73}, {number: 34, name: "سبأ", type: "مكية", ayahs: 54},
-            {number: 35, name: "فاطر", type: "مكية", ayahs: 45}, {number: 36, name: "يس", type: "مكية", ayahs: 83},
-            {number: 37, name: "الصافات", type: "مكية", ayahs: 182}, {number: 38, name: "ص", type: "مكية", ayahs: 88},
-            {number: 39, name: "الزمر", type: "مكية", ayahs: 75}, {number: 40, name: "غافر", type: "مكية", ayahs: 85},
-            {number: 41, name: "فصلت", type: "مكية", ayahs: 54}, {number: 42, name: "الشورى", type: "مكية", ayahs: 53},
-            {number: 43, name: "الزخرف", type: "مكية", ayahs: 89}, {number: 44, name: "الدخان", type: "مكية", ayahs: 59},
-            {number: 45, name: "الجاثية", type: "مكية", ayahs: 37}, {number: 46, name: "الأحقاف", type: "مكية", ayahs: 35},
-            {number: 47, name: "محمد", type: "مدنية", ayahs: 38}, {number: 48, name: "الفتح", type: "مدنية", ayahs: 29},
-            {number: 49, name: "الحجرات", type: "مدنية", ayahs: 18}, {number: 50, name: "ق", type: "مكية", ayahs: 45},
-            {number: 51, name: "الذاريات", type: "مكية", ayahs: 60}, {number: 52, name: "الطور", type: "مكية", ayahs: 49},
-            {number: 53, name: "النجم", type: "مكية", ayahs: 62}, {number: 54, name: "القمر", type: "مكية", ayahs: 55},
-            {number: 55, name: "الرحمن", type: "مدنية", ayahs: 78}, {number: 56, name: "الواقعة", type: "مكية", ayahs: 96},
-            {number: 57, name: "الحديد", type: "مدنية", ayahs: 29}, {number: 58, name: "المجادلة", type: "مدنية", ayahs: 22},
-            {number: 59, name: "الحشر", type: "مدنية", ayahs: 24}, {number: 60, name: "الممتحنة", type: "مدنية", ayahs: 13},
-            {number: 61, name: "الصف", type: "مدنية", ayahs: 14}, {number: 62, name: "الجمعة", type: "مدنية", ayahs: 11},
-            {number: 63, name: "المنافقون", type: "مدنية", ayahs: 11}, {number: 64, name: "التغابن", type: "مدنية", ayahs: 18},
-            {number: 65, name: "الطلاق", type: "مدنية", ayahs: 12}, {number: 66, name: "التحريم", type: "مدنية", ayahs: 12},
-            {number: 67, name: "الملك", type: "مكية", ayahs: 30}, {number: 68, name: "القلم", type: "مكية", ayahs: 52},
-            {number: 69, name: "الحاقة", type: "مكية", ayahs: 52}, {number: 70, name: "المعارج", type: "مكية", ayahs: 44},
-            {number: 71, name: "نوح", type: "مكية", ayahs: 28}, {number: 72, name: "الجن", type: "مكية", ayahs: 28},
-            {number: 73, name: "المزمل", type: "مكية", ayahs: 20}, {number: 74, name: "المدثر", type: "مكية", ayahs: 56},
-            {number: 75, name: "القيامة", type: "مكية", ayahs: 40}, {number: 76, name: "الإنسان", type: "مدنية", ayahs: 31},
-            {number: 77, name: "المرسلات", type: "مكية", ayahs: 50}, {number: 78, name: "النبأ", type: "مكية", ayahs: 40},
-            {number: 79, name: "النازعات", type: "مكية", ayahs: 46}, {number: 80, name: "عبس", type: "مكية", ayahs: 42},
-            {number: 81, name: "التكوير", type: "مكية", ayahs: 29}, {number: 82, name: "الانفطار", type: "مكية", ayahs: 19},
-            {number: 83, name: "المطففين", type: "مكية", ayahs: 36}, {number: 84, name: "الانشقاق", type: "مكية", ayahs: 25},
-            {number: 85, name: "البروج", type: "مكية", ayahs: 22}, {number: 86, name: "الطارق", type: "مكية", ayahs: 17},
-            {number: 87, name: "الأعلى", type: "مكية", ayahs: 19}, {number: 88, name: "الغاشية", type: "مكية", ayahs: 26},
-            {number: 89, name: "الفجر", type: "مكية", ayahs: 30}, {number: 90, name: "البلد", type: "مكية", ayahs: 20},
-            {number: 91, name: "الشمس", type: "مكية", ayahs: 15}, {number: 92, name: "الليل", type: "مكية", ayahs: 21},
-            {number: 93, name: "الضحى", type: "مكية", ayahs: 11}, {number: 94, name: "الشرح", type: "مكية", ayahs: 8},
-            {number: 95, name: "التين", type: "مكية", ayahs: 8}, {number: 96, name: "العلق", type: "مكية", ayahs: 19},
-            {number: 97, name: "القدر", type: "مكية", ayahs: 5}, {number: 98, name: "البينة", type: "مدنية", ayahs: 8},
-            {number: 99, name: "الزلزلة", type: "مدنية", ayahs: 8}, {number: 100, name: "العاديات", type: "مكية", ayahs: 11},
-            {number: 101, name: "القارعة", type: "مكية", ayahs: 11}, {number: 102, name: "التكاثر", type: "مكية", ayahs: 8},
-            {number: 103, name: "العصر", type: "مكية", ayahs: 3}, {number: 104, name: "الهمزة", type: "مكية", ayahs: 9},
-            {number: 105, name: "الفيل", type: "مكية", ayahs: 5}, {number: 106, name: "قريش", type: "مكية", ayahs: 4},
-            {number: 107, name: "الماعون", type: "مكية", ayahs: 7}, {number: 108, name: "الكوثر", type: "مكية", ayahs: 3},
-            {number: 109, name: "الكافرون", type: "مكية", ayahs: 6}, {number: 110, name: "النصر", type: "مدنية", ayahs: 3},
-            {number: 111, name: "المسد", type: "مكية", ayahs: 5}, {number: 112, name: "الإخلاص", type: "مكية", ayahs: 4},
-            {number: 113, name: "الفلق", type: "مكية", ayahs: 5}, {number: 114, name: "الناس", type: "مكية", ayahs: 6}
-        ];
-
-        // تشغيل الفهرس فوراً عند تحميل الصفحة
-        window.addEventListener('DOMContentLoaded', () => {
-            renderSurahList(allSurahs);
-        });
-
-        function renderSurahList(surahs) {
-            const listContainer = document.getElementById('surah-list');
-            if (!listContainer) return;
-            listContainer.innerHTML = '';
-            surahs.forEach(surah => {
-                const card = document.createElement('div');
-                card.className = 'surah-card';
-                card.onclick = () => loadSurah(surah.number, surah.name);
-                card.innerHTML = `
-                    <div class="surah-info">
-                        <div class="surah-number">${surah.number}</div>
-                        <div>
-                            <strong>سورة ${surah.name}</strong>
-                            <div style="font-size: 0.75rem; color: gray;">${surah.type} - ${surah.ayahs} آية</div>
-                        </div>
-                    </div>
-                    <span style="font-size: 0.8rem; color: var(--primary-color);">قراءة ➔</span>
-                `;
-                listContainer.appendChild(card);
-            });
-        }
-
-        function filterSurahs() {
-            const query = document.getElementById('search-input').value.toLowerCase();
-            const filtered = allSurahs.filter(s => s.name.includes(query) || s.number.toString() === query);
-            renderSurahList(filtered);
-        }
-
         function loadSurah(surahNumber, surahName) {
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
             document.getElementById('surah-detail-section').classList.add('active');
             document.getElementById('header-title').innerText = 'سورة ' + surahName;
-            document.getElementById('surah-content').innerHTML = 'جاري جلب الآيات...';
+            document.getElementById('surah-content').innerHTML = 'جاري جلب الآيات بالخط العثماني...';
 
             const audioPlayer = document.getElementById('audio-player');
             const paddedNum = surahNumber.toString().padStart(3, '0');
@@ -432,4 +370,40 @@
             audioPlayer.currentTime = 0;
         }
 
-                                                                                       
+        function switchTab(tabName) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+
+            if (tabName === 'quran') {
+                document.getElementById('quran-section').classList.add('active');
+                document.getElementById('nav-quran').classList.add('active');
+                document.getElementById('header-title').innerText = 'القرآن الكريم';
+            } else if (tabName === 'games') {
+                document.getElementById('games-section').classList.add('active');
+                document.getElementById('nav-games').classList.add('active');
+                document.getElementById('header-title').innerText = 'المسابقات والأنشطة';
+            } else if (tabName === 'settings') {
+                document.getElementById('settings-section').classList.add('active');
+                document.getElementById('nav-settings').classList.add('active');
+                document.getElementById('header-title').innerText = 'الإعدادات';
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            if (body.getAttribute('data-theme') === 'light') {
+                body.setAttribute('data-theme', 'dark');
+            } else {
+                body.setAttribute('data-theme', 'light');
+            }
+        }
+
+        function checkAnswer(isCorrect) {
+            const res = document.getElementById('quiz-result');
+            res.innerText = isCorrect ? "إجابة صحيحة وموفقة! أحسنت 🌟" : "إجابة خاطئة، حاول مرة أخرى!";
+            res.style.color = isCorrect ? "#2e7d32" : "#d32f2f";
+        }
+    </script>
+</body>
+    </html>
+    
