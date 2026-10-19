@@ -1,0 +1,16 @@
+{
+  "name": "تطبيق ورد للقرآن الكريم",
+  "short_name": "ورد",
+  "description": "تطبيق ورد بالخط العثماني والتلاوات الصوتية والمسابقات",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f6f8",
+  "theme_color": "#1b4d3e",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3076/3076753.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
