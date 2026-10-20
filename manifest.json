@@ -1,21 +1,17 @@
 {
-  "background_color": "#ffffff",
-  "description": "تطبيق القرآن الكريم بالخط العثماني والتلاوات الصوتية والمسابقات",
-  "dir": "auto",
-  "display": "standalone",
-  "name": "hamzaeldukhri13-sys.github",
-  "orientation": "any",
-  "scope": "/",
-  "short_name": "hamzaeldukhri13-sys.github",
-  "start_url": "/https://hamzaeldukhri13-sys.github.io/wird_quran/",
-  "theme_color": "#1b4d3e",
+  "name": "وِرْد - المصحف الشريف",
+  "short_name": "وِرْد",
   "id": "quran-app",
+  "start_url": "/wird_quran/",
+  "scope": "/wird_quran/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#204d2a",
+  "theme_color": "#faffe1",
+  "dir": "rtl",
   "lang": "ar",
   "categories": [
     "books",
-    "books &amp; reference",
-    "lifestyle",
-    "reference",
-    "utilities"
+    "lifestyle"
   ]
 }
