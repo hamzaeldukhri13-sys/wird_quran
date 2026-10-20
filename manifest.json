@@ -10,8 +10,16 @@
   "theme_color": "#faffe1",
   "dir": "rtl",
   "lang": "ar",
-  "categories": [
-    "books",
-    "lifestyle"
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192x192.png?text=Wird",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512x512.png?text=Wird",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }
