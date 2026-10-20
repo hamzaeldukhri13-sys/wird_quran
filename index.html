@@ -1,333 +1,374 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#2C3E2E">
-  <link rel="manifest" href='data:application/manifest+json,{"name":"Wird","short_name":"Wird","start_url":"./","display":"standalone","background_color":"%23F8F6F0","theme_color":"%232C3E2E","icons":[]}'>
-  <title>Wird · وِرْد</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root { --olive:#2C3E2E; --navy:#1A2238; --gold:#D4AF37; --warm:#F8F6F0; --warm-dark:#EFECE1; }
-    *{box-sizing:border-box}
-    body{font-family:'Inter',sans-serif;background:var(--warm);color:var(--navy);margin:0;min-height:100vh;overflow-x:hidden}
-    .font-arabic{font-family:'Amiri',serif}
-    .bg-olive{background-color:var(--olive)} .bg-navy{background-color:var(--navy)} .bg-gold{background-color:var(--gold)}
-    .text-gold{color:var(--gold)} .text-olive{color:var(--olive)}
-    .border-gold{border-color:var(--gold)} .border-olive{border-color:var(--olive)}
-    ::-webkit-scrollbar{width:6px;height:6px} ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
-    .virtual-scroll{overflow-y:auto;position:relative} .virtual-inner{position:relative;width:100%}
-    .paper{background:#fffcf5;border:1px solid #e5dfd0;box-shadow:0 2px 12px rgba(0,0,0,0.03)}
-    @keyframes gentlePulse{0%,100%{opacity:1}50%{opacity:.6}} .turn-pulse{animation:gentlePulse 1.8s infinite}
-    .no-scrollbar::-webkit-scrollbar{display:none} .no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
-    .hidden{display:none !important}
-    .spin{animation:spin 1s linear infinite} @keyframes spin{to{transform:rotate(360deg)}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#2C3E2E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href='data:application/manifest+json,{"name":"وِرد","short_name":"وِرد","start_url":"./","display":"standalone","background_color":"%23F8F6F0","theme_color":"%232C3E2E","lang":"ar","dir":"rtl","icons":[]}'>
+<title>وِرد · Wird</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          olive: '#2C3E2E',
+          navy: '#1A2238',
+          gold: '#D4AF37',
+          warm: '#F8F6F0',
+          warmdark: '#EFECE1',
+        },
+        fontFamily: {
+          arabic: ['Amiri', 'serif'],
+          ui: ['Tajawal', 'system-ui', 'sans-serif'],
+        }
+      }
+    }
+  }
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --olive:#2C3E2E; --navy:#1A2238; --gold:#D4AF37; --warm:#F8F6F0; --warm-dark:#EFECE1;
+    --bg: var(--warm); --fg: var(--navy); --card: #ffffff; --muted: #6b7280; --border: #e5e0d4;
+  }
+  html.dark {
+    --bg: #12151c; --fg: #e8e6e0; --card: #1c2230; --muted: #9ca3af; --border: #2e3546;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Tajawal', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
+    padding-bottom: 76px;
+  }
+  .font-arabic { font-family: 'Amiri', serif; }
+  .card { background: var(--card); border: 1px solid var(--border); }
+  .muted { color: var(--muted); }
+  .border-base { border-color: var(--border); }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+  html.dark ::-webkit-scrollbar-thumb { background: #3a4256; }
+  .hidden { display: none !important; }
+  .virtual-scroll { overflow-y: auto; position: relative; }
+  .virtual-inner { position: relative; width: 100%; }
+  @keyframes pulseSoft { 0%,100%{opacity:1} 50%{opacity:.55} }
+  .pulse-soft { animation: pulseSoft 1.8s infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spin { animation: spin 1s linear infinite; }
+  .paper {
+    background: #fffdf7;
+    border: 1px solid #e8e2d2;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  }
+  html.dark .paper { background: #1e2532; border-color: #2e3546; }
+  .btn-gold { background: var(--gold); color: #1a1a1a; }
+  .btn-gold:hover { background: #c9a230; }
+  .btn-olive { background: var(--olive); color: #fff; }
+  .btn-olive:hover { background: #243328; }
+  .nav-tab.active { color: var(--gold); }
+  .nav-tab.active .nav-icon { transform: translateY(-2px) scale(1.08); }
+  .nav-icon { transition: transform 0.2s ease; }
+  .overlay-blur { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  input, select, button, textarea { font-family: inherit; }
+  input:focus, select:focus { outline: none; }
+  .glow-gold { box-shadow: 0 0 0 3px rgba(212,175,55,0.25); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .bracket-col { min-width: 220px; }
+  .bracket-match { background: var(--card); border: 1px solid var(--border); border-radius: 10px; }
+  .podium { background: linear-gradient(135deg, rgba(212,175,55,0.12), rgba(44,62,46,0.08)); }
+</style>
 </head>
 <body class="antialiased">
+
+<!-- ========== APP SHELL ========== -->
 <div id="app" class="min-h-screen flex flex-col">
 
-  <header class="bg-olive text-white shadow-md sticky top-0 z-30">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
-      <div class="flex items-center gap-3">
-        <span class="text-2xl font-arabic text-gold">وِرْد</span>
-        <span class="text-sm font-semibold tracking-wider opacity-90">Wird</span>
+  <!-- ===== TOP HEADER ===== -->
+  <header class="sticky top-0 z-30" style="background: var(--card); border-bottom: 1px solid var(--border);">
+    <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl font-arabic" style="color: var(--gold);">وِرْد</span>
+        <span class="text-xs font-medium muted hidden sm:inline">· رحلة يومية مع القرآن</span>
       </div>
-      <nav class="flex items-center gap-3 md:gap-4 text-xs md:text-sm font-medium flex-wrap">
-        <button data-nav="home" class="nav-btn hover:text-gold transition">Home</button>
-        <button data-nav="reader" class="nav-btn hover:text-gold transition">Reader</button>
-        <button data-nav="match" class="nav-btn hover:text-gold transition">Match</button>
-        <button data-nav="tournament" class="nav-btn hover:text-gold transition">Tournament</button>
-        <button data-nav="admin" class="nav-btn hover:text-gold transition">Admin</button>
-      </nav>
+      <div class="flex items-center gap-2">
+        <span id="headerWindowStatus" class="text-[11px] px-2 py-1 rounded-full hidden sm:inline" style="background: rgba(212,175,55,0.15); color: var(--gold);">
+          —
+        </span>
+        <button id="themeToggle" aria-label="تبديل المظهر" class="w-9 h-9 rounded-full flex items-center justify-center" style="background: rgba(44,62,46,0.08);">
+          <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+          <svg id="iconSun" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        </button>
+      </div>
     </div>
   </header>
 
-  <div id="globalBanner" class="bg-gold/10 border-b border-gold/30 text-navy text-sm py-1.5 px-4 text-center hidden">
+  <!-- ===== BANNER ===== -->
+  <div id="globalBanner" class="hidden text-xs py-2 px-4 text-center" style="background: rgba(212,175,55,0.12); color: var(--fg); border-bottom: 1px solid var(--border);">
     <span id="bannerText"></span>
   </div>
 
-  <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-6">
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="flex-1 max-w-3xl mx-auto w-full px-4 py-5 pb-24">
 
-    <!-- HOME -->
-    <section id="view-home" class="view">
-      <div class="bg-white/70 rounded-xl p-6 md:p-8 shadow-sm border border-warm-dark">
-        <h1 class="text-2xl md:text-3xl font-bold text-olive mb-2">Daily Wird</h1>
-        <p class="text-navy/70 mb-6">Complete your daily Quran page to unlock matches & tournaments.</p>
-        <div class="grid md:grid-cols-2 gap-6">
-          <div class="bg-warm rounded-lg p-5 border border-warm-dark">
-            <h3 class="font-semibold text-olive mb-1">Today's Reflection</h3>
-            <p class="text-sm text-navy/80 leading-relaxed font-arabic text-lg">﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا ﴾</p>
-            <p class="text-xs text-navy/50 mt-2">— Al-Muzzammil 73:4</p>
+    <!-- ============================================================
+         TAB 1: المصحف
+         ============================================================ -->
+    <section id="view-mushaf" class="view">
+
+      <!-- Daily Wird status card -->
+      <div class="card rounded-2xl p-5 mb-4">
+        <div class="flex items-start justify-between gap-3 mb-3">
+          <div>
+            <h1 class="text-lg font-bold">وِرْد اليوم</h1>
+            <p class="text-xs muted mt-0.5">أتمّ قراءة الصفحة أو استمع إليها لفتح المسابقة</p>
           </div>
-          <div class="bg-warm rounded-lg p-5 border border-warm-dark flex flex-col justify-between">
-            <div>
-              <h3 class="font-semibold text-olive mb-1">Prerequisite</h3>
-              <p id="gateStatusText" class="text-sm text-navy/80">Complete reading/listening to unlock.</p>
-            </div>
-            <button id="homeGoReader" class="mt-4 bg-olive text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-olive/90 transition">Go to Reader</button>
-          </div>
+          <div id="wirdStatusPill" class="text-[11px] px-2.5 py-1 rounded-full" style="background: rgba(212,175,55,0.15); color: var(--gold);">بانتظار الإتمام</div>
         </div>
-        <div class="mt-6 grid grid-cols-3 gap-3 text-center text-xs">
-          <div class="bg-white rounded p-3 border"><span class="block text-lg font-bold text-gold" id="statMatches">0</span>Matches</div>
-          <div class="bg-white rounded p-3 border"><span class="block text-lg font-bold text-gold" id="statCorrect">0</span>Correct</div>
-          <div class="bg-white rounded p-3 border"><span class="block text-lg font-bold text-gold" id="statStreak">0</span>Streak</div>
+        <div class="grid grid-cols-3 gap-2 text-center text-[11px] mt-3">
+          <div class="rounded-lg p-2" style="background: rgba(44,62,46,0.05);">
+            <div class="text-base font-bold" style="color: var(--gold);" id="mStatMatches">0</div>
+            <div class="muted">جولات</div>
+          </div>
+          <div class="rounded-lg p-2" style="background: rgba(44,62,46,0.05);">
+            <div class="text-base font-bold" style="color: var(--gold);" id="mStatCorrect">0</div>
+            <div class="muted">إجابة صحيحة</div>
+          </div>
+          <div class="rounded-lg p-2" style="background: rgba(44,62,46,0.05);">
+            <div class="text-base font-bold" style="color: var(--gold);" id="mStatStreak">0</div>
+            <div class="muted">تتابع</div>
+          </div>
         </div>
       </div>
-    </section>
 
-    <!-- READER -->
-    <section id="view-reader" class="view hidden">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold text-olive">Quran Page Reader</h2>
-        <div class="text-sm text-navy/60">Page 1</div>
+      <!-- Reflection -->
+      <div class="card rounded-2xl p-5 mb-4">
+        <div class="text-[11px] uppercase tracking-wide muted mb-2">تأمّل اليوم</div>
+        <p class="font-arabic text-xl leading-loose text-center" style="color: var(--fg);">
+          ﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا ﴾
+        </p>
+        <p class="text-xs muted text-center mt-2">— المزمل ٧٣:٤</p>
       </div>
-      <div class="paper rounded-xl p-6 md:p-10 relative">
-        <div class="text-center mb-6">
-          <p class="font-arabic text-2xl md:text-3xl leading-loose text-navy">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
-          <p class="text-sm text-navy/50 mt-4">In the name of Allah, the Entirely Merciful, the Especially Merciful.</p>
+
+      <!-- Quran Reader -->
+      <div class="paper rounded-2xl p-5 relative">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-base font-bold">المصحف</h2>
+          <span class="text-[11px] muted" id="readerPageLabel">الصفحة ١</span>
         </div>
-        <div class="flex items-center justify-center gap-4 mt-8">
-          <button id="audioPlay" class="bg-olive text-white rounded-full w-12 h-12 flex items-center justify-center hover:bg-olive/90 transition">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+
+        <div class="text-center py-4 mb-3 rounded-xl" style="background: rgba(44,62,46,0.03);">
+          <p class="font-arabic text-2xl leading-loose" style="color: var(--fg);" id="readerText">
+            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+          </p>
+          <p class="text-xs muted mt-3" id="readerTranslation">
+            بسم الله الرحمن الرحيم
+          </p>
+        </div>
+
+        <!-- Audio controls -->
+        <div class="flex items-center gap-3 mt-4">
+          <button id="audioPlay" class="w-11 h-11 rounded-full btn-olive flex items-center justify-center flex-shrink-0" aria-label="تشغيل التلاوة">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
           </button>
-          <div class="flex-1 max-w-xs">
-            <div class="h-1.5 bg-warm-dark rounded-full overflow-hidden">
-              <div id="audioProgress" class="h-full bg-gold w-0 transition-all duration-300"></div>
+          <div class="flex-1">
+            <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--border);">
+              <div id="audioProgress" class="h-full transition-all duration-300" style="width:0%; background: var(--gold);"></div>
             </div>
           </div>
-          <span id="audioTime" class="text-xs text-navy/60 w-10">0:00</span>
+          <span id="audioTime" class="text-xs muted w-10 text-center" dir="ltr">0:00</span>
         </div>
-        <p id="readerUnlockMsg" class="text-center text-sm mt-6 text-olive font-medium hidden">✅ Page completed! Access unlocked.</p>
-        <div class="text-center mt-6">
-          <button id="markCompleteBtn" class="bg-gold text-navy font-semibold px-6 py-2 rounded-lg hover:bg-gold/90 transition shadow-sm">Mark as Completed</button>
+
+        <p id="readerUnlockMsg" class="text-center text-sm mt-4 font-medium hidden" style="color: var(--olive);">
+          ✅ تم إتمام الورد — فُتحت المسابقة
+        </p>
+
+        <div class="text-center mt-4">
+          <button id="markCompleteBtn" class="btn-gold font-semibold px-5 py-2.5 rounded-xl text-sm shadow-sm transition">
+            ✓ إتمام الورد
+          </button>
         </div>
       </div>
+
     </section>
 
-    <!-- MATCH -->
-    <section id="view-match" class="view hidden relative">
-      <div id="matchLockOverlay" class="absolute inset-0 bg-warm/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center rounded-xl hidden">
-        <div class="text-center p-8 bg-white rounded-xl shadow-lg border border-warm-dark max-w-md mx-4">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto text-gold mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-          <h3 class="text-lg font-bold text-olive mb-2">Match Locked</h3>
-          <p id="matchLockReason" class="text-sm text-navy/70 mb-4">Complete your daily Wird and wait for the post-Isha window.</p>
-          <button class="bg-olive text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-olive/90" data-nav="reader">Go to Reader</button>
+    <!-- ============================================================
+         TAB 2: المسابقة
+         ============================================================ -->
+    <section id="view-competition" class="view hidden relative">
+
+      <!-- Lock overlay -->
+      <div id="compLockOverlay" class="absolute inset-0 overlay-blur z-20 flex items-center justify-center rounded-2xl hidden" style="background: rgba(248,246,240,0.85);">
+        <div class="card rounded-2xl p-6 max-w-sm mx-2 text-center shadow-xl">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto mb-3" style="color: var(--gold);" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          <h3 class="font-bold text-base mb-1">المسابقة مقفلة</h3>
+          <p id="compLockReason" class="text-xs muted mb-4">أكمل وِرد اليوم وانتظر نافذة ما بعد العشاء.</p>
+          <button onclick="navigateTo('mushaf')" class="btn-olive px-4 py-2 rounded-lg text-sm font-semibold">اذهب للمصحف</button>
         </div>
       </div>
 
-      <div class="bg-white/70 rounded-xl p-4 md:p-6 shadow-sm border border-warm-dark">
-        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
-          <h2 class="text-xl font-bold text-olive">Live Match</h2>
-          <div class="flex items-center gap-3 text-sm">
-            <span id="matchTimer" class="bg-navy text-white px-3 py-1 rounded-full font-mono">00:15</span>
-            <span id="aiStatus" class="text-navy/60 text-xs flex items-center gap-1">
-              <span class="inline-block w-2 h-2 rounded-full bg-gray-400" id="aiDot"></span>
-              <span id="aiStatusText">AI: idle</span>
-            </span>
+      <!-- Tabs: Match / Tournament -->
+      <div class="flex gap-2 mb-3 text-xs">
+        <button data-comp="match" class="comp-tab-btn flex-1 py-2 rounded-lg font-semibold transition" style="background: var(--gold); color:#1a1a1a;">مبارزة ١ ضد ١</button>
+        <button data-comp="tournament" class="comp-tab-btn flex-1 py-2 rounded-lg font-semibold transition" style="background: rgba(44,62,46,0.08); color: var(--fg);">الدوري</button>
+      </div>
+
+      <!-- MATCH PANEL -->
+      <div id="compPanelMatch">
+        <div class="card rounded-2xl p-4 mb-3">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-base font-bold">المبارزة</h2>
+            <div class="flex items-center gap-2 text-xs">
+              <span id="matchTimer" class="px-2.5 py-1 rounded-full font-mono" style="background: var(--navy); color:#fff;" dir="ltr">00:15</span>
+              <span class="dot" id="aiDot" style="background:#9ca3af;"></span>
+              <span id="aiStatusText" class="muted text-[11px]">AI</span>
+            </div>
+          </div>
+
+          <!-- Scoreboard -->
+          <div class="grid grid-cols-2 gap-2 mb-3">
+            <div class="rounded-xl p-2.5 text-center" style="background: rgba(44,62,46,0.05);">
+              <div class="text-[10px] uppercase muted">أنت</div>
+              <div id="playerScore" class="text-2xl font-bold" style="color: var(--gold);">0</div>
+              <div id="playerStatus" class="text-[10px] muted mt-0.5">جاهز</div>
+            </div>
+            <div class="rounded-xl p-2.5 text-center" style="background: rgba(44,62,46,0.05);">
+              <div class="text-[10px] uppercase muted">الخصم</div>
+              <div id="opponentScore" class="text-2xl font-bold" style="color: var(--gold);">0</div>
+              <div id="opponentStatus" class="text-[10px] muted mt-0.5">بانتظار</div>
+            </div>
+          </div>
+
+          <!-- Question -->
+          <div class="mb-3">
+            <div class="text-[11px] muted mb-1">سؤال <span id="questionIndex">0</span> · الهدف <span id="targetScoreLabel">5</span></div>
+            <div id="questionText" class="text-sm font-semibold p-3 rounded-xl min-h-[70px]" style="background: rgba(44,62,46,0.05);">
+              اضغط «ابدأ المباراة» للبدء.
+            </div>
+          </div>
+
+          <!-- Answer -->
+          <div class="flex gap-2">
+            <input id="answerInput" type="text" placeholder="اكتب إجابتك…" autocomplete="off" disabled
+              class="flex-1 border rounded-lg px-3 py-2.5 text-sm" style="border-color: var(--border); background: var(--card); color: var(--fg);">
+            <button id="submitAnswerBtn" class="btn-olive px-4 py-2.5 rounded-lg text-sm font-semibold disabled:opacity-40" disabled>إرسال</button>
+          </div>
+          <p id="feedbackMsg" class="text-xs mt-2 min-h-[18px]"></p>
+
+          <div class="mt-3 flex gap-2 flex-wrap">
+            <button id="startMatchBtn" class="btn-gold px-4 py-2 rounded-lg text-sm font-semibold">ابدأ المباراة</button>
+            <button id="endMatchBtn" class="hidden px-4 py-2 rounded-lg text-sm font-semibold" style="background: var(--navy); color:#fff;">إنهاء</button>
           </div>
         </div>
+      </div>
 
-        <div class="grid grid-cols-2 gap-3 mb-6">
-          <div class="bg-warm rounded-lg p-3 text-center border">
-            <div class="text-xs uppercase tracking-wider text-navy/50">You</div>
-            <div id="playerScore" class="text-3xl font-bold text-gold">0</div>
-            <div id="playerStatus" class="text-xs text-navy/50 mt-1">Ready</div>
+      <!-- TOURNAMENT PANEL -->
+      <div id="compPanelTournament" class="hidden">
+        <div class="card rounded-2xl p-4">
+          <h2 class="text-base font-bold mb-3">الدوري — خروج مغلوب</h2>
+          <div class="flex items-center gap-2 mb-3 flex-wrap text-sm">
+            <label class="text-xs muted">عدد المشاركين</label>
+            <select id="tournamentSize" class="border rounded-lg px-2 py-1.5 text-xs" style="border-color: var(--border); background: var(--card); color: var(--fg);">
+              <option value="4">4</option>
+              <option value="8" selected>8</option>
+              <option value="16">16</option>
+              <option value="32">32</option>
+            </select>
+            <button id="generateBracketBtn" class="btn-olive px-3 py-1.5 rounded-lg text-xs font-semibold">توليد الدوري</button>
           </div>
-          <div class="bg-warm rounded-lg p-3 text-center border">
-            <div class="text-xs uppercase tracking-wider text-navy/50">Opponent</div>
-            <div id="opponentScore" class="text-3xl font-bold text-gold">0</div>
-            <div id="opponentStatus" class="text-xs text-navy/50 mt-1">Waiting</div>
+          <div id="bracketContainer" class="virtual-scroll" style="max-height: 420px;">
+            <div id="bracketInner" class="virtual-inner"></div>
+          </div>
+          <p class="text-[10px] muted mt-2">عرض افتراضي (virtualized) — مرّر للمزيد</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ============================================================
+         TAB 3: الإعدادات
+         ============================================================ -->
+    <section id="view-settings" class="view hidden">
+
+      <!-- User stats -->
+      <div class="card rounded-2xl p-4 mb-3">
+        <h2 class="text-base font-bold mb-2">الإحصائيات</h2>
+        <div class="grid grid-cols-3 gap-2 text-center text-xs">
+          <div class="rounded-lg p-2" style="background: rgba(44,62,46,0.05);">
+            <div class="text-lg font-bold" style="color: var(--gold);" id="sStatMatches">0</div>
+            <div class="muted">جولات</div>
+          </div>
+          <div class="rounded-lg p-2" style="background: rgba(44,62,46,0.05);">
+            <div class="text-lg font-bold" style="color: var(--gold);" id="sStatCorrect">0</div>
+            <div class="muted">صحيحة</div>
+          </div>
+          <div class="rounded-lg p-2" style="background: rgba(44,62,46,0.05);">
+            <div class="text-lg font-bold" style="color: var(--gold);" id="sStatStreak">0</div>
+            <div class="muted">تتابع</div>
           </div>
         </div>
+      </div>
 
-        <div class="mb-4">
-          <div class="text-xs text-navy/50 mb-1">Question <span id="questionIndex">0</span> · Target <span id="targetScoreLabel">5</span></div>
-          <div id="questionText" class="text-lg font-semibold text-navy bg-warm p-4 rounded-lg border border-warm-dark min-h-[70px]">
-            Press "Start Match" to begin.
+      <!-- Appearance -->
+      <div class="card rounded-2xl p-4 mb-3">
+        <h2 class="text-base font-bold mb-2">المظهر</h2>
+        <div class="flex items-center justify-between py-2">
+          <div>
+            <div class="text-sm font-medium">الوضع الليلي</div>
+            <div class="text-[11px] muted">مريح للعين في الأوقات المتأخرة</div>
           </div>
+          <button id="themeToggleSettings" class="relative w-11 h-6 rounded-full transition" style="background: var(--border);">
+            <span id="themeKnob" class="absolute top-0.5 w-5 h-5 rounded-full transition" style="background:#fff; right:2px; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></span>
+          </button>
         </div>
+      </div>
 
+      <!-- AI Configuration -->
+      <div class="card rounded-2xl p-4 mb-3">
+        <h2 class="text-base font-bold mb-2">توليد الأسئلة بالذكاء الاصطناعي</h2>
+        <div class="flex items-center justify-between py-1.5">
+          <div class="text-sm">استخدام الذكاء الاصطناعي</div>
+          <input id="useAIToggle" type="checkbox" class="w-5 h-5 rounded" style="accent-color: var(--gold);">
+        </div>
+        <label class="block text-xs muted mt-2 mb-1">مفتاح Gemini API</label>
         <div class="flex gap-2">
-          <input id="answerInput" type="text" placeholder="Type your answer…" class="flex-1 border border-warm-dark rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gold bg-white text-navy" autocomplete="off" disabled>
-          <button id="submitAnswerBtn" class="bg-olive text-white px-6 py-3 rounded-lg font-semibold hover:bg-olive/90 transition disabled:opacity-50" disabled>Submit</button>
+          <input id="geminiApiKey" type="password" placeholder="AIza…" class="flex-1 border rounded-lg px-2 py-1.5 text-xs" style="border-color: var(--border); background: var(--card); color: var(--fg);" dir="ltr">
+          <button id="saveAIKeyBtn" class="btn-gold px-3 py-1.5 rounded-lg text-xs font-semibold">حفظ</button>
         </div>
-        <p id="feedbackMsg" class="text-sm mt-2 min-h-[20px]"></p>
-
-        <div class="mt-4 flex gap-2 flex-wrap">
-          <button id="startMatchBtn" class="bg-gold text-navy font-semibold px-4 py-2 rounded-lg text-sm">Start Match</button>
-          <button id="endMatchBtn" class="bg-navy text-white font-semibold px-4 py-2 rounded-lg text-sm hidden">End Match</button>
-        </div>
-
-        <div class="mt-6 text-center">
-          <a href="#" id="judgeLink" class="text-xs text-gold underline">Referee Mode (Judge Code required)</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- TOURNAMENT -->
-    <section id="view-tournament" class="view hidden relative">
-      <div id="tournamentLockOverlay" class="absolute inset-0 bg-warm/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center rounded-xl hidden">
-        <div class="text-center p-8 bg-white rounded-xl shadow-lg border border-warm-dark max-w-md mx-4">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto text-gold mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-          <h3 class="text-lg font-bold text-olive mb-2">Tournament Locked</h3>
-          <p id="tournamentLockReason" class="text-sm text-navy/70 mb-4">Complete Wird & wait for post-Isha window.</p>
+        <p id="aiKeyStatus" class="text-[11px] muted mt-1.5"></p>
+        <div class="grid grid-cols-2 gap-2 mt-2 text-[11px]">
+          <div class="rounded p-1.5 text-center" style="background: rgba(44,62,46,0.05);">
+            وُلِّدت (الجلسة): <b id="aiGeneratedCount">0</b>
+          </div>
+          <div class="rounded p-1.5 text-center" style="background: rgba(44,62,46,0.05);">
+            أسئلة محفوظة: <b id="seenCount">0</b>
+          </div>
         </div>
       </div>
 
-      <div class="bg-white/70 rounded-xl p-4 md:p-6 shadow-sm border border-warm-dark">
-        <h2 class="text-xl font-bold text-olive mb-4">Single-Elimination Tournament</h2>
-        <div class="flex items-center gap-3 mb-4 flex-wrap">
-          <label class="text-sm text-navy/70">Participants:</label>
-          <select id="tournamentSize" class="border rounded px-3 py-1.5 text-sm bg-white">
-            <option value="4">4</option>
-            <option value="8" selected>8</option>
-            <option value="16">16</option>
-            <option value="32">32</option>
-          </select>
-          <button id="generateBracketBtn" class="bg-olive text-white text-sm px-4 py-1.5 rounded-lg font-semibold hover:bg-olive/90 transition">Generate Bracket</button>
-        </div>
-        <div id="bracketContainer" class="virtual-scroll" style="max-height:500px;">
-          <div id="bracketInner" class="virtual-inner"></div>
-        </div>
-        <p class="text-xs text-navy/40 mt-3">Virtualized rendering · Scroll for more</p>
-      </div>
-    </section>
-
-    <!-- ADMIN -->
-    <section id="view-admin" class="view hidden">
-      <div class="bg-white/70 rounded-xl p-6 shadow-sm border border-warm-dark">
-        <h2 class="text-xl font-bold text-olive mb-4">Admin Panel</h2>
-        <div id="adminLogin" class="max-w-sm">
-          <label class="block text-sm text-navy/70 mb-1">Passcode</label>
-          <input id="adminPass" type="password" placeholder="admin123" class="w-full border rounded-lg px-3 py-2 mb-3 bg-white">
-          <button id="adminLoginBtn" class="bg-olive text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-olive/90">Enter</button>
-          <p id="adminError" class="text-red-500 text-xs mt-2 hidden">Incorrect passcode.</p>
+      <!-- Admin access -->
+      <div class="card rounded-2xl p-4 mb-3">
+        <h2 class="text-base font-bold mb-2">لوحة الإدارة</h2>
+        <div id="adminLogin">
+          <label class="block text-xs muted mb-1">كلمة المرور</label>
+          <div class="flex gap-2">
+            <input id="adminPass" type="password" placeholder="admin123" class="flex-1 border rounded-lg px-2 py-1.5 text-xs" style="border-color: var(--border); background: var(--card); color: var(--fg);">
+            <button id="adminLoginBtn" class="btn-olive px-3 py-1.5 rounded-lg text-xs font-semibold">دخول</button>
+          </div>
+          <p id="adminError" class="text-[11px] mt-1.5 hidden" style="color: #ef4444;">كلمة مرور غير صحيحة</p>
         </div>
         <div id="adminPanel" class="hidden">
-          <div class="grid md:grid-cols-2 gap-6 mt-4">
-            <div>
-              <h3 class="font-semibold text-olive mb-2">AI Configuration</h3>
-              <div class="space-y-2 text-sm">
-                <label class="block">Gemini API Key</label>
-                <input id="geminiApiKey" type="password" placeholder="AIza..." class="w-full border rounded px-2 py-1.5 bg-white text-xs">
-                <div class="flex items-center gap-2">
-                  <input id="useAI" type="checkbox" checked>
-                  <label for="useAI">Use AI-generated questions</label>
-                </div>
-                <button id="saveAIKeyBtn" class="bg-gold text-navy px-3 py-1.5 rounded text-sm font-semibold">Save Key</button>
-                <p id="aiKeyStatus" class="text-xs text-navy/50"></p>
-              </div>
-              <h3 class="font-semibold text-olive mb-2 mt-4">Local Question Bank</h3>
-              <div class="flex gap-2 mb-2 flex-wrap">
-                <input id="newQuestion" placeholder="Question" class="flex-1 min-w-[120px] border rounded px-2 py-1.5 text-sm bg-white">
-                <input id="newAnswer" placeholder="Answer" class="w-28 border rounded px-2 py-1.5 text-sm bg-white">
-                <button id="addQuestionBtn" class="bg-gold text-navy text-sm px-3 py-1.5 rounded font-semibold">Add</button>
-              </div>
-              <ul id="questionList" class="text-sm space-y-1 max-h-40 overflow-y-auto"></ul>
-            </div>
-            <div>
-              <h3 class="font-semibold text-olive mb-2">Time Window</h3>
-              <div class="flex gap-2 text-sm items-center flex-wrap">
-                <label>Start</label>
-                <input id="windowStart" type="time" value="20:00" class="border rounded px-2 py-1 bg-white">
-                <label>End</label>
-                <input id="windowEnd" type="time" value="23:59" class="border rounded px-2 py-1 bg-white">
-                <button id="saveWindowBtn" class="bg-olive text-white px-3 py-1 rounded text-sm">Save</button>
-              </div>
-              <h3 class="font-semibold text-olive mb-2 mt-4">Analytics</h3>
-              <p class="text-sm">Total questions in bank: <span id="adminQCount">0</span></p>
-              <p class="text-sm">AI-generated (session): <span id="aiGeneratedCount">0</span></p>
-              <p class="text-sm">Seen questions (this user): <span id="seenCount">0</span></p>
-              <button id="clearSeenBtn" class="mt-2 text-xs text-red-600 underline">Reset seen-question memory</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <footer class="bg-olive text-white/70 text-center text-xs py-3 mt-auto">
-    Wird · وِرْد · A serene space for Quranic study
-  </footer>
-
-  <!-- JUDGE MODAL -->
-  <div id="judgeModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-xl p-6 max-w-lg w-full mx-4 shadow-xl border border-warm-dark">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-bold text-olive">Referee Mode</h3>
-        <button id="closeJudge" class="text-navy/50 hover:text-navy text-xl leading-none">&times;</button>
-      </div>
-      <div id="judgeLogin">
-        <label class="block text-sm text-navy/70 mb-1">Judge Code</label>
-        <input id="judgeCodeInput" placeholder="JUDGE2026" class="w-full border rounded-lg px-3 py-2 mb-3 bg-white">
-        <button id="judgeLoginBtn" class="bg-olive text-white px-4 py-2 rounded-lg text-sm font-semibold">Access</button>
-        <p id="judgeError" class="text-red-500 text-xs mt-2 hidden">Invalid code.</p>
-      </div>
-      <div id="judgePanel" class="hidden">
-        <div class="text-sm space-y-2">
-          <div class="flex justify-between"><span>Player</span><span id="judgePlayer">—</span></div>
-          <div class="flex justify-between"><span>Opponent</span><span id="judgeOpponent">—</span></div>
-          <div class="flex justify-between"><span>Typing speed</span><span id="judgeSpeed">— ms</span></div>
-          <div class="flex justify-between"><span>Score</span><span id="judgeScore">0 – 0</span></div>
-          <div class="flex justify-between"><span>Status</span><span id="judgeStatus">—</span></div>
-        </div>
-        <div class="flex gap-2 mt-4">
-          <button id="judgePause" class="bg-gold text-navy text-sm px-3 py-1.5 rounded font-semibold">Pause</button>
-          <button id="judgeSkip" class="bg-gold text-navy text-sm px-3 py-1.5 rounded font-semibold">Skip</button>
-          <button id="judgeOverride" class="bg-gold text-navy text-sm px-3 py-1.5 rounded font-semibold">Override</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<script>
-/* ============================================================
-   WIRD PWA — Full Logic with AI Question Generation
-   ============================================================ */
-const $ = s => document.querySelector(s);
-const $$ = s => document.querySelectorAll(s);
-
-/* ---------- PERSISTENT STORAGE ---------- */
-const Storage = {
-  KEY_SEEN: 'wird_seen_questions',
-  KEY_API: 'wird_gemini_key',
-  KEY_USE_AI: 'wird_use_ai',
-  KEY_WINDOW: 'wird_window',
-  load(key, fallback) {
-    try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
-    catch { return fallback; }
-  },
-  save(key, value) {
-    try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
-  }
-};
-
-/* ---------- STATE ---------- */
-const State = {
-  currentView: 'home',
-  dailyPageRead: false,
-  matchWindowStart: 20 * 60,
-  matchWindowEnd: 23 * 60 + 59,
-  judgeCode: 'JUDGE2026',
-  adminPass: 'admin123',
-  localQuestions: [
-    { q: "How many chapters (Surahs) are in the Quran?", a: "114" },
-    { q: "What is the first Surah of the Quran?", a: "Al-Fatiha" },
-    { q: "How many verses are in Surah Al-Fatiha?", a: "7" },
-    { q: "Which Surah is the longest in the Quran?", a: "Al-Baqarah" },
-    { q: "What is the name of the angel who revealed the Quran to Prophet Muhammad?", a: "Jibreel" },
-    { q: "In which month was the Quran first revealed?", a: "Ramadan" },
-    { q: "How many Juz (parts) are in the Quran?", a: "30" },
-    { q: "Which Surah is known as the heart of the Quran?", a: "Yasin" },
-    { q: "What is the last Surah of the Quran?", a: "An-Nas" },
-    { q: "What is the longest verse in the Quran called?", a: "Ayat al-Kursi" }
-  ],
-  seenQuestions: Storage.load(Storage.KEY_SEEN, []),       // AI-side dedupe (list of question signatures)
-  usedLocalIndices: [],
-  ai: {
- 
+          <div class="text-xs mb-2" style="color: var(--olive);">✓ تم الدخول كمسؤول</div>
+          <label class="block text-xs muted mb-1">بنك الأسئلة المحلي</label>
+          <div class="flex gap-1.5 mb-2">
+            <input id="newQuestion" placeholder="السؤال" class="flex-1 border rounded px-2 py-1 text-xs" style="border-color: var(--border); background: var(--card); color: var(--fg);">
+            <input id="newAnswer" placeholder="الجواب" class="w-24 border rounded px-2 py-1 t
