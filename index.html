@@ -6,6 +6,15 @@
     <title>تطبيق القرآن الكريم</title>
     <meta name="theme-color" content="#1b4d3e">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Amiri+Quran&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+</script>
+    
     
     <style>
         :root {
