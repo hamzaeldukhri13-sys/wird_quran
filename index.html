@@ -5,106 +5,100 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#2C3E2E">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href='data:application/manifest+json,{"name":"وِرد","short_name":"وِرد","start_url":"./","display":"standalone","background_color":"%23F8F6F0","theme_color":"%232C3E2E","lang":"ar","dir":"rtl","icons":[]}'>
 <title>وِرد · Wird</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
-  tailwind.config = {
-    darkMode: 'class',
-    theme: {
-      extend: {
-        colors: {
-          olive: '#2C3E2E',
-          navy: '#1A2238',
-          gold: '#D4AF37',
-          warm: '#F8F6F0',
-          warmdark: '#EFECE1',
-        },
-        fontFamily: {
-          arabic: ['Amiri', 'serif'],
-          ui: ['Tajawal', 'system-ui', 'sans-serif'],
-        }
-      }
-    }
-  }
+tailwind.config = {
+  darkMode: 'class',
+  theme: { extend: {
+    colors: { olive:'#2C3E2E', navy:'#1A2238', gold:'#D4AF37', warm:'#F8F6F0', warmdark:'#EFECE1' },
+    fontFamily: { arabic:['Amiri','serif'], ui:['Tajawal','system-ui','sans-serif'] }
+  }}
+}
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
     --olive:#2C3E2E; --navy:#1A2238; --gold:#D4AF37; --warm:#F8F6F0; --warm-dark:#EFECE1;
-    --bg: var(--warm); --fg: var(--navy); --card: #ffffff; --muted: #6b7280; --border: #e5e0d4;
+    --bg:var(--warm); --fg:var(--navy); --card:#ffffff; --muted:#6b7280; --border:#e5e0d4;
   }
-  html.dark {
-    --bg: #12151c; --fg: #e8e6e0; --card: #1c2230; --muted: #9ca3af; --border: #2e3546;
-  }
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  body {
-    font-family: 'Tajawal', system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--fg);
-    margin: 0;
-    min-height: 100vh;
-    overflow-x: hidden;
-    transition: background 0.3s, color 0.3s;
-    padding-bottom: 76px;
-  }
-  .font-arabic { font-family: 'Amiri', serif; }
-  .card { background: var(--card); border: 1px solid var(--border); }
-  .muted { color: var(--muted); }
-  .border-base { border-color: var(--border); }
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-  html.dark ::-webkit-scrollbar-thumb { background: #3a4256; }
-  .hidden { display: none !important; }
-  .virtual-scroll { overflow-y: auto; position: relative; }
-  .virtual-inner { position: relative; width: 100%; }
-  @keyframes pulseSoft { 0%,100%{opacity:1} 50%{opacity:.55} }
-  .pulse-soft { animation: pulseSoft 1.8s infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .spin { animation: spin 1s linear infinite; }
-  .paper {
-    background: #fffdf7;
-    border: 1px solid #e8e2d2;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-  }
-  html.dark .paper { background: #1e2532; border-color: #2e3546; }
-  .btn-gold { background: var(--gold); color: #1a1a1a; }
-  .btn-gold:hover { background: #c9a230; }
-  .btn-olive { background: var(--olive); color: #fff; }
-  .btn-olive:hover { background: #243328; }
-  .nav-tab.active { color: var(--gold); }
-  .nav-tab.active .nav-icon { transform: translateY(-2px) scale(1.08); }
-  .nav-icon { transition: transform 0.2s ease; }
-  .overlay-blur { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
-  .scrollbar-hide::-webkit-scrollbar { display: none; }
-  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-  input, select, button, textarea { font-family: inherit; }
-  input:focus, select:focus { outline: none; }
-  .glow-gold { box-shadow: 0 0 0 3px rgba(212,175,55,0.25); }
-  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-  .bracket-col { min-width: 220px; }
-  .bracket-match { background: var(--card); border: 1px solid var(--border); border-radius: 10px; }
-  .podium { background: linear-gradient(135deg, rgba(212,175,55,0.12), rgba(44,62,46,0.08)); }
+  html.dark { --bg:#12151c; --fg:#e8e6e0; --card:#1c2230; --muted:#9ca3af; --border:#2e3546; }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{font-family:'Tajawal',system-ui,sans-serif;background:var(--bg);color:var(--fg);margin:0;min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;padding-bottom:76px}
+  .font-arabic{font-family:'Amiri',serif}
+  .card{background:var(--card);border:1px solid var(--border)}
+  .muted{color:var(--muted)}
+  .border-base{border-color:var(--border)}
+  ::-webkit-scrollbar{width:6px;height:6px}
+  ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+  html.dark ::-webkit-scrollbar-thumb{background:#3a4256}
+  .hidden{display:none!important}
+  .virtual-scroll{overflow-y:auto;position:relative}
+  .virtual-inner{position:relative;width:100%}
+  @keyframes pulseSoft{0%,100%{opacity:1}50%{opacity:.55}}
+  .pulse-soft{animation:pulseSoft 1.8s infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .spin{animation:spin 1s linear infinite}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  .fade-in{animation:fadeIn .3s ease}
+  .paper{background:#fffdf7;border:1px solid #e8e2d2;box-shadow:0 4px 20px rgba(0,0,0,.04)}
+  html.dark .paper{background:#1e2532;border-color:#2e3546}
+  .btn-gold{background:var(--gold);color:#1a1a1a;transition:background .2s}
+  .btn-gold:hover{background:#c9a230}
+  .btn-olive{background:var(--olive);color:#fff;transition:background .2s}
+  .btn-olive:hover{background:#243328}
+  .btn-outline{border:1px solid var(--border);background:transparent;color:var(--fg);transition:background .2s}
+  .btn-outline:hover{background:rgba(44,62,46,.05)}
+  .nav-tab.active{color:var(--gold)}
+  .nav-tab.active .nav-icon{transform:translateY(-2px) scale(1.08)}
+  .nav-icon{transition:transform .2s ease}
+  .overlay-blur{backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  .scrollbar-hide::-webkit-scrollbar{display:none}
+  .scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none}
+  input,select,button,textarea{font-family:inherit}
+  input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 2px rgba(212,175,55,.4)}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+  .bracket-col{min-width:200px}
+  .bracket-match{background:var(--card);border:1px solid var(--border);border-radius:10px}
+  .verse-num{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;border-radius:50%;background:rgba(212,175,55,.18);color:var(--gold);font-size:11px;font-weight:700;margin:0 4px;font-family:'Tajawal',sans-serif}
+  .verse-item{padding:10px 12px;border-radius:10px;transition:background .2s;margin-bottom:4px;cursor:pointer}
+  .verse-item:hover{background:rgba(44,62,46,.04)}
+  .verse-item.active{background:rgba(212,175,55,.12);border-right:3px solid var(--gold)}
+  .reciter-chip{padding:6px 12px;border-radius:999px;font-size:12px;background:rgba(44,62,46,.06);border:1px solid transparent;cursor:pointer;transition:all .2s}
+  .reciter-chip.active{background:var(--gold);color:#1a1a1a;border-color:var(--gold)}
+  .surah-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:background .2s;border-bottom:1px solid var(--border)}
+  .surah-row:hover{background:rgba(44,62,46,.04)}
+  .surah-num{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(212,175,55,.15);color:var(--gold);font-weight:700;font-size:12px;flex-shrink:0}
+  .toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:8px 16px;border-radius:10px;font-size:13px;z-index:60;box-shadow:0 4px 16px rgba(0,0,0,.2);max-width:90%;text-align:center}
+  html.dark .toast{background:var(--gold);color:#1a1a1a}
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
+  .modal-card{background:var(--card);border-radius:16px;padding:20px;width:100%;max-width:420px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+  .chip{display:inline-block;padding:3px 8px;border-radius:999px;font-size:10px;background:rgba(44,62,46,.08);color:var(--fg)}
+  .chip.gold{background:rgba(212,175,55,.2);color:var(--gold)}
+  .avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;flex-shrink:0}
+  .progress-bar{height:6px;border-radius:999px;background:var(--border);overflow:hidden}
+  .progress-bar>div{height:100%;background:var(--gold);transition:width .3s}
+  .stat-box{background:rgba(44,62,46,.05);border-radius:10px;padding:8px;text-align:center}
+  html.dark .stat-box{background:rgba(212,175,55,.08)}
+  .btn-sm{padding:5px 10px;font-size:11px;border-radius:8px;font-weight:600;transition:all .2s}
+  .podium{background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(44,62,46,.08));border-radius:12px;padding:12px}
 </style>
 </head>
 <body class="antialiased">
 
-<!-- ========== APP SHELL ========== -->
 <div id="app" class="min-h-screen flex flex-col">
 
   <!-- ===== TOP HEADER ===== -->
-  <header class="sticky top-0 z-30" style="background: var(--card); border-bottom: 1px solid var(--border);">
+  <header class="sticky top-0 z-30" style="background:var(--card);border-bottom:1px solid var(--border);">
     <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <span class="text-2xl font-arabic" style="color: var(--gold);">وِرْد</span>
+        <span class="text-2xl font-arabic" style="color:var(--gold);">وِرْد</span>
         <span class="text-xs font-medium muted hidden sm:inline">· رحلة يومية مع القرآن</span>
       </div>
       <div class="flex items-center gap-2">
-        <span id="headerWindowStatus" class="text-[11px] px-2 py-1 rounded-full hidden sm:inline" style="background: rgba(212,175,55,0.15); color: var(--gold);">
-          —
-        </span>
-        <button id="themeToggle" aria-label="تبديل المظهر" class="w-9 h-9 rounded-full flex items-center justify-center" style="background: rgba(44,62,46,0.08);">
+        <span id="headerWindowStatus" class="text-[11px] px-2 py-1 rounded-full hidden sm:inline" style="background:rgba(212,175,55,.15);color:var(--gold);">—</span>
+        <button id="themeToggle" aria-label="تبديل المظهر" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:rgba(44,62,46,.08);">
           <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
           <svg id="iconSun" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
         </button>
@@ -112,114 +106,104 @@
     </div>
   </header>
 
-  <!-- ===== BANNER ===== -->
-  <div id="globalBanner" class="hidden text-xs py-2 px-4 text-center" style="background: rgba(212,175,55,0.12); color: var(--fg); border-bottom: 1px solid var(--border);">
+  <div id="globalBanner" class="hidden text-xs py-2 px-4 text-center" style="background:rgba(212,175,55,.12);color:var(--fg);border-bottom:1px solid var(--border);">
     <span id="bannerText"></span>
   </div>
 
   <!-- ===== MAIN CONTENT ===== -->
   <main class="flex-1 max-w-3xl mx-auto w-full px-4 py-5 pb-24">
 
-    <!-- ============================================================
-         TAB 1: المصحف
-         ============================================================ -->
+    <!-- ============ TAB 1: المصحف ============ -->
     <section id="view-mushaf" class="view">
 
-      <!-- Daily Wird status card -->
-      <div class="card rounded-2xl p-5 mb-4">
-        <div class="flex items-start justify-between gap-3 mb-3">
+      <!-- Daily Wird status -->
+      <div class="card rounded-2xl p-4 mb-3">
+        <div class="flex items-start justify-between gap-3 mb-2">
           <div>
             <h1 class="text-lg font-bold">وِرْد اليوم</h1>
-            <p class="text-xs muted mt-0.5">أتمّ قراءة الصفحة أو استمع إليها لفتح المسابقة</p>
+            <p class="text-xs muted mt-0.5">أتمّ قراءة صفحة اليوم لفتح المسابقة</p>
           </div>
-          <div id="wirdStatusPill" class="text-[11px] px-2.5 py-1 rounded-full" style="background: rgba(212,175,55,0.15); color: var(--gold);">بانتظار الإتمام</div>
+          <div id="wirdStatusPill" class="text-[11px] px-2.5 py-1 rounded-full" style="background:rgba(212,175,55,.15);color:var(--gold);">بانتظار الإتمام</div>
         </div>
-        <div class="grid grid-cols-3 gap-2 text-center text-[11px] mt-3">
-          <div class="rounded-lg p-2" style="background: rgba(44,62,46,0.05);">
-            <div class="text-base font-bold" style="color: var(--gold);" id="mStatMatches">0</div>
-            <div class="muted">جولات</div>
-          </div>
-          <div class="rounded-lg p-2" style="background: rgba(44,62,46,0.05);">
-            <div class="text-base font-bold" style="color: var(--gold);" id="mStatCorrect">0</div>
-            <div class="muted">إجابة صحيحة</div>
-          </div>
-          <div class="rounded-lg p-2" style="background: rgba(44,62,46,0.05);">
-            <div class="text-base font-bold" style="color: var(--gold);" id="mStatStreak">0</div>
-            <div class="muted">تتابع</div>
-          </div>
+        <div class="grid grid-cols-3 gap-2 text-center text-[11px] mt-2">
+          <div class="stat-box"><div class="text-base font-bold" style="color:var(--gold);" id="mStatMatches">0</div><div class="muted">جولات</div></div>
+          <div class="stat-box"><div class="text-base font-bold" style="color:var(--gold);" id="mStatCorrect">0</div><div class="muted">إجابة صحيحة</div></div>
+          <div class="stat-box"><div class="text-base font-bold" style="color:var(--gold);" id="mStatStreak">0</div><div class="muted">تتابع</div></div>
         </div>
       </div>
 
       <!-- Reflection -->
-      <div class="card rounded-2xl p-5 mb-4">
+      <div class="card rounded-2xl p-4 mb-3">
         <div class="text-[11px] uppercase tracking-wide muted mb-2">تأمّل اليوم</div>
-        <p class="font-arabic text-xl leading-loose text-center" style="color: var(--fg);">
-          ﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا ﴾
-        </p>
-        <p class="text-xs muted text-center mt-2">— المزمل ٧٣:٤</p>
+        <p class="font-arabic text-xl leading-loose text-center">﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا ﴾</p>
+        <p class="text-xs muted text-center mt-1">— المزمل ٧٣:٤</p>
       </div>
 
-      <!-- Quran Reader -->
-      <div class="paper rounded-2xl p-5 relative">
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-base font-bold">المصحف</h2>
-          <span class="text-[11px] muted" id="readerPageLabel">الصفحة ١</span>
+      <!-- Reciter selector -->
+      <div class="card rounded-2xl p-4 mb-3">
+        <div class="text-xs font-semibold mb-2">القارئ</div>
+        <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+          <button class="reciter-chip active flex-shrink-0" data-reciter="ar.husary">الحصري</button>
+          <button class="reciter-chip flex-shrink-0" data-reciter="ar.minshawi">المنشاوي</button>
+          <button class="reciter-chip flex-shrink-0" data-reciter="ar.afasy">العفاسي</button>
+          <button class="reciter-chip flex-shrink-0" data-reciter="ar.shaatree">الشاطري</button>
+          <button class="reciter-chip flex-shrink-0" data-reciter="ar.hudhaify">الحذيفي</button>
         </div>
+      </div>
 
-        <div class="text-center py-4 mb-3 rounded-xl" style="background: rgba(44,62,46,0.03);">
-          <p class="font-arabic text-2xl leading-loose" style="color: var(--fg);" id="readerText">
-            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-          </p>
-          <p class="text-xs muted mt-3" id="readerTranslation">
-            بسم الله الرحمن الرحيم
-          </p>
-        </div>
-
-        <!-- Audio controls -->
-        <div class="flex items-center gap-3 mt-4">
-          <button id="audioPlay" class="w-11 h-11 rounded-full btn-olive flex items-center justify-center flex-shrink-0" aria-label="تشغيل التلاوة">
+      <!-- Audio player bar -->
+      <div class="card rounded-2xl p-3 mb-3">
+        <div class="flex items-center gap-2 mb-2">
+          <button id="audioPlay" class="w-10 h-10 rounded-full btn-olive flex items-center justify-center flex-shrink-0" aria-label="تشغيل">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
           </button>
-          <div class="flex-1">
-            <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--border);">
-              <div id="audioProgress" class="h-full transition-all duration-300" style="width:0%; background: var(--gold);"></div>
-            </div>
+          <div class="flex-1 text-xs">
+            <div id="nowPlaying" class="font-semibold truncate">لم يتم التشغيل</div>
+            <div id="nowPlayingSub" class="muted text-[10px]">اختر سورة للبدء</div>
           </div>
-          <span id="audioTime" class="text-xs muted w-10 text-center" dir="ltr">0:00</span>
-        </div>
-
-        <p id="readerUnlockMsg" class="text-center text-sm mt-4 font-medium hidden" style="color: var(--olive);">
-          ✅ تم إتمام الورد — فُتحت المسابقة
-        </p>
-
-        <div class="text-center mt-4">
-          <button id="markCompleteBtn" class="btn-gold font-semibold px-5 py-2.5 rounded-xl text-sm shadow-sm transition">
-            ✓ إتمام الورد
+          <button id="audioRepeat" class="w-8 h-8 rounded-full flex items-center justify-center" style="background:rgba(44,62,46,.06);" aria-label="تكرار">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
           </button>
+        </div>
+        <div class="progress-bar"><div id="audioProgress" style="width:0%"></div></div>
+        <div class="flex justify-between text-[10px] muted mt-1" dir="ltr">
+          <span id="audioTime">0:00</span>
+          <span id="audioDuration">0:00</span>
+        </div>
+      </div>
+
+      <!-- Surah index -->
+      <div class="card rounded-2xl p-4">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-base font-bold">فهرس السور</h2>
+          <input id="surahSearch" type="text" placeholder="ابحث…" class="border rounded-lg px-2 py-1 text-xs w-32" style="border-color:var(--border);background:var(--bg);color:var(--fg);">
+        </div>
+        <div id="surahList" class="virtual-scroll" style="max-height:400px;">
+          <div id="surahListInner" class="virtual-inner"></div>
         </div>
       </div>
 
     </section>
 
-    <!-- ============================================================
-         TAB 2: المسابقة
-         ============================================================ -->
+    <!-- ============ TAB 2: المسابقة ============ -->
     <section id="view-competition" class="view hidden relative">
 
-      <!-- Lock overlay -->
-      <div id="compLockOverlay" class="absolute inset-0 overlay-blur z-20 flex items-center justify-center rounded-2xl hidden" style="background: rgba(248,246,240,0.85);">
+      <div id="compLockOverlay" class="absolute inset-0 overlay-blur z-20 flex items-center justify-center rounded-2xl hidden" style="background:rgba(248,246,240,.85);">
         <div class="card rounded-2xl p-6 max-w-sm mx-2 text-center shadow-xl">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto mb-3" style="color: var(--gold);" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto mb-3" style="color:var(--gold);" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
           <h3 class="font-bold text-base mb-1">المسابقة مقفلة</h3>
           <p id="compLockReason" class="text-xs muted mb-4">أكمل وِرد اليوم وانتظر نافذة ما بعد العشاء.</p>
           <button onclick="navigateTo('mushaf')" class="btn-olive px-4 py-2 rounded-lg text-sm font-semibold">اذهب للمصحف</button>
         </div>
       </div>
 
-      <!-- Tabs: Match / Tournament -->
-      <div class="flex gap-2 mb-3 text-xs">
-        <button data-comp="match" class="comp-tab-btn flex-1 py-2 rounded-lg font-semibold transition" style="background: var(--gold); color:#1a1a1a;">مبارزة ١ ضد ١</button>
-        <button data-comp="tournament" class="comp-tab-btn flex-1 py-2 rounded-lg font-semibold transition" style="background: rgba(44,62,46,0.08); color: var(--fg);">الدوري</button>
+      <!-- Sub-tabs -->
+      <div class="flex gap-1.5 mb-3 text-xs overflow-x-auto scrollbar-hide pb-1">
+        <button data-comp="match" class="comp-tab-btn flex-shrink-0 px-3 py-2 rounded-lg font-semibold transition" style="background:var(--gold);color:#1a1a1a;">مبارزة</button>
+        <button data-comp="rooms" class="comp-tab-btn flex-shrink-0 px-3 py-2 rounded-lg font-semibold transition" style="background:rgba(44,62,46,.08);color:var(--fg);">الغرف</button>
+        <button data-comp="friends" class="comp-tab-btn flex-shrink-0 px-3 py-2 rounded-lg font-semibold transition" style="background:rgba(44,62,46,.08);color:var(--fg);">الأصدقاء</button>
+        <button data-comp="leaderboard" class="comp-tab-btn flex-shrink-0 px-3 py-2 rounded-lg font-semibold transition" style="background:rgba(44,62,46,.08);color:var(--fg);">الصدارة</button>
+        <button data-comp="tournament" class="comp-tab-btn flex-shrink-0 px-3 py-2 rounded-lg font-semibold transition" style="background:rgba(44,62,46,.08);color:var(--fg);">الدوري</button>
       </div>
 
       <!-- MATCH PANEL -->
@@ -228,147 +212,93 @@
           <div class="flex items-center justify-between mb-3">
             <h2 class="text-base font-bold">المبارزة</h2>
             <div class="flex items-center gap-2 text-xs">
-              <span id="matchTimer" class="px-2.5 py-1 rounded-full font-mono" style="background: var(--navy); color:#fff;" dir="ltr">00:15</span>
+              <span id="matchTimer" class="px-2.5 py-1 rounded-full font-mono" style="background:var(--navy);color:#fff;" dir="ltr">00:15</span>
               <span class="dot" id="aiDot" style="background:#9ca3af;"></span>
               <span id="aiStatusText" class="muted text-[11px]">AI</span>
             </div>
           </div>
 
-          <!-- Scoreboard -->
           <div class="grid grid-cols-2 gap-2 mb-3">
-            <div class="rounded-xl p-2.5 text-center" style="background: rgba(44,62,46,0.05);">
+            <div class="stat-box">
               <div class="text-[10px] uppercase muted">أنت</div>
-              <div id="playerScore" class="text-2xl font-bold" style="color: var(--gold);">0</div>
+              <div id="playerScore" class="text-2xl font-bold" style="color:var(--gold);">0</div>
               <div id="playerStatus" class="text-[10px] muted mt-0.5">جاهز</div>
             </div>
-            <div class="rounded-xl p-2.5 text-center" style="background: rgba(44,62,46,0.05);">
+            <div class="stat-box">
               <div class="text-[10px] uppercase muted">الخصم</div>
-              <div id="opponentScore" class="text-2xl font-bold" style="color: var(--gold);">0</div>
+              <div id="opponentScore" class="text-2xl font-bold" style="color:var(--gold);">0</div>
               <div id="opponentStatus" class="text-[10px] muted mt-0.5">بانتظار</div>
             </div>
           </div>
 
-          <!-- Question -->
           <div class="mb-3">
             <div class="text-[11px] muted mb-1">سؤال <span id="questionIndex">0</span> · الهدف <span id="targetScoreLabel">5</span></div>
-            <div id="questionText" class="text-sm font-semibold p-3 rounded-xl min-h-[70px]" style="background: rgba(44,62,46,0.05);">
+            <div id="questionText" class="text-sm font-semibold p-3 rounded-xl min-h-[70px]" style="background:rgba(44,62,46,.05);">
               اضغط «ابدأ المباراة» للبدء.
             </div>
           </div>
 
-          <!-- Answer -->
           <div class="flex gap-2">
             <input id="answerInput" type="text" placeholder="اكتب إجابتك…" autocomplete="off" disabled
-              class="flex-1 border rounded-lg px-3 py-2.5 text-sm" style="border-color: var(--border); background: var(--card); color: var(--fg);">
+              class="flex-1 border rounded-lg px-3 py-2.5 text-sm" style="border-color:var(--border);background:var(--bg);color:var(--fg);">
             <button id="submitAnswerBtn" class="btn-olive px-4 py-2.5 rounded-lg text-sm font-semibold disabled:opacity-40" disabled>إرسال</button>
           </div>
           <p id="feedbackMsg" class="text-xs mt-2 min-h-[18px]"></p>
 
           <div class="mt-3 flex gap-2 flex-wrap">
             <button id="startMatchBtn" class="btn-gold px-4 py-2 rounded-lg text-sm font-semibold">ابدأ المباراة</button>
-            <button id="endMatchBtn" class="hidden px-4 py-2 rounded-lg text-sm font-semibold" style="background: var(--navy); color:#fff;">إنهاء</button>
+            <button id="endMatchBtn" class="hidden px-4 py-2 rounded-lg text-sm font-semibold" style="background:var(--navy);color:#fff;">إنهاء</button>
           </div>
         </div>
       </div>
 
-      <!-- TOURNAMENT PANEL -->
-      <div id="compPanelTournament" class="hidden">
-        <div class="card rounded-2xl p-4">
-          <h2 class="text-base font-bold mb-3">الدوري — خروج مغلوب</h2>
-          <div class="flex items-center gap-2 mb-3 flex-wrap text-sm">
-            <label class="text-xs muted">عدد المشاركين</label>
-            <select id="tournamentSize" class="border rounded-lg px-2 py-1.5 text-xs" style="border-color: var(--border); background: var(--card); color: var(--fg);">
-              <option value="4">4</option>
-              <option value="8" selected>8</option>
-              <option value="16">16</option>
-              <option value="32">32</option>
+      <!-- ROOMS PANEL -->
+      <div id="compPanelRooms" class="hidden">
+        <div class="card rounded-2xl p-4 mb-3">
+          <h2 class="text-base font-bold mb-2">إنشاء غرفة</h2>
+          <div class="flex gap-2 mb-2">
+            <input id="roomNameInput" type="text" placeholder="اسم الغرفة" class="flex-1 border rounded-lg px-3 py-2 text-sm" style="border-color:var(--border);background:var(--bg);color:var(--fg);">
+            <select id="roomVisibility" class="border rounded-lg px-2 py-2 text-xs" style="border-color:var(--border);background:var(--bg);color:var(--fg);">
+              <option value="public">عامة</option>
+              <option value="private">خاصة</option>
             </select>
-            <button id="generateBracketBtn" class="btn-olive px-3 py-1.5 rounded-lg text-xs font-semibold">توليد الدوري</button>
+            <button id="createRoomBtn" class="btn-gold px-3 py-2 rounded-lg text-xs font-semibold">إنشاء</button>
           </div>
-          <div id="bracketContainer" class="virtual-scroll" style="max-height: 420px;">
-            <div id="bracketInner" class="virtual-inner"></div>
-          </div>
-          <p class="text-[10px] muted mt-2">عرض افتراضي (virtualized) — مرّر للمزيد</p>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- ============================================================
-         TAB 3: الإعدادات
-         ============================================================ -->
-    <section id="view-settings" class="view hidden">
-
-      <!-- User stats -->
-      <div class="card rounded-2xl p-4 mb-3">
-        <h2 class="text-base font-bold mb-2">الإحصائيات</h2>
-        <div class="grid grid-cols-3 gap-2 text-center text-xs">
-          <div class="rounded-lg p-2" style="background: rgba(44,62,46,0.05);">
-            <div class="text-lg font-bold" style="color: var(--gold);" id="sStatMatches">0</div>
-            <div class="muted">جولات</div>
-          </div>
-          <div class="rounded-lg p-2" style="background: rgba(44,62,46,0.05);">
-            <div class="text-lg font-bold" style="color: var(--gold);" id="sStatCorrect">0</div>
-            <div class="muted">صحيحة</div>
-          </div>
-          <div class="rounded-lg p-2" style="background: rgba(44,62,46,0.05);">
-            <div class="text-lg font-bold" style="color: var(--gold);" id="sStatStreak">0</div>
-            <div class="muted">تتابع</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Appearance -->
-      <div class="card rounded-2xl p-4 mb-3">
-        <h2 class="text-base font-bold mb-2">المظهر</h2>
-        <div class="flex items-center justify-between py-2">
-          <div>
-            <div class="text-sm font-medium">الوضع الليلي</div>
-            <div class="text-[11px] muted">مريح للعين في الأوقات المتأخرة</div>
-          </div>
-          <button id="themeToggleSettings" class="relative w-11 h-6 rounded-full transition" style="background: var(--border);">
-            <span id="themeKnob" class="absolute top-0.5 w-5 h-5 rounded-full transition" style="background:#fff; right:2px; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></span>
-          </button>
-        </div>
-      </div>
-
-      <!-- AI Configuration -->
-      <div class="card rounded-2xl p-4 mb-3">
-        <h2 class="text-base font-bold mb-2">توليد الأسئلة بالذكاء الاصطناعي</h2>
-        <div class="flex items-center justify-between py-1.5">
-          <div class="text-sm">استخدام الذكاء الاصطناعي</div>
-          <input id="useAIToggle" type="checkbox" class="w-5 h-5 rounded" style="accent-color: var(--gold);">
-        </div>
-        <label class="block text-xs muted mt-2 mb-1">مفتاح Gemini API</label>
-        <div class="flex gap-2">
-          <input id="geminiApiKey" type="password" placeholder="AIza…" class="flex-1 border rounded-lg px-2 py-1.5 text-xs" style="border-color: var(--border); background: var(--card); color: var(--fg);" dir="ltr">
-          <button id="saveAIKeyBtn" class="btn-gold px-3 py-1.5 rounded-lg text-xs font-semibold">حفظ</button>
-        </div>
-        <p id="aiKeyStatus" class="text-[11px] muted mt-1.5"></p>
-        <div class="grid grid-cols-2 gap-2 mt-2 text-[11px]">
-          <div class="rounded p-1.5 text-center" style="background: rgba(44,62,46,0.05);">
-            وُلِّدت (الجلسة): <b id="aiGeneratedCount">0</b>
-          </div>
-          <div class="rounded p-1.5 text-center" style="background: rgba(44,62,46,0.05);">
-            أسئلة محفوظة: <b id="seenCount">0</b>
-          </div>
-        </div>
-      </div>
-
-      <!-- Admin access -->
-      <div class="card rounded-2xl p-4 mb-3">
-        <h2 class="text-base font-bold mb-2">لوحة الإدارة</h2>
-        <div id="adminLogin">
-          <label class="block text-xs muted mb-1">كلمة المرور</label>
           <div class="flex gap-2">
-            <input id="adminPass" type="password" placeholder="admin123" class="flex-1 border rounded-lg px-2 py-1.5 text-xs" style="border-color: var(--border); background: var(--card); color: var(--fg);">
-            <button id="adminLoginBtn" class="btn-olive px-3 py-1.5 rounded-lg text-xs font-semibold">دخول</button>
+            <input id="joinRoomCode" type="text" placeholder="رمز الغرفة" class="flex-1 border rounded-lg px-3 py-2 text-sm" style="border-color:var(--border);background:var(--bg);color:var(--fg);" dir="ltr" maxlength="6">
+            <button id="joinRoomBtn" class="btn-olive px-3 py-2 rounded-lg text-xs font-semibold">انضم</button>
           </div>
-          <p id="adminError" class="text-[11px] mt-1.5 hidden" style="color: #ef4444;">كلمة مرور غير صحيحة</p>
         </div>
-        <div id="adminPanel" class="hidden">
-          <div class="text-xs mb-2" style="color: var(--olive);">✓ تم الدخول كمسؤول</div>
-          <label class="block text-xs muted mb-1">بنك الأسئلة المحلي</label>
-          <div class="flex gap-1.5 mb-2">
-            <input id="newQuestion" placeholder="السؤال" class="flex-1 border rounded px-2 py-1 text-xs" style="border-color: var(--border); background: var(--card); color: var(--fg);">
-            <input id="newAnswer" placeholder="الجواب" class="w-24 border rounded px-2 py-1 t
+
+        <div class="card rounded-2xl p-4">
+          <h2 class="text-base font-bold mb-2">الغرف المتاحة</h2>
+          <div id="roomsList" class="space-y-2 text-sm">
+            <p class="muted text-xs text-center py-4">لا توجد غرف حالياً — أنشئ واحدة!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FRIENDS PANEL -->
+      <div id="compPanelFriends" class="hidden">
+        <div class="card rounded-2xl p-4 mb-3">
+          <h2 class="text-base font-bold mb-2">البحث عن مستخدمين</h2>
+          <div class="flex gap-2">
+            <input id="userSearchInput" type="text" placeholder="اسم المستخدم أو المعرّف" class="flex-1 border rounded-lg px-3 py-2 text-sm" style="border-color:var(--border);background:var(--bg);color:var(--fg);">
+            <button id="userSearchBtn" class="btn-olive px-3 py-2 rounded-lg text-xs font-semibold">بحث</button>
+          </div>
+          <div id="userSearchResults" class="mt-2 space-y-1.5"></div>
+        </div>
+
+        <div class="card rounded-2xl p-4">
+          <h2 class="text-base font-bold mb-2">أصدقائي</h2>
+          <div id="friendsList" class="space-y-1.5 text-sm">
+            <p class="muted text-xs text-center py-4">لا أصدقاء بعد</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEADERBOARD PANEL -->
+      <div id="compPanelLeaderboard" class="hidden">
+        <div class="card rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="
