@@ -1,253 +1,333 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق القرآن الكريم</title>
-    <meta name="theme-color" content="#1b4d3e">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Amiri+Quran&display=swap" rel="stylesheet">
-    <link rel="manifest" href="/manifest.json">
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js');
-    });
-  }
-</script>
-    
-    
-    <style>
-        :root {
-            --primary: #1b4d3e;
-            --secondary: #2e7d32;
-            --bg: #f4f6f8;
-            --card: #ffffff;
-            --text: #222222;
-            --accent: #d4af37;
-        }
-        [data-theme="dark"] {
-            --primary: #0f2921;
-            --secondary: #1b4d3e;
-            --bg: #121212;
-            --card: #1e1e1e;
-            --text: #e0e0e0;
-            --accent: #e6c547;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-        body { background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 80px; }
-        header { background: var(--primary); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .theme-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 12px; border-radius: 20px; cursor: pointer; }
-        main { padding: 15px; max-width: 600px; margin: 0 auto; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        
-        .search-input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 15px; font-size: 0.95rem; background: var(--card); color: var(--text); outline: none; }
-        
-        .surah-item { background: var(--card); padding: 12px 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-right: 4px solid var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .surah-num { background: var(--primary); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem; }
-        .othmani { font-family: 'Amiri Quran', serif; font-size: 1.6rem; line-height: 2.4; text-align: justify; }
-        .card { background: var(--card); padding: 18px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); margin-bottom: 15px; }
-        select, audio { width: 100%; margin-top: 10px; }
-        select { padding: 8px; border-radius: 6px; border: 1px solid #ccc; background: var(--card); color: var(--text); }
-        .opt-btn { width: 100%; padding: 10px; margin-top: 8px; background: var(--card); border: 2px solid var(--secondary); color: var(--text); border-radius: 6px; cursor: pointer; text-align: right; }
-        nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #ccc; z-index: 1000; }
-        .nav-btn { background: none; border: none; color: var(--text); cursor: pointer; display: flex; flex-direction: column; align-items: center; font-size: 0.8rem; opacity: 0.7; }
-        .nav-btn.active { opacity: 1; color: var(--primary); font-weight: bold; }
-        .btn-back { background: var(--secondary); color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; margin-bottom: 10px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2C3E2E">
+  <link rel="manifest" href='data:application/manifest+json,{"name":"Wird","short_name":"Wird","start_url":"./","display":"standalone","background_color":"%23F8F6F0","theme_color":"%232C3E2E","icons":[]}'>
+  <title>Wird · وِرْد</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --olive:#2C3E2E; --navy:#1A2238; --gold:#D4AF37; --warm:#F8F6F0; --warm-dark:#EFECE1; }
+    *{box-sizing:border-box}
+    body{font-family:'Inter',sans-serif;background:var(--warm);color:var(--navy);margin:0;min-height:100vh;overflow-x:hidden}
+    .font-arabic{font-family:'Amiri',serif}
+    .bg-olive{background-color:var(--olive)} .bg-navy{background-color:var(--navy)} .bg-gold{background-color:var(--gold)}
+    .text-gold{color:var(--gold)} .text-olive{color:var(--olive)}
+    .border-gold{border-color:var(--gold)} .border-olive{border-color:var(--olive)}
+    ::-webkit-scrollbar{width:6px;height:6px} ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+    .virtual-scroll{overflow-y:auto;position:relative} .virtual-inner{position:relative;width:100%}
+    .paper{background:#fffcf5;border:1px solid #e5dfd0;box-shadow:0 2px 12px rgba(0,0,0,0.03)}
+    @keyframes gentlePulse{0%,100%{opacity:1}50%{opacity:.6}} .turn-pulse{animation:gentlePulse 1.8s infinite}
+    .no-scrollbar::-webkit-scrollbar{display:none} .no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+    .hidden{display:none !important}
+    .spin{animation:spin 1s linear infinite} @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
 </head>
-<body data-theme="light">
+<body class="antialiased">
+<div id="app" class="min-h-screen flex flex-col">
 
-    <header>
-        <h1 id="title-header">القرآن الكريم</h1>
-        <button class="theme-btn" onclick="toggleMode()">🌙 الوضع</button>
-    </header>
+  <header class="bg-olive text-white shadow-md sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-2">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl font-arabic text-gold">وِرْد</span>
+        <span class="text-sm font-semibold tracking-wider opacity-90">Wird</span>
+      </div>
+      <nav class="flex items-center gap-3 md:gap-4 text-xs md:text-sm font-medium flex-wrap">
+        <button data-nav="home" class="nav-btn hover:text-gold transition">Home</button>
+        <button data-nav="reader" class="nav-btn hover:text-gold transition">Reader</button>
+        <button data-nav="match" class="nav-btn hover:text-gold transition">Match</button>
+        <button data-nav="tournament" class="nav-btn hover:text-gold transition">Tournament</button>
+        <button data-nav="admin" class="nav-btn hover:text-gold transition">Admin</button>
+      </nav>
+    </div>
+  </header>
 
-    <main>
-        <!-- 1. قسم الفهرس الكامل (114 سورة) -->
-        <div id="tab-index" class="tab-content active">
-            <input type="text" class="search-input" id="search-box" placeholder="🔍 ابحث عن اسم السورة..." oninput="filterSurahs()">
-            <div id="surah-container"></div>
+  <div id="globalBanner" class="bg-gold/10 border-b border-gold/30 text-navy text-sm py-1.5 px-4 text-center hidden">
+    <span id="bannerText"></span>
+  </div>
+
+  <main class="flex-1 max-w-6xl mx-auto w-full px-4 py-6">
+
+    <!-- HOME -->
+    <section id="view-home" class="view">
+      <div class="bg-white/70 rounded-xl p-6 md:p-8 shadow-sm border border-warm-dark">
+        <h1 class="text-2xl md:text-3xl font-bold text-olive mb-2">Daily Wird</h1>
+        <p class="text-navy/70 mb-6">Complete your daily Quran page to unlock matches & tournaments.</p>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-warm rounded-lg p-5 border border-warm-dark">
+            <h3 class="font-semibold text-olive mb-1">Today's Reflection</h3>
+            <p class="text-sm text-navy/80 leading-relaxed font-arabic text-lg">﴿ وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا ﴾</p>
+            <p class="text-xs text-navy/50 mt-2">— Al-Muzzammil 73:4</p>
+          </div>
+          <div class="bg-warm rounded-lg p-5 border border-warm-dark flex flex-col justify-between">
+            <div>
+              <h3 class="font-semibold text-olive mb-1">Prerequisite</h3>
+              <p id="gateStatusText" class="text-sm text-navy/80">Complete reading/listening to unlock.</p>
+            </div>
+            <button id="homeGoReader" class="mt-4 bg-olive text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-olive/90 transition">Go to Reader</button>
+          </div>
+        </div>
+        <div class="mt-6 grid grid-cols-3 gap-3 text-center text-xs">
+          <div class="bg-white rounded p-3 border"><span class="block text-lg font-bold text-gold" id="statMatches">0</span>Matches</div>
+          <div class="bg-white rounded p-3 border"><span class="block text-lg font-bold text-gold" id="statCorrect">0</span>Correct</div>
+          <div class="bg-white rounded p-3 border"><span class="block text-lg font-bold text-gold" id="statStreak">0</span>Streak</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- READER -->
+    <section id="view-reader" class="view hidden">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold text-olive">Quran Page Reader</h2>
+        <div class="text-sm text-navy/60">Page 1</div>
+      </div>
+      <div class="paper rounded-xl p-6 md:p-10 relative">
+        <div class="text-center mb-6">
+          <p class="font-arabic text-2xl md:text-3xl leading-loose text-navy">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+          <p class="text-sm text-navy/50 mt-4">In the name of Allah, the Entirely Merciful, the Especially Merciful.</p>
+        </div>
+        <div class="flex items-center justify-center gap-4 mt-8">
+          <button id="audioPlay" class="bg-olive text-white rounded-full w-12 h-12 flex items-center justify-center hover:bg-olive/90 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+          </button>
+          <div class="flex-1 max-w-xs">
+            <div class="h-1.5 bg-warm-dark rounded-full overflow-hidden">
+              <div id="audioProgress" class="h-full bg-gold w-0 transition-all duration-300"></div>
+            </div>
+          </div>
+          <span id="audioTime" class="text-xs text-navy/60 w-10">0:00</span>
+        </div>
+        <p id="readerUnlockMsg" class="text-center text-sm mt-6 text-olive font-medium hidden">✅ Page completed! Access unlocked.</p>
+        <div class="text-center mt-6">
+          <button id="markCompleteBtn" class="bg-gold text-navy font-semibold px-6 py-2 rounded-lg hover:bg-gold/90 transition shadow-sm">Mark as Completed</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- MATCH -->
+    <section id="view-match" class="view hidden relative">
+      <div id="matchLockOverlay" class="absolute inset-0 bg-warm/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center rounded-xl hidden">
+        <div class="text-center p-8 bg-white rounded-xl shadow-lg border border-warm-dark max-w-md mx-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto text-gold mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          <h3 class="text-lg font-bold text-olive mb-2">Match Locked</h3>
+          <p id="matchLockReason" class="text-sm text-navy/70 mb-4">Complete your daily Wird and wait for the post-Isha window.</p>
+          <button class="bg-olive text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-olive/90" data-nav="reader">Go to Reader</button>
+        </div>
+      </div>
+
+      <div class="bg-white/70 rounded-xl p-4 md:p-6 shadow-sm border border-warm-dark">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <h2 class="text-xl font-bold text-olive">Live Match</h2>
+          <div class="flex items-center gap-3 text-sm">
+            <span id="matchTimer" class="bg-navy text-white px-3 py-1 rounded-full font-mono">00:15</span>
+            <span id="aiStatus" class="text-navy/60 text-xs flex items-center gap-1">
+              <span class="inline-block w-2 h-2 rounded-full bg-gray-400" id="aiDot"></span>
+              <span id="aiStatusText">AI: idle</span>
+            </span>
+          </div>
         </div>
 
-        <!-- 2. قسم عرض السورة والقراء -->
-        <div id="tab-read" class="tab-content">
-            <button class="btn-back" onclick="goBack()">➔ العودة للفهرس</button>
-            <div class="card">
-                <label>اختر القارئ للبدء بالتلاوة:</label>
-                <select id="reciter" onchange="playAudio()">
-                    <option value="afs">مشاري العفاسي</option>
-                    <option value="abdulsamad">عبد الباسط عبد الصمد</option>
-                    <option value="maher">ماهر المعيقلي</option>
-                    <option value="hissary">محمود خليل الحصري</option>
-                </select>
-                <audio id="player" controls></audio>
-            </div>
-            <div class="card">
-                <div id="text-quran" class="othmani">جاري التحميل...</div>
-            </div>
+        <div class="grid grid-cols-2 gap-3 mb-6">
+          <div class="bg-warm rounded-lg p-3 text-center border">
+            <div class="text-xs uppercase tracking-wider text-navy/50">You</div>
+            <div id="playerScore" class="text-3xl font-bold text-gold">0</div>
+            <div id="playerStatus" class="text-xs text-navy/50 mt-1">Ready</div>
+          </div>
+          <div class="bg-warm rounded-lg p-3 text-center border">
+            <div class="text-xs uppercase tracking-wider text-navy/50">Opponent</div>
+            <div id="opponentScore" class="text-3xl font-bold text-gold">0</div>
+            <div id="opponentStatus" class="text-xs text-navy/50 mt-1">Waiting</div>
+          </div>
         </div>
 
-        <!-- 3. قسم المسابقات -->
-        <div id="tab-quiz" class="tab-content">
-            <div class="card">
-                <h3 id="q-title">اختبار الحفظ</h3>
-                <p id="q-text" style="margin: 15px 0; font-size: 1.1rem; font-weight: bold;"></p>
-                <div id="q-options"></div>
-                <p id="q-res" style="margin-top: 15px; font-weight: bold; text-align: center;"></p>
-                <button onclick="nextQ()" style="margin-top: 15px; width: 100%; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer;">السؤال التالي ➔</button>
-            </div>
+        <div class="mb-4">
+          <div class="text-xs text-navy/50 mb-1">Question <span id="questionIndex">0</span> · Target <span id="targetScoreLabel">5</span></div>
+          <div id="questionText" class="text-lg font-semibold text-navy bg-warm p-4 rounded-lg border border-warm-dark min-h-[70px]">
+            Press "Start Match" to begin.
+          </div>
         </div>
 
-        <!-- 4. قسم الإعدادات -->
-        <div id="tab-info" class="tab-content">
-            <div class="card">
-                <h3>عن التطبيق</h3>
-                <p style="margin-top: 10px; line-height: 1.6;">تطبيق القرآن الكريم بالخط العثماني الرسمي مع فهرس كامل وتلاوات صوتية لمختلف القراء ومسابقات تفاعلية.</p>
-            </div>
+        <div class="flex gap-2">
+          <input id="answerInput" type="text" placeholder="Type your answer…" class="flex-1 border border-warm-dark rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gold bg-white text-navy" autocomplete="off" disabled>
+          <button id="submitAnswerBtn" class="bg-olive text-white px-6 py-3 rounded-lg font-semibold hover:bg-olive/90 transition disabled:opacity-50" disabled>Submit</button>
         </div>
-    </main>
+        <p id="feedbackMsg" class="text-sm mt-2 min-h-[20px]"></p>
 
-    <!-- شريط التنقل السفلي -->
-    <nav>
-        <button class="nav-btn active" id="btn-n1" onclick="showTab('tab-index', 'btn-n1', 'القرآن الكريم')">📖 المصحف</button>
-        <button class="nav-btn" id="btn-n2" onclick="showTab('tab-quiz', 'btn-n2', 'المسابقات والأنشطة')">🎮 المسابقات</button>
-        <button class="nav-btn" id="btn-n3" onclick="showTab('tab-info', 'btn-n3', 'الإعدادات')">⚙️ الإعدادات</button>
-    </nav>
+        <div class="mt-4 flex gap-2 flex-wrap">
+          <button id="startMatchBtn" class="bg-gold text-navy font-semibold px-4 py-2 rounded-lg text-sm">Start Match</button>
+          <button id="endMatchBtn" class="bg-navy text-white font-semibold px-4 py-2 rounded-lg text-sm hidden">End Match</button>
+        </div>
 
-    <script>
-        // أسماء السور الـ 114 بالترتيب
-        const surahNames = [
-            "الفاتحة", "البقرة", "آل عمران", "النساء", "المائدة", "الأنعام", "الأعراف", "الأنفال", "التوبة", "يونس",
-            "هود", "يوسف", "الرعد", "إبراهيم", "الحجر", "النحل", "الإسراء", "الكهف", "مريم", "طه",
-            "الأنبياء", "الحج", "المؤمنون", "النور", "الفرقان", "الشعراء", "النمل", "القصص", "العنكبوت", "الروم",
-            "لقمان", "السجدة", "الأحزاب", "سبأ", "فاطر", "يس", "الصافات", "ص", "الزمر", "غافر",
-            "فصلت", "الشورى", "الزخرف", "الدخان", "الجاثية", "الأحقاف", "محمد", "الفتح", "الحجرات", "ق",
-            "الذاريات", "الطور", "النجم", "القمر", "الرحمن", "الواقعة", "الحديد", "المجادلة", "الحشر", "الممتحنة",
-            "الصف", "الجمعة", "المنافقون", "التغابن", "الطلاق", "التحريم", "الملك", "القلم", "الحاقة", "المعارج",
-            "نوح", "الجن", "المزمل", "المدثر", "القيامة", "الإنسان", "المرسلات", "النبأ", "النازعات", "عبس",
-            "التكوير", "الانفطار", "المطففين", "الانشقاق", "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد",
-            "الشمس", "الليل", "الضحى", "الشرح", "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات",
-            "القارعة", "التكاثر", "العصر", "الهمزة", "الفيل", "قريش", "الماعون", "الكوثر", "الكافرون", "النصر",
-            "المسد", "الإخلاص", "الفلق", "الناس"
-        ];
+        <div class="mt-6 text-center">
+          <a href="#" id="judgeLink" class="text-xs text-gold underline">Referee Mode (Judge Code required)</a>
+        </div>
+      </div>
+    </section>
 
-        let currentS = 1;
+    <!-- TOURNAMENT -->
+    <section id="view-tournament" class="view hidden relative">
+      <div id="tournamentLockOverlay" class="absolute inset-0 bg-warm/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center rounded-xl hidden">
+        <div class="text-center p-8 bg-white rounded-xl shadow-lg border border-warm-dark max-w-md mx-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto text-gold mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          <h3 class="text-lg font-bold text-olive mb-2">Tournament Locked</h3>
+          <p id="tournamentLockReason" class="text-sm text-navy/70 mb-4">Complete Wird & wait for post-Isha window.</p>
+        </div>
+      </div>
 
-        // بناء الفهرس فور التحميل
-        window.onload = function() {
-            renderSurahList(surahNames);
-            renderQ();
-        };
+      <div class="bg-white/70 rounded-xl p-4 md:p-6 shadow-sm border border-warm-dark">
+        <h2 class="text-xl font-bold text-olive mb-4">Single-Elimination Tournament</h2>
+        <div class="flex items-center gap-3 mb-4 flex-wrap">
+          <label class="text-sm text-navy/70">Participants:</label>
+          <select id="tournamentSize" class="border rounded px-3 py-1.5 text-sm bg-white">
+            <option value="4">4</option>
+            <option value="8" selected>8</option>
+            <option value="16">16</option>
+            <option value="32">32</option>
+          </select>
+          <button id="generateBracketBtn" class="bg-olive text-white text-sm px-4 py-1.5 rounded-lg font-semibold hover:bg-olive/90 transition">Generate Bracket</button>
+        </div>
+        <div id="bracketContainer" class="virtual-scroll" style="max-height:500px;">
+          <div id="bracketInner" class="virtual-inner"></div>
+        </div>
+        <p class="text-xs text-navy/40 mt-3">Virtualized rendering · Scroll for more</p>
+      </div>
+    </section>
 
-        function renderSurahList(list) {
-            const container = document.getElementById('surah-container');
-            container.innerHTML = '';
-            list.forEach((name) => {
-                const num = surahNames.indexOf(name) + 1;
-                const item = document.createElement('div');
-                item.className = 'surah-item';
-                item.onclick = function() { openSurah(num, name); };
-                item.innerHTML = `
-                    <div style="display:flex; gap:12px; align-items:center;">
-                        <div class="surah-num">${num}</div>
-                        <strong>سورة ${name}</strong>
-                    </div>
-                    <span>قراءة ➔</span>
-                `;
-                container.appendChild(item);
-            });
-        }
+    <!-- ADMIN -->
+    <section id="view-admin" class="view hidden">
+      <div class="bg-white/70 rounded-xl p-6 shadow-sm border border-warm-dark">
+        <h2 class="text-xl font-bold text-olive mb-4">Admin Panel</h2>
+        <div id="adminLogin" class="max-w-sm">
+          <label class="block text-sm text-navy/70 mb-1">Passcode</label>
+          <input id="adminPass" type="password" placeholder="admin123" class="w-full border rounded-lg px-3 py-2 mb-3 bg-white">
+          <button id="adminLoginBtn" class="bg-olive text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-olive/90">Enter</button>
+          <p id="adminError" class="text-red-500 text-xs mt-2 hidden">Incorrect passcode.</p>
+        </div>
+        <div id="adminPanel" class="hidden">
+          <div class="grid md:grid-cols-2 gap-6 mt-4">
+            <div>
+              <h3 class="font-semibold text-olive mb-2">AI Configuration</h3>
+              <div class="space-y-2 text-sm">
+                <label class="block">Gemini API Key</label>
+                <input id="geminiApiKey" type="password" placeholder="AIza..." class="w-full border rounded px-2 py-1.5 bg-white text-xs">
+                <div class="flex items-center gap-2">
+                  <input id="useAI" type="checkbox" checked>
+                  <label for="useAI">Use AI-generated questions</label>
+                </div>
+                <button id="saveAIKeyBtn" class="bg-gold text-navy px-3 py-1.5 rounded text-sm font-semibold">Save Key</button>
+                <p id="aiKeyStatus" class="text-xs text-navy/50"></p>
+              </div>
+              <h3 class="font-semibold text-olive mb-2 mt-4">Local Question Bank</h3>
+              <div class="flex gap-2 mb-2 flex-wrap">
+                <input id="newQuestion" placeholder="Question" class="flex-1 min-w-[120px] border rounded px-2 py-1.5 text-sm bg-white">
+                <input id="newAnswer" placeholder="Answer" class="w-28 border rounded px-2 py-1.5 text-sm bg-white">
+                <button id="addQuestionBtn" class="bg-gold text-navy text-sm px-3 py-1.5 rounded font-semibold">Add</button>
+              </div>
+              <ul id="questionList" class="text-sm space-y-1 max-h-40 overflow-y-auto"></ul>
+            </div>
+            <div>
+              <h3 class="font-semibold text-olive mb-2">Time Window</h3>
+              <div class="flex gap-2 text-sm items-center flex-wrap">
+                <label>Start</label>
+                <input id="windowStart" type="time" value="20:00" class="border rounded px-2 py-1 bg-white">
+                <label>End</label>
+                <input id="windowEnd" type="time" value="23:59" class="border rounded px-2 py-1 bg-white">
+                <button id="saveWindowBtn" class="bg-olive text-white px-3 py-1 rounded text-sm">Save</button>
+              </div>
+              <h3 class="font-semibold text-olive mb-2 mt-4">Analytics</h3>
+              <p class="text-sm">Total questions in bank: <span id="adminQCount">0</span></p>
+              <p class="text-sm">AI-generated (session): <span id="aiGeneratedCount">0</span></p>
+              <p class="text-sm">Seen questions (this user): <span id="seenCount">0</span></p>
+              <button id="clearSeenBtn" class="mt-2 text-xs text-red-600 underline">Reset seen-question memory</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        function filterSurahs() {
-            const query = document.getElementById('search-box').value.trim();
-            const filtered = surahNames.filter(name => name.includes(query));
-            renderSurahList(filtered);
-        }
+  </main>
 
-        function showTab(tabId, btnId, title) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            document.getElementById(btnId).classList.add('active');
-            document.getElementById('title-header').innerText = title;
-        }
+  <footer class="bg-olive text-white/70 text-center text-xs py-3 mt-auto">
+    Wird · وِرْد · A serene space for Quranic study
+  </footer>
 
-        function openSurah(num, name) {
-            currentS = num;
-            showTab('tab-read', 'btn-n1', 'سورة ' + name);
-            document.getElementById('text-quran').innerHTML = 'جاري تحميل الآيات...';
-            playAudio();
+  <!-- JUDGE MODAL -->
+  <div id="judgeModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-xl p-6 max-w-lg w-full mx-4 shadow-xl border border-warm-dark">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-bold text-olive">Referee Mode</h3>
+        <button id="closeJudge" class="text-navy/50 hover:text-navy text-xl leading-none">&times;</button>
+      </div>
+      <div id="judgeLogin">
+        <label class="block text-sm text-navy/70 mb-1">Judge Code</label>
+        <input id="judgeCodeInput" placeholder="JUDGE2026" class="w-full border rounded-lg px-3 py-2 mb-3 bg-white">
+        <button id="judgeLoginBtn" class="bg-olive text-white px-4 py-2 rounded-lg text-sm font-semibold">Access</button>
+        <p id="judgeError" class="text-red-500 text-xs mt-2 hidden">Invalid code.</p>
+      </div>
+      <div id="judgePanel" class="hidden">
+        <div class="text-sm space-y-2">
+          <div class="flex justify-between"><span>Player</span><span id="judgePlayer">—</span></div>
+          <div class="flex justify-between"><span>Opponent</span><span id="judgeOpponent">—</span></div>
+          <div class="flex justify-between"><span>Typing speed</span><span id="judgeSpeed">— ms</span></div>
+          <div class="flex justify-between"><span>Score</span><span id="judgeScore">0 – 0</span></div>
+          <div class="flex justify-between"><span>Status</span><span id="judgeStatus">—</span></div>
+        </div>
+        <div class="flex gap-2 mt-4">
+          <button id="judgePause" class="bg-gold text-navy text-sm px-3 py-1.5 rounded font-semibold">Pause</button>
+          <button id="judgeSkip" class="bg-gold text-navy text-sm px-3 py-1.5 rounded font-semibold">Skip</button>
+          <button id="judgeOverride" class="bg-gold text-navy text-sm px-3 py-1.5 rounded font-semibold">Override</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-            fetch('https://api.alquran.cloud/v1/surah/' + num + '/quran-uthmani')
-                .then(r => r.json())
-                .then(d => {
-                    let html = '';
-                    if (num !== 1 && num !== 9) html += '<div style="text-align:center; margin-bottom:15px; font-weight:bold;">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>';
-                    d.data.ayahs.forEach(a => {
-                        let txt = a.text;
-                        if (num !== 1 && a.numberInSurah === 1) txt = txt.replace("بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ", "");
-                        html += txt + ' <span style="color:var(--accent);">﴿' + a.numberInSurah + '﴾</span> ';
-                    });
-                    document.getElementById('text-quran').innerHTML = html;
-                })
-                .catch(() => {
-                    document.getElementById('text-quran').innerHTML = 'تعذر التحميل، تحقق من اتصالك.';
-                });
-        }
+</div>
 
-        function playAudio() {
-            const p = document.getElementById('player');
-            const r = document.getElementById('reciter').value;
-            const str = currentS.toString().padStart(3, '0');
-            let base = "https://server8.mp3quran.net/afs/";
-            if (r === 'abdulsamad') base = "https://server11.mp3quran.net/abdulsamad/";
-            if (r === 'maher') base = "https://server12.mp3quran.net/maher/";
-            if (r === 'hissary') base = "https://server13.mp3quran.net/hissary/";
-            p.src = base + str + ".mp3";
-        }
+<script>
+/* ============================================================
+   WIRD PWA — Full Logic with AI Question Generation
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
 
-        function goBack() {
-            showTab('tab-index', 'btn-n1', 'القرآن الكريم');
-            document.getElementById('player').pause();
-        }
+/* ---------- PERSISTENT STORAGE ---------- */
+const Storage = {
+  KEY_SEEN: 'wird_seen_questions',
+  KEY_API: 'wird_gemini_key',
+  KEY_USE_AI: 'wird_use_ai',
+  KEY_WINDOW: 'wird_window',
+  load(key, fallback) {
+    try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+    catch { return fallback; }
+  },
+  save(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+  }
+};
 
-        function toggleMode() {
-            const b = document.body;
-            b.setAttribute('data-theme', b.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
-        }
-
-        // المسابقات
-        const qList = [
-            { t: "أكمل الآية: \"إِنَّا أَعْطَيْنَاكَ ...\"", o: ["الْكَوْثَرَ", "الْفَلَقَ", "النَّصْرَ"], c: 0 },
-            { t: "ما السورة التي تسمى \"قلب القرآن\"؟", o: ["سورة البقرة", "سورة يس", "سورة الملك"], c: 1 },
-            { t: "أكمل الآية: \"قُلْ هُوَ اللَّهُ ...\"", o: ["أَحَدٌ", "الصَّمَدُ", "الرَّحْمَنُ"], c: 0 },
-            { t: "ما هي أعظم آية في القرآن الكريم؟", o: ["آية الكرسي", "آية الدين", "خواتيم البقرة"], c: 0 }
-        ];
-        let qIdx = 0;
-
-        function renderQ() {
-            const q = qList[qIdx];
-            document.getElementById('q-text').innerText = q.t;
-            document.getElementById('q-res').innerText = '';
-            let h = '';
-            q.o.forEach((opt, idx) => {
-                h += '<button class="opt-btn" onclick="checkAnswer(' + (idx === q.c) + ')">' + opt + '</button>';
-            });
-            document.getElementById('q-options').innerHTML = h;
-        }
-
-        function checkAnswer(isC) {
-            const r = document.getElementById('q-res');
-            r.innerText = isC ? "إجابة صحيحة! أحسنت 🌟" : "إجابة خاطئة، حاول ثانية!";
-            r.style.color = isC ? "green" : "red";
-        }
-
-        function nextQ() {
-            qIdx = (qIdx + 1) % qList.length;
-            renderQ();
-        }
-    </script>
-</body>
-                </html>
-                                                                                                                         
+/* ---------- STATE ---------- */
+const State = {
+  currentView: 'home',
+  dailyPageRead: false,
+  matchWindowStart: 20 * 60,
+  matchWindowEnd: 23 * 60 + 59,
+  judgeCode: 'JUDGE2026',
+  adminPass: 'admin123',
+  localQuestions: [
+    { q: "How many chapters (Surahs) are in the Quran?", a: "114" },
+    { q: "What is the first Surah of the Quran?", a: "Al-Fatiha" },
+    { q: "How many verses are in Surah Al-Fatiha?", a: "7" },
+    { q: "Which Surah is the longest in the Quran?", a: "Al-Baqarah" },
+    { q: "What is the name of the angel who revealed the Quran to Prophet Muhammad?", a: "Jibreel" },
+    { q: "In which month was the Quran first revealed?", a: "Ramadan" },
+    { q: "How many Juz (parts) are in the Quran?", a: "30" },
+    { q: "Which Surah is known as the heart of the Quran?", a: "Yasin" },
+    { q: "What is the last Surah of the Quran?", a: "An-Nas" },
+    { q: "What is the longest verse in the Quran called?", a: "Ayat al-Kursi" }
+  ],
+  seenQuestions: Storage.load(Storage.KEY_SEEN, []),       // AI-side dedupe (list of question signatures)
+  usedLocalIndices: [],
+  ai: {
+ 
