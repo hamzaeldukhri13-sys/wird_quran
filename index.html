@@ -40,7 +40,7 @@
     .quran-text { font-family: 'Amiri', serif; line-height: 2.2; }
   </style>
 </head>
-<body class="bg-sand text-navy dark:bg-navy-dark dark:text-sand min-h-screen flex flex-col pb-20 transition-colors duration-300">
+<body class="bg-sand text-navy dark:bg-navy-dark dark:text-sand min-h-screen flex flex-col pb-24 transition-colors duration-300">
 
   <!-- Header -->
   <header class="sticky top-0 z-40 bg-olive text-white shadow-lg border-b-2 border-gold px-4 py-3 flex justify-between items-center">
@@ -102,7 +102,7 @@
           <i class="fa-solid fa-moon"></i>
         </div>
         <h2 class="text-2xl font-bold font-quran text-gold">المسابقات مغلقة حالياً</h2>
-        <p class="text-xs opacity-80 max-w-md mx-auto">تفتح التحديات والدوريات اليومية فور حان وقت صلاة العشاء.</p>
+        <p class="text-xs opacity-80 max-w-md mx-auto">تفتح التحديات والدوريات اليومية فور حلول وقت صلاة العشاء.</p>
         <div class="p-4 bg-sand dark:bg-navy-dark rounded-xl border border-gold/20 inline-block">
           <span class="text-xs text-gray-400 block mb-1">المتبقي حتى العشاء:</span>
           <span id="isha-countdown" class="text-3xl font-bold text-gold tracking-widest font-mono">00:00:00</span>
@@ -111,8 +111,6 @@
 
       <!-- Unlocked View -->
       <div id="isha-unlocked-view" class="hidden space-y-6">
-        
-        <!-- Leagues Section -->
         <div class="bg-white dark:bg-navy p-5 rounded-2xl shadow border border-gold/30 space-y-4">
           <div class="flex justify-between items-center border-b border-gold/20 pb-3">
             <div>
@@ -125,16 +123,15 @@
           </div>
 
           <div>
-            <h4 class="text-xs font-bold text-gold mb-2">دورياتي:</h4>
+            <h4 class="text-xs font-bold text-gold mb-2">دورياتي السحابية:</h4>
             <div id="my-leagues-list" class="space-y-2"></div>
           </div>
 
           <div>
-            <h4 class="text-xs font-bold text-gray-400 mb-2">الدوريات المتاحة:</h4>
+            <h4 class="text-xs font-bold text-gray-400 mb-2">الدوريات المتاحة للانضمام:</h4>
             <div id="available-leagues-list" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
           </div>
         </div>
-
       </div>
     </section>
 
@@ -255,15 +252,15 @@
 
   <!-- Firebase & App Logic Script -->
   <script>
-    // ⚠️ استبدل هذه البيانات بمعلومات مشروعك الفعلي على منصة Firebase Console
+    // Firebase Configuration
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "SENDER_ID",
-      appId: "APP_ID"
+      apiKey: "AIzaSyDoKSSImyyywVVUN9RMNV131wf-FHPQ1Qg",
+      authDomain: "wird2026-8c813.firebaseapp.com",
+      databaseURL: "https://wird2026-8c813-default-rtdb.firebaseio.com",
+      projectId: "wird2026-8c813",
+      storageBucket: "wird2026-8c813.firebasestorage.app",
+      messagingSenderId: "563035214741",
+      appId: "1:563035214741:web:eb9ccf2adc189b8ad61c9c"
     };
 
     // Initialize Firebase
@@ -283,7 +280,6 @@
       fetchSurahs();
       startIshaTimer();
       
-      // Monitor Auth State Changes
       auth.onAuthStateChanged((user) => {
         if (user) {
           currentUser = {
@@ -303,7 +299,6 @@
           }
           document.getElementById('user-status-text').innerText = currentUser.name;
           
-          // Sync user to database & load data
           db.ref('users/' + currentUser.uid).set(currentUser);
           loadRealtimeLeagues();
           loadFriends();
@@ -313,11 +308,11 @@
           document.getElementById('logged-in-view').classList.add('hidden');
           document.getElementById('user-status-text').innerText = "زائر غير مسجل";
           document.getElementById('user-avatar-container').innerHTML = "و";
+          renderLeagues();
         }
       });
     });
 
-    // Google Authentication Functions
     function loginWithGoogle() {
       const provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithPopup(provider).catch((error) => {
@@ -329,7 +324,6 @@
       auth.signOut();
     }
 
-    // Realtime Leagues Sync with Firebase
     function loadRealtimeLeagues() {
       db.ref('leagues').on('value', (snapshot) => {
         const data = snapshot.val();
@@ -385,13 +379,11 @@
       db.ref(`leagues/${leagueId}/pendingRequests/${userId}`).remove();
     }
 
-    // Friend System Functions
     function sendFriendRequest() {
       if (!currentUser) return alert('يرجى تسجيل الدخول أولاً.');
       const friendEmail = document.getElementById('friend-email-input').value.trim();
       if (!friendEmail) return alert('يرجى إدخال البريد الإلكتروني لصديقك.');
 
-      // البحث عن الصديق في قاعدة البيانات عبر الايميل
       db.ref('users').orderByChild('email').equalTo(friendEmail).once('value', (snapshot) => {
         const users = snapshot.val();
         if (!users) return alert('لم يتم العثور على مستخدم بهذا البريد الإلكتروني المسجل.');
@@ -428,7 +420,11 @@
       });
     }
 
-    // Surahs & Audio
     async function fetchSurahs() {
       try {
-    
+        const res = await fetch('https://api.alquran.cloud/v1/surah');
+        const data = await res.json();
+        surahsData = data.data;
+        renderSurahs(surahsData);
+      } catch (e) {
+        document.getElementById('surah-list').innerHTM
