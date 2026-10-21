@@ -1,408 +1,532 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>وِرْد | Wird</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        olive: {
-                            DEFAULT: '#2C3E2E',
-                            dark: '#1A241B',
-                            light: '#3E5441'
-                        },
-                        gold: {
-                            DEFAULT: '#D4AF37',
-                            light: '#E8C86A',
-                            dark: '#B5932A'
-                        }
-                    },
-                    fontFamily: {
-                        quran: ['"Amiri Quran"', 'serif'],
-                        sans: ['Cairo', 'sans-serif'],
-                    }
-                }
-            }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>وِرْد | Wird PWA</title>
+  
+  <!-- Styling & Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            olive: { DEFAULT: '#2C3E2E', dark: '#1e2b20', light: '#3d5440' },
+            navy: { DEFAULT: '#1A2238', dark: '#101625' },
+            gold: { DEFAULT: '#D4AF37', light: '#e5c358' },
+            sand: '#FDFBF7'
+          },
+          fontFamily: {
+            quran: ['Amiri', 'serif'],
+            sans: ['Tajawal', 'sans-serif']
+          }
         }
-    </script>
-    <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #1A241B; color: #fff; overflow-x: hidden; }
-        .font-quran { font-family: 'Amiri Quran', serif; font-size: 1.8rem; line-height: 2.5rem; }
-        .glass { background: rgba(44, 62, 46, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(212, 175, 55, 0.2); }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .tab-active { color: #D4AF37; border-top: 3px solid #D4AF37; }
-        .surah-card:active { transform: scale(0.98); background-color: rgba(212, 175, 55, 0.1); }
-        .locked-overlay { background: rgba(26, 36, 27, 0.95); backdrop-filter: blur(5px); z-index: 40; }
-        .fade-in { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Light Mode Overrides */
-        .light-mode { background-color: #f8f9fa; color: #1a241b; }
-        .light-mode .glass { background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(44, 62, 46, 0.1); color: #1a241b; }
-        .light-mode .bg-olive-dark { background-color: #e9ecef; }
-        .light-mode .text-white { color: #1a241b !important; }
-        .light-mode .border-gray-700 { border-color: #dee2e6; }
-    </style>
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Tajawal', sans-serif; }
+    .quran-text { font-family: 'Amiri', serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 4px; }
+  </style>
 </head>
-<body class="pb-20 text-gray-200">
+<body class="bg-sand text-navy dark:bg-navy-dark dark:text-sand min-h-screen flex flex-col pb-20 transition-colors duration-300">
 
-    <!-- Header -->
-    <header class="fixed top-0 w-full z-30 glass px-4 py-3 flex justify-between items-center shadow-lg">
-        <div class="flex items-center gap-2">
-            <div class="w-10 h-10 rounded-full bg-gold flex items-center justify-center text-olive-dark font-bold text-xl shadow-[0_0_10px_rgba(212,175,55,0.5)]">
-                و
-            </div>
+  <!-- Top Bar -->
+  <header class="sticky top-0 z-40 bg-olive text-white shadow-lg border-b-2 border-gold px-4 py-3 flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center border border-gold text-gold font-bold text-xl">
+        و
+      </div>
+      <div>
+        <h1 class="text-xl font-bold font-quran tracking-wide text-gold">وِرْد</h1>
+        <p class="text-xs text-sand/80" id="user-status">زائر | المستوى 1</p>
+      </div>
+    </div>
+    
+    <div class="flex items-center gap-2">
+      <button id="bypass-btn" onclick="toggleIshaLock()" class="text-xs bg-gold/20 hover:bg-gold/40 text-gold px-2 py-1 rounded border border-gold/40">
+        <i class="fa-solid fa-key"></i> تجربة العشاء
+      </button>
+      <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-white/10 text-gold">
+        <i class="fa-solid fa-moon text-lg" id="theme-icon"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content View Container -->
+  <main class="flex-1 max-w-4xl w-full mx-auto p-4 custom-scrollbar">
+
+    <!-- Tab 1: المصحف (Default View) -->
+    <section id="tab-quran" class="tab-view space-y-4">
+      <!-- Search & Controls -->
+      <div class="bg-white dark:bg-navy p-4 rounded-xl shadow-md border border-gold/20 space-y-3">
+        <div class="relative">
+          <input type="text" id="quran-search" oninput="filterSurahs()" placeholder="ابحث عن اسم السورة..." 
+                 class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-sand dark:bg-navy-dark focus:outline-none focus:border-gold">
+          <i class="fa-solid fa-search absolute left-3 top-3 text-gold"></i>
+        </div>
+        
+        <!-- Reciter Selection -->
+        <div class="flex items-center gap-2 text-sm">
+          <i class="fa-solid fa-headphones text-gold"></i>
+          <label class="whitespace-nowrap">القارئ:</label>
+          <select id="reciter-select" class="w-full p-2 rounded border border-gray-200 dark:border-gray-700 bg-sand dark:bg-navy-dark text-xs font-bold">
+            <option value="ar.alafasy">مشاري العفاسي</option>
+            <option value="ar.husary">محمود خليل الحصري</option>
+            <option value="ar.abdulbasitmurattal">عبد الباسط عبد الصمد</option>
+            <option value="ar.minshawi">محمد صديق المنشاوي</option>
+            <option value="ar.mahermuaiqly">ماهر المعيقلي</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Surah Cards Index -->
+      <div id="surah-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div class="text-center py-8 text-gray-500 col-span-full">جاري تحميل السور الشريفة...</div>
+      </div>
+    </section>
+
+    <!-- Tab 2: المسابقات (Prayer-Gated Competition & Leagues) -->
+    <section id="tab-competitions" class="tab-view hidden space-y-4">
+      
+      <!-- Locked Screen (Pre-Isha) -->
+      <div id="isha-locked-view" class="bg-white dark:bg-navy p-8 rounded-2xl shadow-xl text-center border-2 border-gold/30 space-y-4">
+        <div class="w-20 h-20 bg
+                    <div class="w-20 h-20 bg-olive/10 text-olive dark:text-gold rounded-full flex items-center justify-center mx-auto text-3xl">
+          <i class="fa-solid fa-moon"></i>
+        </div>
+        <h2 class="text-2xl font-bold font-quran text-gold">المسابقات مغلقة حالياً</h2>
+        <p class="text-sm opacity-80 max-w-md mx-auto">
+          تنطلق المسابقات اليومية والتحديات بين المتنافسين بعد صلاة العشاء لتنظيم الوقت والاستفادة من اليوم.
+        </p>
+        <div class="p-4 bg-sand dark:bg-navy-dark rounded-xl border border-gold/20 inline-block">
+          <span class="text-xs text-gray-500 block">الوقت المتبقي حتى أذان العشاء:</span>
+          <span id="isha-countdown" class="text-2xl font-bold text-gold tracking-widest font-mono">--:--:--</span>
+        </div>
+        <blockquote class="italic text-xs opacity-75 border-r-2 border-gold pr-3 text-right">
+          "وَأَقِمِ الصَّلَاةَ طَرَفَيِ النَّهَارِ وَزُلَفًا مِّنَ اللَّيْلِ"
+        </blockquote>
+      </div>
+
+      <!-- Unlocked Competition & Multi-League Dashboard -->
+      <div id="isha-unlocked-view" class="hidden space-y-6">
+        
+        <!-- League Creation & Participation System -->
+        <div class="bg-white dark:bg-navy p-5 rounded-2xl shadow-md border border-gold/30 space-y-4">
+          <div class="flex justify-between items-center border-b border-gold/20 pb-3">
             <div>
-                <h1 class="text-xl font-bold text-gold">وِرْد</h1>
-                <p class="text-xs text-gray-400" id="user-status">زائر</p>
+              <h3 class="text-lg font-bold text-gold flex items-center gap-2">
+                <i class="fa-solid fa-trophy"></i> الدوريات والبطولات
+              </h3>
+              <p class="text-xs text-gray-500">يمكنك إنشاء دوري خاص بك والمشاركة في دوريات متعددة بنفس الوقت</p>
             </div>
-        </div>
-        <div class="flex items-center gap-4">
-            <button onclick="toggleTheme()" class="text-gold hover:text-gold-light transition">
-                <i class="fas fa-moon text-xl" id="theme-icon"></i>
+            <button onclick="openCreateLeagueModal()" class="bg-gold hover:bg-gold-light text-navy font-bold text-xs px-3 py-2 rounded-lg shadow transition">
+              <i class="fa-solid fa-plus"></i> إنشاء دوري جديد
             </button>
-            <div class="flex items-center gap-1 bg-olive-dark px-3 py-1 rounded-full border border-gold/30">
-                <i class="fas fa-star text-gold text-xs"></i>
-                <span class="text-sm font-bold" id="user-level">المستوى 1</span>
+          </div>
+
+          <!-- User's Active Leagues List -->
+          <div>
+            <h4 class="text-xs font-bold text-gray-400 mb-2">الدوريات التي تشارك فيها / تديرها:</h4>
+            <div id="my-leagues-list" class="space-y-2">
+              <!-- Dynamically Populated -->
             </div>
+          </div>
+
+          <!-- All Available Leagues to Join -->
+          <div>
+            <h4 class="text-xs font-bold text-gray-400 mb-2">الدوريات المتاحة للانضمام:</h4>
+            <div id="available-leagues-list" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <!-- Dynamically Populated -->
+            </div>
+          </div>
         </div>
-    </header>
 
-    <!-- Main Content Area -->
-    <main class="pt-20 px-4 max-w-lg mx-auto" id="app-main">
+        <!-- Quick 1vs1 Matches -->
+        <div class="bg-white dark:bg-navy p-5 rounded-2xl shadow-md border border-gold/30 space-y-3">
+          <h3 class="text-lg font-bold text-gold flex items-center gap-2">
+            <i class="fa-solid fa-gamepad"></i> التحدي السريع (1 ضد 1)
+          </h3>
+          <div class="flex gap-2">
+            <input type="text" id="room-code-input" placeholder="أدخل رمز الغرفة..." class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-700 bg-sand dark:bg-navy-dark">
+            <button onclick="joinMatchRoom()" class="bg-olive hover:bg-olive-light text-white font-bold text-xs px-4 py-2 rounded-lg">انضمام</button>
+            <button onclick="createMatchRoom()" class="bg-gold hover:bg-gold-light text-navy font-bold text-xs px-4 py-2 rounded-lg">إنشاء غرفة</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 3: الإعدادات والتحكم -->
+    <section id="tab-settings" class="tab-view hidden space-y-4">
+      <div class="bg-white dark:bg-navy p-5 rounded-2xl shadow-md border border-gold/30 space-y-4">
+        <h3 class="text-lg font-bold text-gold flex items-center gap-2">
+          <i class="fa-solid fa-user-gear"></i> إعدادات المستخدم والتحكم
+        </h3>
         
-        <!-- View 1: Moshaf (Default) -->
-        <section id="view-moshaf" class="fade-in block">
-            <div class="mb-4">
-                <div class="relative">
-                    <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
-                    <input type="text" id="search-surah" placeholder="ابحث عن سورة..." class="w-full bg-olive-dark border border-gold/20 rounded-xl py-2 pr-10 pl-4 focus:outline-none focus:border-gold text-white transition">
-                </div>
+        <div class="space-y-3 text-sm">
+          <div>
+            <label class="block text-xs font-bold mb-1">اسم المستخدم:</label>
+            <input type="text" id="username-input" value="متنافس_وِرْد" class="w-full p-2 rounded border border-gray-300 dark:border-gray-700 bg-sand dark:bg-navy-dark">
+          </div>
+
+          <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
+            <h4 class="font-bold text-xs text-gold mb-2">وضع الحَكَم (Judge Mode):</h4>
+            <div class="flex gap-2">
+              <input type="password" id="judge-code" placeholder="أدخل رمز الحكم (JUDGE2026)" class="flex-1 p-2 text-xs rounded border border-gray-300 dark:border-gray-700 bg-sand dark:bg-navy-dark">
+              <button onclick="authJudge()" class="bg-navy text-white px-3 py-1 rounded text-xs">تفعيل</button>
             </div>
-            
-            <div class="mb-4">
-                <label class="text-sm text-gold mb-1 block">القارئ</label>
-                <select id="reciter-select" class="w-full bg-olive-dark border border-gold/20 rounded-xl py-2 px-3 focus:outline-none focus:border-gold text-white appearance-none">
-                    <option value="ar.alafasy">مشاري العفاسي</option>
-                    <option value="ar.abdulbasitmurattal">عبدالباسط عبدالصمد (مرتل)</option>
-                    <option value="ar.minshawi">محمد صديق المنشاوي</option>
-                    <option value="ar.husary">محمود خليل الحصري</option>
-                </select>
+          </div>
+
+          <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
+            <h4 class="font-bold text-xs text-gold mb-2">لوحة الإدارة (Admin Panel):</h4>
+            <div class="flex gap-2">
+              <input type="password" id="admin-code" placeholder="رمز الأدمن (admin123)" class="flex-1 p-2 text-xs rounded border border-gray-300 dark:border-gray-700 bg-sand dark:bg-navy-dark">
+              <button onclick="authAdmin()" class="bg-olive text-white px-3 py-1 rounded text-xs">دخول</button>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-            <div id="surah-list" class="space-y-3 pb-4">
-                <!-- Surah cards injected via JS -->
-            </div>
-        </section>
+  <!-- Create League Modal -->
+  <div id="create-league-modal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-navy p-6 rounded-2xl max-w-md w-full border border-gold space-y-4">
+      <h3 class="text-lg font-bold text-gold">إنشاء دوري جديد</h3>
+      <div class="space-y-3 text-sm">
+        <div>
+          <label class="block text-xs mb-1">اسم الدوري:</label>
+          <input type="text" id="league-name-input" placeholder="مثال: دوري حفاظ القرآن" class="w-full p-2 rounded border border-gray-300 dark:border-gray-700 bg-sand dark:bg-navy-dark">
+        </div>
+        <div>
+          <label class="block text-xs mb-1">الحد الأقصى للمشاركين:</label>
+          <select id="league-max-players" class="w-full p-2 rounded border border-gray-300 dark:border-gray-700 bg-sand dark:bg-navy-dark">
+            <option value="4">4 لاعبين</option>
+            <option value="8" selected>8 لاعبين</option>
+            <option value="16">16 لاعب</option>
+            <option value="32">32 لاعب</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeCreateLeagueModal()" class="px-4 py-2 text-xs rounded bg-gray-200 dark:bg-gray-700">إلغاء</button>
+        <button onclick="submitCreateLeague()" class="px-4 py-2 text-xs rounded bg-gold text-navy font-bold">إنشاء الدوري</button>
+      </div>
+    </div>
+  </div>
 
-        <!-- View 2: Competitions -->
-        <section id="view-competitions" class="fade-in hidden relative">
-            <!-- Lock Overlay -->
-            <div id="competition-lock" class="locked-overlay absolute inset-0 flex flex-col items-center justify-center rounded-2xl p-6 text-center mt-10 h-[80vh]">
-                <div class="w-20 h-20 bg-olive-light rounded-full flex items-center justify-center mb-4 border-2 border-gold">
-                    <i class="fas fa-lock text-3xl text-gold"></i>
-                </div>
-                <h2 class="text-2xl font-bold text-gold mb-2">المسابقات مقفلة</h2>
-                <p class="text-sm text-gray-300 mb-6">يتم فتح المسابقات بعد أداء صلاة العشاء أو إكمال وِرْد اليوم.</p>
-                
-                <div class="glass p-4 rounded-xl w-full mb-6">
-                    <p class="text-xs text-gray-400 mb-1">متبقي على أذان العشاء (تقريبي)</p>
-                    <div id="isha-countdown" class="text-3xl font-bold text-white font-mono">--:--:--</div>
-                </div>
+  <!-- Bottom Navigation Bar -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-olive text-white border-t-2 border-gold shadow-2xl z-40">
+    <div class="max-w-md mx-auto flex justify-around py-2">
+      <button onclick="switchTab('quran')" id="nav-quran" class="nav-btn active flex flex-col items-center gap-1 text-gold">
+        <i class="fa-solid fa-book-quran text-lg"></i>
+        <span class="text-[10px] font-bold">المصحف</span>
+      </button>
+      <button onclick="switchTab('competitions')" id="nav-competitions" class="nav-btn flex flex-col items-center gap-1 text-white/70 hover:text-gold">
+        <i class="fa-solid fa-trophy text-lg"></i>
+        <span class="text-[10px] font-bold">المسابقات</span>
+      </button>
+      <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn flex flex-col items-center gap-1 text-white/70 hover:text-gold">
+        <i class="fa-solid fa-gear text-lg"></i>
+        <span class="text-[10px] font-bold">الإعدادات</span>
+      </button>
+    </div>
+  </nav>
 
-                <div class="glass p-4 rounded-xl w-full text-right mb-6 border-r-4 border-gold">
-                    <p class="text-sm font-bold text-gold mb-2"><i class="fas fa-lightbulb"></i> خاطرة اليوم</p>
-                    <p class="text-sm text-gray-300">"وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا" - تأنَّ في قراءتك وتدبر معانيها.</p>
-                </div>
-                
-                <button onclick="unlockByWird()" class="w-full bg-gold text-olive-dark font-bold py-3 rounded-xl hover:bg-gold-light transition shadow-lg shadow-gold/20">
-                    أكملت وِرْد اليوم (فتح يدوي)
-                </button>
-            </div>
+  <!-- Audio Player Floating Bar -->
+  <div id="audio-player" class="fixed bottom-14 left-0 right-0 bg-navy text-white border-t border-gold p-2 hidden z-30 flex items-center justify-between px-4">
+    <div class="flex items-center gap-2">
+      <i class="fa-solid fa-volume-high text-gold"></i>
+      <span id="audio-title" class="text-xs truncate max-w-[150px]">تلاوة...</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="toggleAudio()"><i id="play-icon" class="fa-solid fa-play text-gold"></i></button>
+      <button onclick="stopAudio()"><i class="fa-solid fa-square text-red-400"></i></button>
+    </div>
+  </div>
 
-            <!-- Unlocked Content -->
-            <div id="competition-content" class="hidden space-y-4">
-                <div class="glass p-5 rounded-2xl">
-                    <h3 class="text-lg font-bold text-gold mb-4"><i class="fas fa-trophy"></i> لوحة الصدارة</h3>
-                    <div class="space-y-3" id="leaderboard">
-                        <!-- Leaderboard items -->
-                    </div>
-                </div>
+  <!-- JavaScript Application Logic -->
+  <script>
+    let surahsData = [];
+    let isIshaBypassed = false;
+    let currentAudio = null;
+    let currentUser = { id: 'user_' + Math.floor(Math.random()*1000), name: 'متنافس_وِرْد' };
 
-                <div class="glass p-5 rounded-2xl">
-                    <h3 class="text-lg font-bold text-gold mb-4"><i class="fas fa-gamepad"></i> تحدي الطباعة 1 ضد 1</h3>
-                    <p class="text-sm text-gray-400 mb-4">أنشئ غرفة وشارك الكود مع صديقك لتحدي سرعة الطباعة.</p>
-                    <div class="flex gap-2">
-                        <button onclick="createRoom()" class="flex-1 bg-olive-light border border-gold/30 py-2 rounded-lg text-sm hover:bg-olive transition">إنشاء غرفة</button>
-                        <button onclick="promptJoinRoom()" class="flex-1 bg-olive-dark border border-gold/30 py-2 rounded-lg text-sm hover:bg-olive transition">انضمام برمز</button>
-                    </div>
-                </div>
+    let leagues = [
+      {
+        id: 'league_1',
+        name: 'دوري الفرقان العام',
+        creatorId: 'admin',
+        creatorName: 'المشرف العام',
+        maxPlayers: 16,
+        participants: [
+          { id: 'user_123', name: 'أحمد', status: 'approved' },
+          { id: 'user_456', name: 'عمر', status: 'approved' }
+        ],
+        pendingRequests: [
+          { id: 'user_789', name: 'خالد' }
+        ]
+      }
+    ];
 
-                <div class="glass p-5 rounded-2xl">
-                    <h3 class="text-lg font-bold text-gold mb-4"><i class="fas fa-sitemap"></i> الدوريات</h3>
-                    <div class="flex justify-between items-center bg-olive-dark p-3 rounded-lg mb-2 border border-gold/10">
-                        <div>
-                            <p class="font-bold text-sm">دوري الحفاظ - الأسبوع الأول</p>
-                            <p class="text-xs text-gray-400">الحالة: بانتظار موافقة الإدارة</p>
-                        </div>
-                        <button class="bg-gray-600 text-xs px-3 py-1 rounded opacity-50 cursor-not-allowed">مغلق</button>
-                    </div>
-                    <div class="flex justify-between items-center bg-olive-dark p-3 rounded-lg border border-gold/10">
-                        <div>
-                            <p class="font-bold text-sm">دوري التفسير</p>
-                            <p class="text-xs text-green-400">مفتوح للتسجيل</p>
-                        </div>
-                        <button onclick="alert('تم إرسال طلب الانضمام للمشرف')" class="bg-gold text-olive-dark text-xs px-3 py-1 rounded font-bold">انضمام</button>
-                    </div>
-                </div>
-            </div>
-        </section>
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchSurahs();
+      checkIshaPrayerTime();
+      renderLeagues();
+    });
 
-        <!-- View 3: Settings -->
-        <section id="view-settings" class="fade-in hidden space-y-4">
-            <div class="glass p-5 rounded-2xl flex items-center gap-4">
-                <div class="w-16 h-16 rounded-full bg-olive-light flex items-center justify-center text-2xl text-gold border-2 border-gold">
-                    <i class="fas fa-user"></i>
-                </div>
+    async function fetchSurahs() {
+      try {
+        const res = await fetch('https://api.alquran.cloud/v1/surah');
+        const data = await res.json();
+        surahsData = data.data;
+        renderSurahs(surahsData);
+      } catch (e) {
+        document.getElementById('surah-list').innerHTML = `<div class="text-center text-red-500 col-span-full">عذراً، تعذر جلب قائمة السور. يرجى التحقق من الاتصال.</div>`;
+      }
+    }
+
+    function renderSurahs(list) {
+      const container = document.getElementById('surah-list');
+      container.innerHTML = list.map(s => `
+        <div class="bg-white dark:bg-navy p-4 rounded-xl shadow border border-gold/20 flex justify-between items-center">
+          <div>
+            <span class="text-xs text-gold font-bold">سورة ${s.number}</span>
+            <h4 class="font-bold font-quran text-lg">${s.name}</h4>
+            <p class="text-[10px] text-gray-400">${s.revelationType === 'Meccan' ? 'مكية' : 'مدنية'} - آياتها ${s.numberOfAyahs}</p>
+          </div>
+          <button onclick="playSurahAudio(${s.number}, '${s.name}')" class="w-8 h-8 rounded-full bg-gold/20 text-gold hover:bg-gold hover:text-navy flex items-center justify-center transition">
+            <i class="fa-solid fa-play text-xs"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function filterSurahs() {
+      const query = document.getElementById('quran-search').value.trim();
+      const filtered = surahsData.filter(s => s.name.includes(query) || s.number.toString() === query);
+      renderSurahs(filtered);
+    }
+
+    function playSurahAudio(surahNum, surahName) {
+      const reciter = document.getElementById('reciter-select').value;
+      const audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/${reciter}/${surahNum}.mp3`;
+      
+      if(currentAudio) currentAudio.pause();
+      
+      currentAudio = new Audio(audioUrl);
+      document.getElementById('audio-title').innerText = `${surahName} - ${reciter}`;
+      document.getElementById('audio-player').classList.remove('hidden');
+      
+      currentAudio.play();
+      document.getElementById('play-icon').className = 'fa-solid fa-pause text-gold';
+
+      currentAudio.onended = () => {
+        document.getElementById('play-icon').className = 'fa-solid fa-play text-gold';
+      };
+    }
+
+    function toggleAudio() {
+      if(!currentAudio) return;
+      if(currentAudio.paused) {
+        currentAudio.play();
+        document.getElementById('play-icon').className = 'fa-solid fa-pause text-gold';
+      } else {
+        currentAudio.pause();
+        document.getElementById('play-icon').className = 'fa-solid fa-play text-gold';
+      }
+    }
+
+    function stopAudio() {
+      if(currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      document.getElementById('audio-player').classList.add('hidden');
+    }
+
+    function checkIshaPrayerTime() {
+      if(isIshaBypassed) {
+        document.getElementById('isha-locked-view').classList.add('hidden');
+        document.getElementById('isha-unlocked-view').classList.remove('hidden');
+        return;
+      }
+
+      const now = new Date();
+      const isPostIsha = now.getHours() >= 20 || now.getHours() < 4;
+
+      if(isPostIsha) {
+        document.getElementById('isha-locked-view').classList.add('hidden');
+        document.getElementById('isha-unlocked-view').classList.remove('hidden');
+      } else {
+        document.getElementById('isha-locked-view').classList.remove('hidden');
+        document.getElementById('isha-unlocked-view').classList.add('hidden');
+        document.getElementById('isha-countdown').innerText = "01:45:12";
+      }
+    }
+
+    function toggleIshaLock() {
+      isIshaBypassed = !isIshaBypassed;
+      checkIshaPrayerTime();
+    }
+
+    function renderLeagues() {
+      const myContainer = document.getElementById('my-leagues-list');
+      const availableContainer = document.getElementById('available-leagues-list');
+
+      const myLeagues = leagues.filter(l => 
+        l.creatorId === currentUser.id || 
+        l.participants.some(p => p.id === currentUser.id) ||
+        l.pendingRequests.some(p => p.id === currentUser.id)
+      );
+
+      const availableLeagues = leagues.filter(l => !myLeagues.includes(l));
+
+      if(myLeagues.length === 0) {
+        myContainer.innerHTML = `<div class="text-xs text-gray-400 py-2">لم تنضم أو تنشئ أي دوري بعد.</div>`;
+      } else {
+        myContainer.innerHTML = myLeagues.map(l => {
+          const isCreator = l.creatorId === currentUser.id;
+          const isParticipant = l.participants.some(p => p.id === currentUser.id && p.status === 'approved');
+
+          return `
+            <div class="bg-sand dark:bg-navy-dark p-3 rounded-lg border border-gold/20 space-y-2">
+              <div class="flex justify-between items-center">
                 <div>
-                    <h3 class="text-lg font-bold text-white">زائر</h3>
-                    <p class="text-sm text-gray-400">سجل دخولك لحفظ تقدمك</p>
-                    <button class="mt-2 text-xs bg-gold text-olive-dark px-3 py-1 rounded-full font-bold">تسجيل الدخول</button>
+                  <span class="font-bold text-sm text-gold">${l.name}</span>
+                  <span class="text-[10px] bg-gold/10 text-gold px-2 py-0.5 rounded mr-2">
+                    ${isCreator ? 'المشرف' : (isParticipant ? 'مشارك' : 'قيد الانتظار')}
+                  </span>
                 </div>
-            </div>
+                <span class="text-xs text-gray-400">${l.participants.length}/${l.maxPlayers} لاعب</span>
+              </div>
 
-            <div class="glass p-5 rounded-2xl">
-                <h3 class="text-md font-bold text-gold mb-4"><i class="fas fa-user-shield"></i> أدوات المشرفين</h3>
-                <div class="space-y-3">
-                    <div>
-                        <label class="text-xs text-gray-400 block mb-1">كود الحكم (Referee)</label>
-                        <div class="flex gap-2">
-                            <input type="text" id="referee-code" placeholder="JUDGE..." class="flex-1 bg-olive-dark border border-gold/20 rounded-lg px-3 py-1 text-sm text-white focus:outline-none focus:border-gold">
-                            <button onclick="verifyReferee()" class="bg-olive-light px-4 rounded-lg text-sm border border-gold/30">تحقق</button>
-                        </div>
+              ${isCreator && l.pendingRequests.length > 0 ? `
+                <div class="bg-white dark:bg-navy p-2 rounded text-xs space-y-1">
+                  <span class="font-bold text-gold text-[10px]">طلبات الانضمام المعلقة:</span>
+                  ${l.pendingRequests.map(req => `
+                    <div class="flex justify-between items-center pt-1">
+                      <span>${req.name}</span>
+                      <div class="flex gap-1">
+                        <button onclick="approvePlayer('${l.id}', '${req.id}')" class="bg-green-600 text-white px-2 py-0.5 rounded text-[10px]">قبول</button>
+                        <button onclick="rejectPlayer('${l.id}', '${req.id}')" class="bg-red-600 text-white px-2 py-0.5 rounded text-[10px]">رفض</button>
+                      </div>
                     </div>
-                    <div>
-                        <label class="text-xs text-gray-400 block mb-1">رمز الإدارة (Admin)</label>
-                        <div class="flex gap-2">
-                            <input type="password" id="admin-code" placeholder="***" class="flex-1 bg-olive-dark border border-gold/20 rounded-lg px-3 py-1 text-sm text-white focus:outline-none focus:border-gold">
-                            <button onclick="verifyAdmin()" class="bg-olive-light px-4 rounded-lg text-sm border border-gold/30">دخول</button>
-                        </div>
-                    </div>
+                  `).join('')}
                 </div>
+              ` : ''}
             </div>
+          `;
+        }).join('');
+      }
 
-            <div class="glass p-5 rounded-2xl">
-                <h3 class="text-md font-bold text-gold mb-4"><i class="fas fa-users"></i> الأصدقاء</h3>
-                <div class="flex gap-2 mb-3">
-                    <input type="text" placeholder="ابحث عن مستخدم..." class="flex-1 bg-olive-dark border border-gold/20 rounded-lg px-3 py-1 text-sm text-white focus:outline-none">
-                    <button class="bg-gold text-olive-dark px-3 rounded-lg text-sm"><i class="fas fa-search"></i></button>
-                </div>
-                <p class="text-xs text-gray-500 text-center">لا يوجد أصدقاء بعد.</p>
-            </div>
-        </section>
-    </main>
-
-    <!-- Bottom Navigation -->
-    <nav class="fixed bottom-0 w-full z-30 glass flex justify-around items-center pt-2 pb-2 px-2 border-t border-gray-700">
-        <button onclick="switchTab('moshaf')" id="tab-moshaf" class="flex flex-col items-center p-2 w-1/3 text-gold tab-active transition">
-            <i class="fas fa-book-open text-xl mb-1"></i>
-            <span class="text-xs font-bold">المصحف</span>
-        </button>
-        <button onclick="switchTab('competitions')" id="tab-competitions" class="flex flex-col items-center p-2 w-1/3 text-gray-400 hover:text-gold transition">
-            <i class="fas fa-trophy text-xl mb-1"></i>
-            <span class="text-xs">المسابقات</span>
-        </button>
-        <button onclick="switchTab('settings')" id="tab-settings" class="flex flex-col items-center p-2 w-1/3 text-gray-400 hover:text-gold transition">
-            <i class="fas fa-cog text-xl mb-1"></i>
-            <span class="text-xs">الإعدادات</span>
-        </button>
-    </nav>
-
-    <!-- Quran Modal Viewer -->
-    <div id="quran-modal" class="fixed inset-0 z-50 bg-olive-dark hidden flex-col">
-        <header class="glass px-4 py-3 flex justify-between items-center shadow-lg">
-            <button onclick="closeQuranModal()" class="text-gold text-xl"><i class="fas fa-times"></i></button>
-            <div class="text-center">
-                <h2 id="modal-surah-title" class="text-xl font-bold text-gold">اسم السورة</h2>
-                <p id="modal-surah-subtitle" class="text-xs text-gray-400">معلومات السورة</p>
-            </div>
-            <button id="modal-play-btn" onclick="toggleAudio()" class="text-gold text-xl w-8 h-8 rounded-full bg-olive-light border border-gold/30 flex items-center justify-center">
-                <i class="fas fa-play"></i>
-            </button>
-        </header>
-        
-        <div class="flex-1 overflow-y-auto p-6 pb-24 hide-scrollbar">
-            <div class="text-center mb-6">
-                <p class="text-gold text-lg">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
-            </div>
-            <div id="quran-text-container" class="font-quran text-white text-justify dir-rtl leading-loose">
-                <!-- Verses injected here -->
-                <div class="flex justify-center mt-10">
-                    <i class="fas fa-spinner fa-spin text-3xl text-gold"></i>
-                </div>
-            </div>
+      availableContainer.innerHTML = availableLeagues.map(l => `
+        <div class="bg-sand dark:bg-navy-dark p-3 rounded-lg border border-gray-200 dark:border-gray-700 flex justify-between items-center">
+          <div>
+            <h5 class="font-bold text-xs">${l.name}</h5>
+            <p class="text-[10px] text-gray-400">المنشئ: ${l.creatorName}</p>
+          </div>
+          <button onclick="requestJoinLeague('${l.id}')" class="bg-gold text-navy font-bold text-[10px] px-3 py-1 rounded">
+            طلب انضمام
+          </button>
         </div>
+      `).join('');
+    }
 
-        <div class="fixed bottom-0 w-full glass p-4">
-            <button onclick="markWirdComplete()" class="w-full bg-gold text-olive-dark font-bold py-3 rounded-xl shadow-lg">
-                <i class="fas fa-check-circle ml-2"></i> أنهيت قراءة الورد
-            </button>
-        </div>
-        
-        <!-- Hidden Audio Element -->
-        <audio id="quran-audio" onended="onAudioEnded()"></audio>
-    </div>
+    function openCreateLeagueModal() {
+      document.getElementById('create-league-modal').classList.remove('hidden');
+    }
 
-    <!-- Typing Game Modal -->
-    <div id="typing-modal" class="fixed inset-0 z-50 bg-olive-dark hidden flex-col p-4">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-bold text-gold">تحدي الطباعة</h2>
-            <button onclick="closeTypingGame()" class="text-white text-xl"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="glass p-6 rounded-2xl flex-1 flex flex-col">
-            <p class="text-sm text-gray-400 mb-2">اكتب النص التالي:</p>
-            <div id="target-text" class="bg-olive-dark p-4 rounded-xl text-lg font-quran text-center text-gold mb-4 select-none">
-                إِنَّ مَعَ الْعُسْرِ يُسْرًا
-            </div>
-            <textarea id="typing-input" class="w-full bg-olive-dark border border-gold/30 rounded-xl p-4 text-white font-quran text-center focus:outline-none focus:border-gold resize-none h-32 mb-4" placeholder="اكتب هنا..." oninput="checkTyping(event)"></textarea>
-            
-            <div class="flex justify-between text-sm mt-2">
-                <span class="text-gray-400">السرعة: <span id="wpm" class="text-gold font-bold">0</span> WPM</span>
-                <span class="text-gray-400">الدقة: <span id="accuracy" class="text-gold font-bold">100%</span></span>
-            </div>
-            
-            <div class="mt-auto">
-                <p class="text-xs text-center text-gray-500">تحذير: الخروج من الشاشة يعتبر غشاً.</p>
-            </div>
-        </div>
-    </div>
+    function closeCreateLeagueModal() {
+      document.getElementById('create-league-modal').classList.add('hidden');
+    }
 
-    <script>
-        // --- 1. Robust Surah Data (Fallback ensures no blank screen) ---
-        const rawSurahData = `1|الفاتحة|Al-Fatihah|7|مكية
-2|البقرة|Al-Baqarah|286|مدنية
-3|آل عمران|Ali 'Imran|200|مدنية
-4|النساء|An-Nisa|176|مدنية
-5|المائدة|Al-Ma'idah|120|مدنية
-6|الأنعام|Al-An'am|165|مكية
-7|الأعراف|Al-A'raf|206|مكية
-8|الأنفال|Al-Anfal|75|مدنية
-9|التوبة|At-Tawbah|129|مدنية
-10|يونس|Yunus|109|مكية
-11|هود|Hud|123|مكية
-12|يوسف|Yusuf|111|مكية
-13|الرعد|Ar-Ra'd|43|مدنية
-14|إبراهيم|Ibrahim|52|مكية
-15|الحجر|Al-Hijr|99|مكية
-16|النحل|An-Nahl|128|مكية
-17|الإسراء|Al-Isra|111|مكية
-18|الكهف|Al-Kahf|110|مكية
-19|مريم|Maryam|98|مكية
-20|طه|Taha|135|مكية
-21|الأنبياء|Al-Anbya|112|مكية
-22|الحج|Al-Hajj|78|مدنية
-23|المؤمنون|Al-Mu'minun|118|مكية
-24|النور|An-Nur|64|مدنية
-25|الفرقان|Al-Furqan|77|مكية
-26|الشعراء|Ash-Shu'ara|227|مكية
-27|النمل|An-Naml|93|مكية
-28|القصص|Al-Qasas|88|مكية
-29|العنكبوت|Al-'Ankabut|69|مكية
-30|الروم|Ar-Rum|60|مكية
-31|لقمان|Luqman|34|مكية
-32|السجدة|As-Sajdah|30|مكية
-33|الأحزاب|Al-Ahzab|73|مدنية
-34|سبأ|Saba|54|مكية
-35|فاطر|Fatir|45|مكية
-36|يس|Ya-Sin|83|مكية
-37|الصافات|As-Saffat|182|مكية
-38|ص|Sad|88|مكية
-39|الزمر|Az-Zumar|75|مكية
-40|غافر|Ghafir|85|مكية
-41|فصلت|Fussilat|54|مكية
-42|الشورى|Ash-Shuraa|53|مكية
-43|الزخرف|Az-Zukhruf|89|مكية
-44|الدخان|Ad-Dukhan|59|مكية
-45|الجاثية|Al-Jathiyah|37|مكية
-46|الأحقاف|Al-Ahqaf|35|مكية
-47|محمد|Muhammad|38|مدنية
-48|الفتح|Al-Fath|29|مدنية
-49|الحجرات|Al-Hujurat|18|مدنية
-50|ق|Qaf|45|مكية
-51|الذاريات|Adh-Dhariyat|60|مكية
-52|الطور|At-Tur|49|مكية
-53|النجم|An-Najm|62|مكية
-54|القمر|Al-Qamar|55|مكية
-55|الرحمن|Ar-Rahman|78|مدنية
-56|الواقعة|Al-Waqi'ah|96|مكية
-57|الحديد|Al-Hadid|29|مدنية
-58|المجادلة|Al-Mujadila|22|مدنية
-59|الحشر|Al-Hashr|24|مدنية
-60|الممتحنة|Al-Mumtahanah|13|مدنية
-61|الصف|As-Saf|14|مدنية
-62|الجمعة|Al-Jumu'ah|11|مدنية
-63|المنافقون|Al-Munafiqun|11|مدنية
-64|التغابن|At-Taghabun|18|مدنية
-65|الطلاق|At-Talaq|12|مدنية
-66|التحريم|At-Tahrim|12|مدنية
-67|الملك|Al-Mulk|30|مكية
-68|القلم|Al-Qalam|52|مكية
-69|الحاقة|Al-Haqqah|52|مكية
-70|المعارج|Al-Ma'arij|44|مكية
-71|نوح|Nuh|28|مكية
-72|الجن|Al-Jinn|28|مكية
-73|المزمل|Al-Muzzammil|20|مكية
-74|المدثر|Al-Muddaththir|56|مكية
-75|القيامة|Al-Qiyamah|40|مكية
-76|الإنسان|Al-Insan|31|مدنية
-77|المرسلات|Al-Mursalat|50|مكية
-78|النبأ|An-Naba|40|مكية
-79|النازعات|An-Nazi'at|46|مكية
-80|عبس|'Abasa|42|مكية
-81|التكوير|At-Takwir|29|مكية
-82|الانفطار|Al-Infitar|19|مكية
-83|المطففين|Al-Mutaffifin|36|مكية
-84|الانشقاق|Al-Inshiqaq|25|مكية
-85|البروج|Al-Buruj|22|مكية
-86|الطارق|At-Tariq|17|مكية
-87|الأعلى|Al-A'la|19|مكية
-88|الغاشية|Al-Ghashiyah|26|مكية
-89|الفجر|Al-Fajr|30|مكية
-90|البلد|Al-Balad|20|مكية
-91|الشمس|Ash-Shams|15|مكية
-92|الليل|Al-Layl|21|مكية
-93|الضحى|Ad-Duhaa|11|مكية
-94|الشرح|Ash-Sharh|8|مكية
-95|التين|At-Tin|8|مكية
-96|العلق|Al-'Alaq|19|مكية
-97|القدر|Al-Qadr|5|مكية
-98|البينة|Al-Bayyinah|8|مدنية
-99|الزلزلة|Az-Zalzalah|8|مدنية
-100|العاديات|Al-'Adiyat|11|مكية
-101|القارعة|Al-Qari'ah|11|مكية
-102|التكاثر|At-Takathur|8|مكية
-103|العصر|Al-'Asr|3|مكية
-104|الهمزة|Al-Humazah|9|مكية
-105|الفيل|Al-Fil|5|مكية
-106|قريش|Quraysh|4|مكية
-107|الماعون|Al-Ma'un|7|مكية
-108|الكوثر|Al-Kawthar|3|مكية
-109|الكافرون|Al-Kafirun|6|مكية
-110|النصر|An-Nasr|3|مدنية
-111|المسد|Al-Masad|5|مكية
-112|الإخلاص|Al-Ikhlas|4|مكية
-113|الفلق|Al-Falaq|5|مكية
-114|الناس|An-Nas|6|مكية`;
+    function submitCreateLeague() {
+      const name = document.getElementById('league-name-input').value.trim();
+      const max = parseInt(document.getElementById('league-max-players').value);
 
-        const surahs = rawSurahData.split('\n').map(line => {
-            const [number, name, englishName, ayahs, type] = line.split('|');
-            return { number: parseInt(number), name, englishName, ayahs: parseInt(ayahs), type };
-     
+      if(!name) return alert('يرجى إدخال اسم الدوري');
+
+      const newLeague = {
+        id: 'league_' + Date.now(),
+        name: name,
+        creatorId: currentUser.id,
+        creatorName: currentUser.name,
+        maxPlayers: max,
+        participants: [{ id: currentUser.id, name: currentUser.name, status: 'approved' }],
+        pendingRequests: []
+      };
+
+      leagues.push(newLeague);
+      closeCreateLeagueModal();
+      renderLeagues();
+      alert('تم إنشاء الدوري بنجاح! بصفتك المشرف، يمكنك قبول ورفض طلبات الانضمام.');
+    }
+
+    function requestJoinLeague(leagueId) {
+      const league = leagues.find(l => l.id === leagueId);
+      if(league) {
+        league.pendingRequests.push({ id: currentUser.id, name: currentUser.name });
+        renderLeagues();
+        alert('تم إرسال طلب الانضمام إلى مشرف الدوري.');
+      }
+    }
+
+    function approvePlayer(leagueId, userId) {
+      const league = leagues.find(l => l.id === leagueId);
+      if(league) {
+        const reqIndex = league.pendingRequests.findIndex(r => r.id === userId);
+        if(reqIndex > -1) {
+          const user = league.pendingRequests.splice(reqIndex, 1)[0];
+          league.participants.push({ id: user.id, name: user.name, status: 'approved' });
+          renderLeagues();
+        }
+      }
+    }
+
+    function rejectPlayer(leagueId, userId) {
+      const league = leagues.find(l => l.id === leagueId);
+      if(league) {
+        league.pendingRequests = league.pendingRequests.filter(r => r.id !== userId);
+        renderLeagues();
+      }
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('text-gold'));
+
+      document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+      document.getElementById(`nav-${tabName}`).classList.add('text-gold');
+    }
+
+    function toggleDarkMode() {
+      document.documentElement.classList.toggle('dark');
+    }
+
+    function authJudge() {
+      const code = document.getElementById('judge-code').value;
+      if(code === 'JUDGE2026') alert('تم تفعيل وضع الحَكَم بنجاح!');
+      else alert('رمز الحَكَم غير صحيح');
+    }
+
+    function authAdmin() {
+      const code = document.getElementById('admin-code').value;
+      if(code === 'admin123') alert('تم الدخول لوحة الأدمن بنجاح!');
+      else alert('رمز الأدمن غير صحيح');
+    }
+  </script>
+</body>
+            </html>
+                
