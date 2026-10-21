@@ -5,12 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>وِرْد | Wird PWA</title>
   
-  <!-- Styling & Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
   <script>
     tailwind.config = {
@@ -18,7 +22,7 @@
       theme: {
         extend: {
           colors: {
-            olive: { DEFAULT: '#2C3E2E', dark: '#1e2b20', light: '#3d5440' },
+            olive: { DEFAULT: '#2C3E2E', dark: '#1e2b20' },
             navy: { DEFAULT: '#1A2238', dark: '#101625' },
             gold: { DEFAULT: '#D4AF37', light: '#e5c358' },
             sand: '#FDFBF7'
@@ -33,172 +37,166 @@
   </script>
   <style>
     body { font-family: 'Tajawal', sans-serif; }
-    .quran-text { font-family: 'Amiri', serif; }
-    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 4px; }
+    .quran-text { font-family: 'Amiri', serif; line-height: 2.2; }
   </style>
 </head>
 <body class="bg-sand text-navy dark:bg-navy-dark dark:text-sand min-h-screen flex flex-col pb-20 transition-colors duration-300">
 
-  <!-- Top Bar -->
+  <!-- Header -->
   <header class="sticky top-0 z-40 bg-olive text-white shadow-lg border-b-2 border-gold px-4 py-3 flex justify-between items-center">
     <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center border border-gold text-gold font-bold text-xl">
+      <div id="user-avatar-container" class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center border border-gold text-gold font-bold text-xl overflow-hidden">
         و
       </div>
       <div>
-        <h1 class="text-xl font-bold font-quran tracking-wide text-gold">وِرْد</h1>
-        <p class="text-xs text-sand/80" id="user-status">زائر | المستوى 1</p>
+        <h1 class="text-xl font-bold font-quran text-gold">وِرْد</h1>
+        <p class="text-xs text-sand/80" id="user-status-text">زائر غير مسجل</p>
       </div>
     </div>
     
     <div class="flex items-center gap-2">
-      <button id="bypass-btn" onclick="toggleIshaLock()" class="text-xs bg-gold/20 hover:bg-gold/40 text-gold px-2 py-1 rounded border border-gold/40">
-        <i class="fa-solid fa-key"></i> تجربة العشاء
+      <button onclick="toggleIshaLock()" class="text-xs bg-gold/20 hover:bg-gold text-gold hover:text-navy px-3 py-1.5 rounded-lg border border-gold font-bold transition">
+        <i class="fa-solid fa-key"></i> <span id="bypass-text">تجربة العشاء</span>
       </button>
       <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-white/10 text-gold">
-        <i class="fa-solid fa-moon text-lg" id="theme-icon"></i>
+        <i class="fa-solid fa-moon text-lg"></i>
       </button>
     </div>
   </header>
 
-  <!-- Main Content View Container -->
-  <main class="flex-1 max-w-4xl w-full mx-auto p-4 custom-scrollbar">
+  <!-- Main View -->
+  <main class="flex-1 max-w-4xl w-full mx-auto p-4">
 
-    <!-- Tab 1: المصحف (Default View) -->
+    <!-- Tab 1: المصحف الشريف -->
     <section id="tab-quran" class="tab-view space-y-4">
-      <!-- Search & Controls -->
-      <div class="bg-white dark:bg-navy p-4 rounded-xl shadow-md border border-gold/20 space-y-3">
+      <div class="bg-white dark:bg-navy p-4 rounded-xl shadow border border-gold/20 space-y-3">
         <div class="relative">
           <input type="text" id="quran-search" oninput="filterSurahs()" placeholder="ابحث عن اسم السورة..." 
                  class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-sand dark:bg-navy-dark focus:outline-none focus:border-gold">
           <i class="fa-solid fa-search absolute left-3 top-3 text-gold"></i>
         </div>
         
-        <!-- Reciter Selection -->
         <div class="flex items-center gap-2 text-sm">
           <i class="fa-solid fa-headphones text-gold"></i>
-          <label class="whitespace-nowrap">القارئ:</label>
+          <label class="whitespace-nowrap font-bold text-xs">القارئ للتلاوة:</label>
           <select id="reciter-select" class="w-full p-2 rounded border border-gray-200 dark:border-gray-700 bg-sand dark:bg-navy-dark text-xs font-bold">
             <option value="ar.alafasy">مشاري العفاسي</option>
             <option value="ar.husary">محمود خليل الحصري</option>
             <option value="ar.abdulbasitmurattal">عبد الباسط عبد الصمد</option>
             <option value="ar.minshawi">محمد صديق المنشاوي</option>
-            <option value="ar.mahermuaiqly">ماهر المعيقلي</option>
           </select>
         </div>
       </div>
 
-      <!-- Surah Cards Index -->
       <div id="surah-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-        <div class="text-center py-8 text-gray-500 col-span-full">جاري تحميل السور الشريفة...</div>
+        <div class="text-center py-8 text-gray-500 col-span-full">جاري جلب السور...</div>
       </div>
     </section>
 
-    <!-- Tab 2: المسابقات (Prayer-Gated Competition & Leagues) -->
+    <!-- Tab 2: المسابقات والدوريات والأصدقاء -->
     <section id="tab-competitions" class="tab-view hidden space-y-4">
       
-      <!-- Locked Screen (Pre-Isha) -->
+      <!-- Locked View -->
       <div id="isha-locked-view" class="bg-white dark:bg-navy p-8 rounded-2xl shadow-xl text-center border-2 border-gold/30 space-y-4">
-        <div class="w-20 h-20 bg
-                    <div class="w-20 h-20 bg-olive/10 text-olive dark:text-gold rounded-full flex items-center justify-center mx-auto text-3xl">
+        <div class="w-16 h-16 bg-olive/10 text-gold rounded-full flex items-center justify-center mx-auto text-2xl">
           <i class="fa-solid fa-moon"></i>
         </div>
         <h2 class="text-2xl font-bold font-quran text-gold">المسابقات مغلقة حالياً</h2>
-        <p class="text-sm opacity-80 max-w-md mx-auto">
-          تنطلق المسابقات اليومية والتحديات بين المتنافسين بعد صلاة العشاء لتنظيم الوقت والاستفادة من اليوم.
-        </p>
+        <p class="text-xs opacity-80 max-w-md mx-auto">تفتح التحديات والدوريات اليومية فور حان وقت صلاة العشاء.</p>
         <div class="p-4 bg-sand dark:bg-navy-dark rounded-xl border border-gold/20 inline-block">
-          <span class="text-xs text-gray-500 block">الوقت المتبقي حتى أذان العشاء:</span>
-          <span id="isha-countdown" class="text-2xl font-bold text-gold tracking-widest font-mono">--:--:--</span>
+          <span class="text-xs text-gray-400 block mb-1">المتبقي حتى العشاء:</span>
+          <span id="isha-countdown" class="text-3xl font-bold text-gold tracking-widest font-mono">00:00:00</span>
         </div>
-        <blockquote class="italic text-xs opacity-75 border-r-2 border-gold pr-3 text-right">
-          "وَأَقِمِ الصَّلَاةَ طَرَفَيِ النَّهَارِ وَزُلَفًا مِّنَ اللَّيْلِ"
-        </blockquote>
       </div>
 
-      <!-- Unlocked Competition & Multi-League Dashboard -->
+      <!-- Unlocked View -->
       <div id="isha-unlocked-view" class="hidden space-y-6">
         
-        <!-- League Creation & Participation System -->
-        <div class="bg-white dark:bg-navy p-5 rounded-2xl shadow-md border border-gold/30 space-y-4">
+        <!-- Leagues Section -->
+        <div class="bg-white dark:bg-navy p-5 rounded-2xl shadow border border-gold/30 space-y-4">
           <div class="flex justify-between items-center border-b border-gold/20 pb-3">
             <div>
-              <h3 class="text-lg font-bold text-gold flex items-center gap-2">
-                <i class="fa-solid fa-trophy"></i> الدوريات والبطولات
-              </h3>
-              <p class="text-xs text-gray-500">يمكنك إنشاء دوري خاص بك والمشاركة في دوريات متعددة بنفس الوقت</p>
+              <h3 class="text-lg font-bold text-gold flex items-center gap-2"><i class="fa-solid fa-trophy"></i> الدوريات والبطولات</h3>
+              <p class="text-xs text-gray-400">أنشئ دوريك الخاص أو شارك في دوريات الأعضاء</p>
             </div>
-            <button onclick="openCreateLeagueModal()" class="bg-gold hover:bg-gold-light text-navy font-bold text-xs px-3 py-2 rounded-lg shadow transition">
-              <i class="fa-solid fa-plus"></i> إنشاء دوري جديد
+            <button onclick="openModal('create-league-modal')" class="bg-gold hover:bg-gold-light text-navy font-bold text-xs px-3 py-2 rounded-lg shadow">
+              <i class="fa-solid fa-plus"></i> إنشاء دوري
             </button>
           </div>
 
-          <!-- User's Active Leagues List -->
           <div>
-            <h4 class="text-xs font-bold text-gray-400 mb-2">الدوريات التي تشارك فيها / تديرها:</h4>
-            <div id="my-leagues-list" class="space-y-2">
-              <!-- Dynamically Populated -->
-            </div>
+            <h4 class="text-xs font-bold text-gold mb-2">دورياتي:</h4>
+            <div id="my-leagues-list" class="space-y-2"></div>
           </div>
 
-          <!-- All Available Leagues to Join -->
           <div>
-            <h4 class="text-xs font-bold text-gray-400 mb-2">الدوريات المتاحة للانضمام:</h4>
-            <div id="available-leagues-list" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <!-- Dynamically Populated -->
-            </div>
-          </div>
-        </div>
-
-        <!-- Quick 1vs1 Matches -->
-        <div class="bg-white dark:bg-navy p-5 rounded-2xl shadow-md border border-gold/30 space-y-3">
-          <h3 class="text-lg font-bold text-gold flex items-center gap-2">
-            <i class="fa-solid fa-gamepad"></i> التحدي السريع (1 ضد 1)
-          </h3>
-          <div class="flex gap-2">
-            <input type="text" id="room-code-input" placeholder="أدخل رمز الغرفة..." class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-700 bg-sand dark:bg-navy-dark">
-            <button onclick="joinMatchRoom()" class="bg-olive hover:bg-olive-light text-white font-bold text-xs px-4 py-2 rounded-lg">انضمام</button>
-            <button onclick="createMatchRoom()" class="bg-gold hover:bg-gold-light text-navy font-bold text-xs px-4 py-2 rounded-lg">إنشاء غرفة</button>
+            <h4 class="text-xs font-bold text-gray-400 mb-2">الدوريات المتاحة:</h4>
+            <div id="available-leagues-list" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
           </div>
         </div>
 
       </div>
     </section>
 
-    <!-- Tab 3: الإعدادات والتحكم -->
+    <!-- Tab 3: الإعدادات وتسجيل الدخول بحساب جوجل -->
     <section id="tab-settings" class="tab-view hidden space-y-4">
-      <div class="bg-white dark:bg-navy p-5 rounded-2xl shadow-md border border-gold/30 space-y-4">
-        <h3 class="text-lg font-bold text-gold flex items-center gap-2">
-          <i class="fa-solid fa-user-gear"></i> إعدادات المستخدم والتحكم
-        </h3>
+      <div class="bg-white dark:bg-navy p-5 rounded-2xl shadow border border-gold/30 space-y-5">
+        <h3 class="text-lg font-bold text-gold"><i class="fa-solid fa-user-gear"></i> الحساب وإعدادات جوجل</h3>
         
-        <div class="space-y-3 text-sm">
-          <div>
-            <label class="block text-xs font-bold mb-1">اسم المستخدم:</label>
-            <input type="text" id="username-input" value="متنافس_وِرْد" class="w-full p-2 rounded border border-gray-300 dark:border-gray-700 bg-sand dark:bg-navy-dark">
+        <!-- Google Sign-In Card -->
+        <div id="auth-card" class="bg-sand dark:bg-navy-dark p-4 rounded-xl border border-gold/30 text-center space-y-3">
+          <div id="logged-out-view">
+            <p class="text-xs text-gray-500 mb-3">سجل دخولك بحساب جوجل لتتمكن من حفظ مستواك وإضافة أصدقائك بداخل البرنامج.</p>
+            <button onclick="loginWithGoogle()" class="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 text-navy dark:text-sand font-bold text-sm py-2.5 px-4 rounded-xl shadow flex items-center justify-center gap-3 transition">
+              <i class="fa-brands fa-google text-red-500 text-lg"></i> تسجيل الدخول بواسطة جوجل
+            </button>
           </div>
 
-          <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
-            <h4 class="font-bold text-xs text-gold mb-2">وضع الحَكَم (Judge Mode):</h4>
-            <div class="flex gap-2">
-              <input type="password" id="judge-code" placeholder="أدخل رمز الحكم (JUDGE2026)" class="flex-1 p-2 text-xs rounded border border-gray-300 dark:border-gray-700 bg-sand dark:bg-navy-dark">
-              <button onclick="authJudge()" class="bg-navy text-white px-3 py-1 rounded text-xs">تفعيل</button>
+          <div id="logged-in-view" class="hidden space-y-3">
+            <div class="flex items-center gap-3 justify-center">
+              <img id="profile-img" src="" alt="صورة المستخدم" class="w-12 h-12 rounded-full border-2 border-gold object-cover">
+              <div class="text-right">
+                <h4 id="profile-name" class="font-bold text-sm text-gold">اسم المستخدم</h4>
+                <p id="profile-email" class="text-[10px] text-gray-400">email@gmail.com</p>
+              </div>
             </div>
-          </div>
-
-          <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
-            <h4 class="font-bold text-xs text-gold mb-2">لوحة الإدارة (Admin Panel):</h4>
-            <div class="flex gap-2">
-              <input type="password" id="admin-code" placeholder="رمز الأدمن (admin123)" class="flex-1 p-2 text-xs rounded border border-gray-300 dark:border-gray-700 bg-sand dark:bg-navy-dark">
-              <button onclick="authAdmin()" class="bg-olive text-white px-3 py-1 rounded text-xs">دخول</button>
-            </div>
+            <button onclick="logoutGoogle()" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-2 px-4 rounded-lg shadow">
+              تسجيل الخروج
+            </button>
           </div>
         </div>
+
+        <!-- Friends Section -->
+        <div class="pt-3 border-t border-gray-200 dark:border-gray-700 space-y-3">
+          <h4 class="font-bold text-xs text-gold flex items-center gap-2"><i class="fa-solid fa-users"></i> قائمة الأصدقاء</h4>
+          <div class="flex gap-2">
+            <input type="text" id="friend-email-input" placeholder="أدخل البريد الإلكتروني لصديقك..." class="flex-1 p-2 text-xs rounded border border-gray-300 dark:border-gray-700 bg-sand dark:bg-navy-dark">
+            <button onclick="sendFriendRequest()" class="bg-olive text-white px-3 py-1.5 rounded-lg text-xs font-bold">إضافة</button>
+          </div>
+          <div id="friends-list" class="space-y-2">
+            <p class="text-[10px] text-gray-400">لا يوجد أصدقاء مضافون بعد.</p>
+          </div>
+        </div>
+
       </div>
     </section>
   </main>
+
+  <!-- Surah Reader Modal -->
+  <div id="reader-modal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center p-3">
+    <div class="bg-sand dark:bg-navy max-w-2xl w-full max-h-[85vh] rounded-2xl border-2 border-gold flex flex-col shadow-2xl">
+      <div class="p-4 bg-olive text-white flex justify-between items-center rounded-t-xl border-b border-gold">
+        <div>
+          <h3 id="modal-surah-title" class="font-bold font-quran text-xl text-gold">سورة</h3>
+          <p id="modal-surah-info" class="text-[10px] text-sand/80"></p>
+        </div>
+        <button onclick="closeModal('reader-modal')" class="text-white hover:text-gold text-lg p-1"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="modal-surah-body" class="p-6 overflow-y-auto quran-text text-xl text-justify leading-loose space-y-4 dark:text-sand">
+        <p class="text-center text-gray-400">جاري تحميل الآيات...</p>
+      </div>
+    </div>
+  </div>
 
   <!-- Create League Modal -->
   <div id="create-league-modal" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center p-4">
@@ -206,327 +204,231 @@
       <h3 class="text-lg font-bold text-gold">إنشاء دوري جديد</h3>
       <div class="space-y-3 text-sm">
         <div>
-          <label class="block text-xs mb-1">اسم الدوري:</label>
-          <input type="text" id="league-name-input" placeholder="مثال: دوري حفاظ القرآن" class="w-full p-2 rounded border border-gray-300 dark:border-gray-700 bg-sand dark:bg-navy-dark">
+          <label class="block text-xs mb-1 font-bold">اسم الدوري:</label>
+          <input type="text" id="league-name-input" placeholder="مثال: دوري الأبطال" class="w-full p-2 rounded border border-gray-300 dark:border-gray-700 bg-sand dark:bg-navy-dark">
         </div>
         <div>
-          <label class="block text-xs mb-1">الحد الأقصى للمشاركين:</label>
+          <label class="block text-xs mb-1 font-bold">الحد الأقصى للمشاركين:</label>
           <select id="league-max-players" class="w-full p-2 rounded border border-gray-300 dark:border-gray-700 bg-sand dark:bg-navy-dark">
             <option value="4">4 لاعبين</option>
             <option value="8" selected>8 لاعبين</option>
             <option value="16">16 لاعب</option>
-            <option value="32">32 لاعب</option>
           </select>
         </div>
       </div>
       <div class="flex justify-end gap-2 pt-2">
-        <button onclick="closeCreateLeagueModal()" class="px-4 py-2 text-xs rounded bg-gray-200 dark:bg-gray-700">إلغاء</button>
-        <button onclick="submitCreateLeague()" class="px-4 py-2 text-xs rounded bg-gold text-navy font-bold">إنشاء الدوري</button>
+        <button onclick="closeModal('create-league-modal')" class="px-4 py-2 text-xs rounded bg-gray-200 dark:bg-gray-700">إلغاء</button>
+        <button onclick="submitCreateLeague()" class="px-4 py-2 text-xs rounded bg-gold text-navy font-bold">تأكيد وإنشاء</button>
       </div>
     </div>
   </div>
 
-  <!-- Bottom Navigation Bar -->
+  <!-- Navigation -->
   <nav class="fixed bottom-0 left-0 right-0 bg-olive text-white border-t-2 border-gold shadow-2xl z-40">
     <div class="max-w-md mx-auto flex justify-around py-2">
-      <button onclick="switchTab('quran')" id="nav-quran" class="nav-btn active flex flex-col items-center gap-1 text-gold">
+      <button onclick="switchTab('quran')" id="nav-quran" class="nav-btn text-gold flex flex-col items-center gap-1">
         <i class="fa-solid fa-book-quran text-lg"></i>
         <span class="text-[10px] font-bold">المصحف</span>
       </button>
-      <button onclick="switchTab('competitions')" id="nav-competitions" class="nav-btn flex flex-col items-center gap-1 text-white/70 hover:text-gold">
+      <button onclick="switchTab('competitions')" id="nav-competitions" class="nav-btn text-white/70 hover:text-gold flex flex-col items-center gap-1">
         <i class="fa-solid fa-trophy text-lg"></i>
         <span class="text-[10px] font-bold">المسابقات</span>
       </button>
-      <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn flex flex-col items-center gap-1 text-white/70 hover:text-gold">
+      <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn text-white/70 hover:text-gold flex flex-col items-center gap-1">
         <i class="fa-solid fa-gear text-lg"></i>
         <span class="text-[10px] font-bold">الإعدادات</span>
       </button>
     </div>
   </nav>
 
-  <!-- Audio Player Floating Bar -->
+  <!-- Audio Player -->
   <div id="audio-player" class="fixed bottom-14 left-0 right-0 bg-navy text-white border-t border-gold p-2 hidden z-30 flex items-center justify-between px-4">
     <div class="flex items-center gap-2">
       <i class="fa-solid fa-volume-high text-gold"></i>
-      <span id="audio-title" class="text-xs truncate max-w-[150px]">تلاوة...</span>
+      <span id="audio-title" class="text-xs truncate max-w-[180px]">تلاوة...</span>
     </div>
     <div class="flex items-center gap-3">
-      <button onclick="toggleAudio()"><i id="play-icon" class="fa-solid fa-play text-gold"></i></button>
-      <button onclick="stopAudio()"><i class="fa-solid fa-square text-red-400"></i></button>
+      <button onclick="toggleAudio()"><i id="play-icon" class="fa-solid fa-pause text-gold"></i></button>
+      <button onclick="stopAudio()"><i class="fa-solid fa-xmark text-red-400"></i></button>
     </div>
   </div>
 
-  <!-- JavaScript Application Logic -->
+  <!-- Firebase & App Logic Script -->
   <script>
+    // ⚠️ استبدل هذه البيانات بمعلومات مشروعك الفعلي على منصة Firebase Console
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "SENDER_ID",
+      appId: "APP_ID"
+    };
+
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+    const db = firebase.database();
+
     let surahsData = [];
     let isIshaBypassed = false;
     let currentAudio = null;
-    let currentUser = { id: 'user_' + Math.floor(Math.random()*1000), name: 'متنافس_وِرْد' };
-
-    let leagues = [
-      {
-        id: 'league_1',
-        name: 'دوري الفرقان العام',
-        creatorId: 'admin',
-        creatorName: 'المشرف العام',
-        maxPlayers: 16,
-        participants: [
-          { id: 'user_123', name: 'أحمد', status: 'approved' },
-          { id: 'user_456', name: 'عمر', status: 'approved' }
-        ],
-        pendingRequests: [
-          { id: 'user_789', name: 'خالد' }
-        ]
-      }
-    ];
+    let currentUser = null;
+    let leagues = [];
 
     document.addEventListener('DOMContentLoaded', () => {
       fetchSurahs();
-      checkIshaPrayerTime();
-      renderLeagues();
+      startIshaTimer();
+      
+      // Monitor Auth State Changes
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          currentUser = {
+            id: user.uid,
+            name: user.displayName || 'مستخدم وِرْد',
+            email: user.email,
+            photo: user.photoURL || ''
+          };
+          
+          document.getElementById('logged-out-view').classList.add('hidden');
+          document.getElementById('logged-in-view').classList.remove('hidden');
+          document.getElementById('profile-name').innerText = currentUser.name;
+          document.getElementById('profile-email').innerText = currentUser.email;
+          if(currentUser.photo) {
+            document.getElementById('profile-img').src = currentUser.photo;
+            document.getElementById('user-avatar-container').innerHTML = `<img src="${currentUser.photo}" class="w-full h-full object-cover">`;
+          }
+          document.getElementById('user-status-text').innerText = currentUser.name;
+          
+          // Sync user to database & load data
+          db.ref('users/' + currentUser.uid).set(currentUser);
+          loadRealtimeLeagues();
+          loadFriends();
+        } else {
+          currentUser = null;
+          document.getElementById('logged-out-view').classList.remove('hidden');
+          document.getElementById('logged-in-view').classList.add('hidden');
+          document.getElementById('user-status-text').innerText = "زائر غير مسجل";
+          document.getElementById('user-avatar-container').innerHTML = "و";
+        }
+      });
     });
 
-    async function fetchSurahs() {
-      try {
-        const res = await fetch('https://api.alquran.cloud/v1/surah');
-        const data = await res.json();
-        surahsData = data.data;
-        renderSurahs(surahsData);
-      } catch (e) {
-        document.getElementById('surah-list').innerHTML = `<div class="text-center text-red-500 col-span-full">عذراً، تعذر جلب قائمة السور. يرجى التحقق من الاتصال.</div>`;
-      }
+    // Google Authentication Functions
+    function loginWithGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider).catch((error) => {
+        alert("فشل تسجيل الدخول: " + error.message);
+      });
     }
 
-    function renderSurahs(list) {
-      const container = document.getElementById('surah-list');
-      container.innerHTML = list.map(s => `
-        <div class="bg-white dark:bg-navy p-4 rounded-xl shadow border border-gold/20 flex justify-between items-center">
-          <div>
-            <span class="text-xs text-gold font-bold">سورة ${s.number}</span>
-            <h4 class="font-bold font-quran text-lg">${s.name}</h4>
-            <p class="text-[10px] text-gray-400">${s.revelationType === 'Meccan' ? 'مكية' : 'مدنية'} - آياتها ${s.numberOfAyahs}</p>
-          </div>
-          <button onclick="playSurahAudio(${s.number}, '${s.name}')" class="w-8 h-8 rounded-full bg-gold/20 text-gold hover:bg-gold hover:text-navy flex items-center justify-center transition">
-            <i class="fa-solid fa-play text-xs"></i>
-          </button>
-        </div>
-      `).join('');
+    function logoutGoogle() {
+      auth.signOut();
     }
 
-    function filterSurahs() {
-      const query = document.getElementById('quran-search').value.trim();
-      const filtered = surahsData.filter(s => s.name.includes(query) || s.number.toString() === query);
-      renderSurahs(filtered);
-    }
-
-    function playSurahAudio(surahNum, surahName) {
-      const reciter = document.getElementById('reciter-select').value;
-      const audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/${reciter}/${surahNum}.mp3`;
-      
-      if(currentAudio) currentAudio.pause();
-      
-      currentAudio = new Audio(audioUrl);
-      document.getElementById('audio-title').innerText = `${surahName} - ${reciter}`;
-      document.getElementById('audio-player').classList.remove('hidden');
-      
-      currentAudio.play();
-      document.getElementById('play-icon').className = 'fa-solid fa-pause text-gold';
-
-      currentAudio.onended = () => {
-        document.getElementById('play-icon').className = 'fa-solid fa-play text-gold';
-      };
-    }
-
-    function toggleAudio() {
-      if(!currentAudio) return;
-      if(currentAudio.paused) {
-        currentAudio.play();
-        document.getElementById('play-icon').className = 'fa-solid fa-pause text-gold';
-      } else {
-        currentAudio.pause();
-        document.getElementById('play-icon').className = 'fa-solid fa-play text-gold';
-      }
-    }
-
-    function stopAudio() {
-      if(currentAudio) {
-        currentAudio.pause();
-        currentAudio = null;
-      }
-      document.getElementById('audio-player').classList.add('hidden');
-    }
-
-    function checkIshaPrayerTime() {
-      if(isIshaBypassed) {
-        document.getElementById('isha-locked-view').classList.add('hidden');
-        document.getElementById('isha-unlocked-view').classList.remove('hidden');
-        return;
-      }
-
-      const now = new Date();
-      const isPostIsha = now.getHours() >= 20 || now.getHours() < 4;
-
-      if(isPostIsha) {
-        document.getElementById('isha-locked-view').classList.add('hidden');
-        document.getElementById('isha-unlocked-view').classList.remove('hidden');
-      } else {
-        document.getElementById('isha-locked-view').classList.remove('hidden');
-        document.getElementById('isha-unlocked-view').classList.add('hidden');
-        document.getElementById('isha-countdown').innerText = "01:45:12";
-      }
-    }
-
-    function toggleIshaLock() {
-      isIshaBypassed = !isIshaBypassed;
-      checkIshaPrayerTime();
-    }
-
-    function renderLeagues() {
-      const myContainer = document.getElementById('my-leagues-list');
-      const availableContainer = document.getElementById('available-leagues-list');
-
-      const myLeagues = leagues.filter(l => 
-        l.creatorId === currentUser.id || 
-        l.participants.some(p => p.id === currentUser.id) ||
-        l.pendingRequests.some(p => p.id === currentUser.id)
-      );
-
-      const availableLeagues = leagues.filter(l => !myLeagues.includes(l));
-
-      if(myLeagues.length === 0) {
-        myContainer.innerHTML = `<div class="text-xs text-gray-400 py-2">لم تنضم أو تنشئ أي دوري بعد.</div>`;
-      } else {
-        myContainer.innerHTML = myLeagues.map(l => {
-          const isCreator = l.creatorId === currentUser.id;
-          const isParticipant = l.participants.some(p => p.id === currentUser.id && p.status === 'approved');
-
-          return `
-            <div class="bg-sand dark:bg-navy-dark p-3 rounded-lg border border-gold/20 space-y-2">
-              <div class="flex justify-between items-center">
-                <div>
-                  <span class="font-bold text-sm text-gold">${l.name}</span>
-                  <span class="text-[10px] bg-gold/10 text-gold px-2 py-0.5 rounded mr-2">
-                    ${isCreator ? 'المشرف' : (isParticipant ? 'مشارك' : 'قيد الانتظار')}
-                  </span>
-                </div>
-                <span class="text-xs text-gray-400">${l.participants.length}/${l.maxPlayers} لاعب</span>
-              </div>
-
-              ${isCreator && l.pendingRequests.length > 0 ? `
-                <div class="bg-white dark:bg-navy p-2 rounded text-xs space-y-1">
-                  <span class="font-bold text-gold text-[10px]">طلبات الانضمام المعلقة:</span>
-                  ${l.pendingRequests.map(req => `
-                    <div class="flex justify-between items-center pt-1">
-                      <span>${req.name}</span>
-                      <div class="flex gap-1">
-                        <button onclick="approvePlayer('${l.id}', '${req.id}')" class="bg-green-600 text-white px-2 py-0.5 rounded text-[10px]">قبول</button>
-                        <button onclick="rejectPlayer('${l.id}', '${req.id}')" class="bg-red-600 text-white px-2 py-0.5 rounded text-[10px]">رفض</button>
-                      </div>
-                    </div>
-                  `).join('')}
-                </div>
-              ` : ''}
-            </div>
-          `;
-        }).join('');
-      }
-
-      availableContainer.innerHTML = availableLeagues.map(l => `
-        <div class="bg-sand dark:bg-navy-dark p-3 rounded-lg border border-gray-200 dark:border-gray-700 flex justify-between items-center">
-          <div>
-            <h5 class="font-bold text-xs">${l.name}</h5>
-            <p class="text-[10px] text-gray-400">المنشئ: ${l.creatorName}</p>
-          </div>
-          <button onclick="requestJoinLeague('${l.id}')" class="bg-gold text-navy font-bold text-[10px] px-3 py-1 rounded">
-            طلب انضمام
-          </button>
-        </div>
-      `).join('');
-    }
-
-    function openCreateLeagueModal() {
-      document.getElementById('create-league-modal').classList.remove('hidden');
-    }
-
-    function closeCreateLeagueModal() {
-      document.getElementById('create-league-modal').classList.add('hidden');
+    // Realtime Leagues Sync with Firebase
+    function loadRealtimeLeagues() {
+      db.ref('leagues').on('value', (snapshot) => {
+        const data = snapshot.val();
+        leagues = data ? Object.values(data) : [];
+        renderLeagues();
+      });
     }
 
     function submitCreateLeague() {
+      if (!currentUser) return alert('يجب تسجيل الدخول بحساب جوجل أولاً لإنشاء دوري.');
       const name = document.getElementById('league-name-input').value.trim();
       const max = parseInt(document.getElementById('league-max-players').value);
 
-      if(!name) return alert('يرجى إدخال اسم الدوري');
+      if (!name) return alert('يرجى كتابة اسم الدوري أولاً');
 
+      const newLeagueRef = db.ref('leagues').push();
       const newLeague = {
-        id: 'league_' + Date.now(),
+        id: newLeagueRef.key,
         name: name,
         creatorId: currentUser.id,
         creatorName: currentUser.name,
         maxPlayers: max,
-        participants: [{ id: currentUser.id, name: currentUser.name, status: 'approved' }],
-        pendingRequests: []
+        participants: { [currentUser.id]: { id: currentUser.id, name: currentUser.name, status: 'approved' } },
+        pendingRequests: {}
       };
 
-      leagues.push(newLeague);
-      closeCreateLeagueModal();
-      renderLeagues();
-      alert('تم إنشاء الدوري بنجاح! بصفتك المشرف، يمكنك قبول ورفض طلبات الانضمام.');
+      newLeagueRef.set(newLeague).then(() => {
+        closeModal('create-league-modal');
+        document.getElementById('league-name-input').value = '';
+        alert('تم إنشاء الدوري بنجاح على السحاب!');
+      });
     }
 
     function requestJoinLeague(leagueId) {
-      const league = leagues.find(l => l.id === leagueId);
-      if(league) {
-        league.pendingRequests.push({ id: currentUser.id, name: currentUser.name });
-        renderLeagues();
-        alert('تم إرسال طلب الانضمام إلى مشرف الدوري.');
-      }
+      if (!currentUser) return alert('يرجى تسجيل الدخول بحساب جوجل للانضمام.');
+      db.ref(`leagues/${leagueId}/pendingRequests/${currentUser.id}`).set({
+        id: currentUser.id,
+        name: currentUser.name
+      }).then(() => alert('تم إرسال طلب الانضمام بنجاح.'));
     }
 
     function approvePlayer(leagueId, userId) {
-      const league = leagues.find(l => l.id === leagueId);
-      if(league) {
-        const reqIndex = league.pendingRequests.findIndex(r => r.id === userId);
-        if(reqIndex > -1) {
-          const user = league.pendingRequests.splice(reqIndex, 1)[0];
-          league.participants.push({ id: user.id, name: user.name, status: 'approved' });
-          renderLeagues();
+      db.ref(`leagues/${leagueId}/pendingRequests/${userId}`).once('value', (snapshot) => {
+        const userData = snapshot.val();
+        if(userData) {
+          db.ref(`leagues/${leagueId}/participants/${userId}`).set({ ...userData, status: 'approved' });
+          db.ref(`leagues/${leagueId}/pendingRequests/${userId}`).remove();
         }
-      }
+      });
     }
 
     function rejectPlayer(leagueId, userId) {
-      const league = leagues.find(l => l.id === leagueId);
-      if(league) {
-        league.pendingRequests = league.pendingRequests.filter(r => r.id !== userId);
-        renderLeagues();
-      }
+      db.ref(`leagues/${leagueId}/pendingRequests/${userId}`).remove();
     }
 
-    function switchTab(tabName) {
-      document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('text-gold'));
+    // Friend System Functions
+    function sendFriendRequest() {
+      if (!currentUser) return alert('يرجى تسجيل الدخول أولاً.');
+      const friendEmail = document.getElementById('friend-email-input').value.trim();
+      if (!friendEmail) return alert('يرجى إدخال البريد الإلكتروني لصديقك.');
 
-      document.getElementById(`tab-${tabName}`).classList.remove('hidden');
-      document.getElementById(`nav-${tabName}`).classList.add('text-gold');
+      // البحث عن الصديق في قاعدة البيانات عبر الايميل
+      db.ref('users').orderByChild('email').equalTo(friendEmail).once('value', (snapshot) => {
+        const users = snapshot.val();
+        if (!users) return alert('لم يتم العثور على مستخدم بهذا البريد الإلكتروني المسجل.');
+        
+        const friendId = Object.keys(users)[0];
+        if (friendId === currentUser.id) return alert('لا يمكنك إضافة نفسك كصديق.');
+
+        db.ref(`friends/${currentUser.id}/${friendId}`).set({
+          email: friendEmail,
+          name: users[friendId].name,
+          status: 'connected'
+        }).then(() => {
+          document.getElementById('friend-email-input').value = '';
+          alert('تمت إضافة الصديق بنجاح!');
+        });
+      });
     }
 
-    function toggleDarkMode() {
-      document.documentElement.classList.toggle('dark');
+    function loadFriends() {
+      if (!currentUser) return;
+      db.ref(`friends/${currentUser.id}`).on('value', (snapshot) => {
+        const friends = snapshot.val();
+        const container = document.getElementById('friends-list');
+        if (!friends) {
+          container.innerHTML = '<p class="text-[10px] text-gray-400">لا يوجد أصدقاء مضافون بعد.</p>';
+          return;
+        }
+        container.innerHTML = Object.values(friends).map(f => `
+          <div class="bg-sand dark:bg-navy-dark p-2 rounded-lg border border-gold/20 flex justify-between items-center text-xs">
+            <span class="font-bold text-gold">${f.name}</span>
+            <span class="text-[10px] text-gray-400">${f.email}</span>
+          </div>
+        `).join('');
+      });
     }
 
-    function authJudge() {
-      const code = document.getElementById('judge-code').value;
-      if(code === 'JUDGE2026') alert('تم تفعيل وضع الحَكَم بنجاح!');
-      else alert('رمز الحَكَم غير صحيح');
-    }
-
-    function authAdmin() {
-      const code = document.getElementById('admin-code').value;
-      if(code === 'admin123') alert('تم الدخول لوحة الأدمن بنجاح!');
-      else alert('رمز الأدمن غير صحيح');
-    }
-  </script>
-</body>
-            </html>
-                
+    // Surahs & Audio
+    async function fetchSurahs() {
+      try {
+    
