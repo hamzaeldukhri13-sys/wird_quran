@@ -1,602 +1,322 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>وِرْد | Wird - القرآن والمسابقات</title>
-  
-  <!-- الخطوط والأيقونات الرسمية -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- مكتبات Firebase (الإصدار المتوافق المستقر) -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
-  <style>
-    :root {
-      --olive: #2C3E2E;
-      --navy: #1A2238;
-      --gold: #D4AF37;
-      --gold-light: #e5c358;
-      --sand: #FDFBF7;
-      --dark-bg: #101625;
-      --card-bg: #ffffff;
-      --text-color: #1A2238;
-      --border-color: rgba(212,175,55,0.2);
-    }
-
-    body.dark {
-      --sand: #101625;
-      --card-bg: #1A2238;
-      --text-color: #FDFBF7;
-      --border-color: rgba(212,175,55,0.15);
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-    body { background-color: var(--sand); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 90px; transition: background 0.3s, color 0.3s; direction: rtl; text-align: right; }
-
-    /* الهيدر العلوي */
-    header { position: sticky; top: 0; z-index: 40; background: var(--olive); color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-bottom: 2px solid var(--gold); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
-    .user-info { display: flex; align-items: center; gap: 10px; }
-    .avatar { width: 42px; height: 42px; border-radius: 50%; background: rgba(212,175,55,0.2); display: flex; align-items: center; justify-content: center; border: 2px solid var(--gold); color: var(--gold); font-weight: bold; overflow: hidden; font-size: 16px; }
-    .avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .header-title { font-family: 'Amiri', serif; color: var(--gold); font-size: 20px; line-height: 1; }
-    .user-status { font-size: 11px; opacity: 0.85; margin-top: 2px; }
-
-    .header-btns { display: flex; gap: 8px; align-items: center; }
-    .btn-gold-outline { background: rgba(212,175,55,0.15); color: var(--gold); border: 1px solid var(--gold); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-    .btn-gold-outline:hover { background: var(--gold); color: var(--navy); }
-    .icon-btn { background: none; border: none; color: var(--gold); font-size: 18px; cursor: pointer; padding: 6px; }
-
-    /* الحاوية الرئيسية */
-    main { flex: 1; max-width: 850px; width: 100%; margin: 0 auto; padding: 16px; }
-    .tab-view { display: none; flex-direction: column; gap: 16px; animation: fadeIn 0.3s ease-in-out; }
-    .tab-view.active { display: flex; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-    .card { background: var(--card-bg); border-radius: 14px; padding: 18px; box-shadow: 0 3px 10px rgba(0,0,0,0.04); border: 1px solid var(--border-color); }
-    
-    /* قسم البحث والقارئ */
-    .search-box { position: relative; margin-bottom: 12px; }
-    .search-box input { width: 100%; padding: 11px 42px 11px 14px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--sand); color: var(--text-color); outline: none; font-size: 14px; }
-    .search-box input:focus { border-color: var(--gold); }
-    .search-box i { position: absolute; left: 14px; top: 14px; color: var(--gold); }
-
-    .select-group { display: flex; align-items: center; gap: 10px; font-size: 13px; background: var(--sand); padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border-color); }
-    .select-group select { flex: 1; padding: 6px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color); font-weight: bold; outline: none; }
-
-    .surahs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; margin-top: 4px; }
-    .surah-card { background: var(--card-bg); padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
-    .surah-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-    .play-btn { width: 38px; height: 38px; border-radius: 50%; background: rgba(212,175,55,0.15); color: var(--gold); border: 1px solid var(--gold); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
-    .play-btn:hover { background: var(--gold); color: var(--navy); }
-
-    .quran-font { font-family: 'Amiri', serif; }
-    
-    /* قفل المسابقات وزمن العشاء */
-    .locked-box { text-align: center; padding: 40px 20px; background: var(--card-bg); border-radius: 18px; border: 2px solid rgba(212,175,55,0.3); }
-    .locked-icon { width: 60px; height: 60px; background: rgba(44,62,46,0.1); color: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 24px; border: 1px solid var(--gold); }
-    .locked-title { color: var(--gold); font-family: 'Amiri', serif; font-size: 22px; margin-bottom: 8px; }
-    .locked-desc { font-size: 13px; opacity: 0.8; margin-bottom: 20px; line-height: 1.6; }
-    .countdown-label { font-size: 12px; color: gray; display: block; margin-bottom: 6px; }
-    .countdown-text { font-size: 32px; font-weight: bold; color: var(--gold); font-family: monospace; letter-spacing: 3px; }
-
-    .competitions-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 14px; }
-    .section-subtitle { font-size: 13px; color: var(--gold); margin-bottom: 8px; font-weight: bold; }
-    .leagues-grid { display: grid; gap: 10px; }
-    .league-item { background: var(--sand); padding: 12px; border-radius: 10px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-
-    /* شريط التنقل السفلي */
-    nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--olive); border-top: 2px solid var(--gold); z-index: 40; display: flex; justify-content: space-around; padding: 8px 0; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); }
-    .nav-btn { background: none; border: none; color: rgba(255,255,255,0.7); display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; font-size: 11px; font-weight: bold; transition: 0.2s; }
-    .nav-btn.active { color: var(--gold); transform: scale(1.05); }
-    .nav-btn i { font-size: 20px; }
-
-    /* النوافذ المنبثقة (Modals) */
-    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
-    .modal.active { display: flex; }
-    .modal-content { background: var(--sand); width: 100%; max-width: 650px; max-height: 85vh; border-radius: 18px; border: 2px solid var(--gold); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-    .modal-header { background: var(--olive); color: white; padding: 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--gold); }
-    .modal-body { padding: 24px; overflow-y: auto; line-height: 2.4; font-size: 22px; text-align: justify; }
-
-    /* مشغل الصوتيات السفلي */
-    .audio-bar { position: fixed; bottom: 68px; left: 0; right: 0; background: var(--navy); color: white; border-top: 1px solid var(--gold); padding: 12px 20px; display: none; justify-content: space-between; align-items: center; z-index: 35; box-shadow: 0 -3px 8px rgba(0,0,0,0.2); }
-    .audio-bar.active { display: flex; }
-    .audio-title { font-size: 12px; font-weight: bold; color: var(--gold); }
-    .audio-ctrl-btn, .audio-close-btn { background: none; border: none; cursor: pointer; font-size: 18px; }
-    .audio-ctrl-btn { color: var(--gold); }
-    .audio-close-btn { color: #ff6b6b; }
-
-    /* الأزرار والنماذج العامة */
-    .btn-gold { background: var(--gold); color: var(--navy); border: none; padding: 9px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 13px; }
-    .btn-gold:hover { background: var(--gold-light); }
-    .input-field { width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--sand); color: var(--text-color); margin-top: 6px; margin-bottom: 14px; outline: none; font-size: 13px; }
-    .input-field:focus { border-color: var(--gold); }
-
-    .btn-google { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; background: white; color: #333; border: 1px solid #ccc; padding: 10px; border-radius: 10px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s; }
-    .btn-google:hover { background: #f8f9fa; }
-    .google-icon { color: #db4437; font-size: 16px; }
-
-    .profile-info { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 16px; }
-    .profile-avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; }
-    .btn-logout { background: #dc3545; color: white; border: none; padding: 6px 16px; border-radius: 6px; font-size: 12px; cursor: pointer; }
-    
-    .friends-section { margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 14px; }
-    .btn-olive { background: var(--olive); color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; height: fit-content; font-weight: bold; }
-    
-    .flex-gap { display: flex; gap: 8px; align-items: center; }
-    .gold-text { color: var(--gold); }
-    .gray-text { color: gray; }
-    .text-xs { font-size: 11px; }
-    .text-sm { font-size: 12px; }
-    .text-md { font-size: 16px; }
-    .font-bold { font-weight: bold; }
-    .icon-gold { color: var(--gold); }
-    .loading-text { text-align: center; grid-column: 1/-1; padding: 30px; color: gray; }
-    .modal-info { font-size: 11px; opacity: 0.85; margin-top: 2px; }
-    .close-btn { background: none; border: none; color: white; font-size: 20px; cursor: pointer; }
-    .league-modal-size { max-width: 420px; padding: 20px; }
-    .input-label { font-size: 12px; font-weight: bold; display: block; color: var(--text-color); }
-    .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
-    .btn-gray { padding: 8px 14px; font-size: 12px; background: #e0e0e0; color: #333; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق وِرْد - القرآن والسلاسل الإيمانية</title>
+    <!-- استدعاء خط الأميري المعتمد لضمان عرض القرآن بدون مربعات -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; }
+        .quran-text { font-family: 'Amiri', serif; }
+    </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
 
-  <!-- شريط العنوان العلوي -->
-  <header>
-    <div class="user-info">
-      <div id="user-avatar-container" class="avatar">و</div>
-      <div>
-        <h1 class="header-title">وِرْد</h1>
-        <p id="user-status-text" class="user-status">زائر غير مسجل</p>
-      </div>
-    </div>
-    <div class="header-btns">
-      <button onclick="toggleIshaLock()" class="btn-gold-outline"><i class="fa-solid fa-key"></i> <span id="bypass-text">تجربة العشاء</span></button>
-      <button onclick="toggleDarkMode()" class="icon-btn" title="التبديل بين الوضع الليلي والنهاري"><i class="fa-solid fa-moon"></i></button>
-    </div>
-  </header>
+    <!-- الشريط العلوي -->
+    <header class="bg-emerald-700 text-white p-4 shadow-md flex justify-between items-center">
+        <h1 class="text-xl font-bold">تطبيق وِرْد 📖</h1>
+        <button onclick="toggleDarkMode()" class="bg-emerald-800 px-3 py-1 rounded-lg text-sm">🌓 المظهر</button>
+    </header>
 
-  <!-- محتوى التطبيق -->
-  <main>
-    <!-- 1. قسم المصحف والقارئ -->
-    <section id="tab-quran" class="tab-view active">
-      <div class="card">
-        <div class="search-box">
-          <input type="text" id="quran-search" oninput="filterSurahs()" placeholder="ابحث عن اسم السورة أو رقمها...">
-          <i class="fa-solid fa-search"></i>
-        </div>
-        <div class="select-group">
-          <i class="fa-solid fa-headphones icon-gold"></i>
-          <label class="font-bold">اختر القارئ:</label>
-          <select id="reciter-select">
-            <option value="ar.alafasy">مشاري العفاسي</option>
-            <option value="ar.husary">محمود خليل الحصري</option>
-            <option value="ar.abdulbasitmurattal">عبد الباسط عبد الصمد</option>
-            <option value="ar.minshawi">محمد صديق المنشاوي</option>
-          </select>
-        </div>
-      </div>
-      <div id="surah-list" class="surahs-grid">
-        <div class="loading-text">جاري جلب سور القرآن الكريم...</div>
-      </div>
-    </section>
+    <!-- الأزرار الرئيسية -->
+    <nav class="flex justify-around bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-2">
+        <button onclick="switchTab('quran')" class="tab-btn font-bold text-emerald-600 dark:text-emerald-400 py-2 px-4">القرآن الكريم</button>
+        <button onclick="switchTab('athkar')" class="tab-btn py-2 px-4 text-slate-600 dark:text-slate-300">الأذكار</button>
+        <button onclick="switchTab('chain')" class="tab-btn py-2 px-4 text-slate-600 dark:text-slate-300">سلسلة الأجر 🔗</button>
+    </nav>
 
-    <!-- 2. قسم المسابقات والدوريات -->
-    <section id="tab-competitions" class="tab-view">
-      <div id="isha-locked-view" class="locked-box">
-        <div class="locked-icon"><i class="fa-solid fa-moon"></i></div>
-        <h2 class="locked-title">المسابقات مغلقة حالياً</h2>
-        <p class="locked-desc">تفتح التحديات والدوريات اليومية تلقائياً فور حلول وقت صلاة العشاء.</p>
-        <div>
-          <span class="countdown-label">المتبقي حتى العشاء:</span>
-          <span id="isha-countdown" class="countdown-text">00:00:00</span>
-        </div>
-      </div>
-
-      <div id="isha-unlocked-view" style="display: none;" class="card">
-        <div class="competitions-header">
-          <div>
-            <h3 class="gold-text text-md"><i class="fa-solid fa-trophy"></i> الدوريات والبطولات</h3>
-            <p class="gray-text text-xs">أنشئ دوريك الخاص أو انضم للمنافسة الحية</p>
-          </div>
-          <button onclick="openModal('create-league-modal')" class="btn-gold">إنشاء دوري</button>
-        </div>
-        <h4 class="section-subtitle">دورياتي المشترك بها:</h4>
-        <div id="my-leagues-list" class="mb-4"></div>
-        <h4 class="section-subtitle">الدوريات المتاحة للانضمام:</h4>
-        <div id="available-leagues-list" class="leagues-grid"></div>
-      </div>
-    </section>
-
-    <!-- 3. قسم إعدادات الحساب والأصدقاء -->
-    <section id="tab-settings" class="tab-view">
-      <div class="card">
-        <h3 class="gold-text mb-3 text-md"><i class="fa-solid fa-user-gear"></i> إعدادات الحساب والربط السحابي</h3>
+    <!-- المحتوى الرئيسي -->
+    <main class="flex-1 p-4 max-w-md mx-auto w-full">
         
-        <div id="logged-out-view" class="text-center">
-          <p class="gray-text mb-3 text-sm">سجل دخولك بحساب جوجل لحفظ نقاطك، إدارة دورياتك، وإضافة أصدقائك في الوقت الفعلي.</p>
-          <button onclick="loginWithGoogle()" class="btn-google">
-            <i class="fa-brands fa-google google-icon"></i> تسجيل الدخول بواسطة جوجل
-          </button>
-        </div>
-
-        <div id="logged-in-view" class="logged-in-box" style="display: none;">
-          <div class="profile-info">
-            <img id="profile-img" src="" class="profile-avatar">
-            <div class="text-right">
-              <h4 id="profile-name" class="gold-text text-md"></h4>
-              <p id="profile-email" class="gray-text text-xs"></p>
+        <!-- قسم القرآن -->
+        <div id="tab-quran" class="space-y-4">
+            <h2 class="text-lg font-semibold text-emerald-700 dark:text-emerald-400">فهرس السور</h2>
+            <div class="space-y-2" id="surah-list">
+                <!-- سيتم تعبئتها برمجياً -->
             </div>
-          </div>
-          <button onclick="logoutGoogle()" class="btn-logout">تسجيل الخروج</button>
         </div>
 
-        <div class="friends-section">
-          <h4 class="gold-text text-sm mb-2"><i class="fa-solid fa-users"></i> قائمة الأصدقاء</h4>
-          <div class="flex-gap">
-            <input type="text" id="friend-email-input" placeholder="البريد الإلكتروني لصديقك..." class="input-field" style="margin:0;">
-            <button onclick="sendFriendRequest()" class="btn-olive">إضافة</button>
-          </div>
-          <div id="friends-list" class="mt-2" style="margin-top:10px;"></div>
+        <!-- قسم الأذكار -->
+        <div id="tab-athkar" class="hidden space-y-4">
+            <h2 class="text-lg font-semibold text-emerald-700 dark:text-emerald-400">أذكار الصباح والمساء</h2>
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow border border-slate-200 dark:border-slate-700">
+                <p id="zekr-text" class="text-lg mb-4 text-center leading-relaxed">أصبحنا وأصبح الملك لله، والحمد لله...</p>
+                <div class="flex justify-between items-center">
+                    <span id="zekr-count" class="bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-3 py-1 rounded-full text-sm font-bold">الباقي: 3</span>
+                    <button onclick="decrementZekr()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-bold">قرأتُها</button>
+                </div>
+            </div>
         </div>
-      </div>
-    </section>
-  </main>
 
-  <!-- نافذة قراءة الآيات (Modal) -->
-  <div id="reader-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div>
-          <h3 id="modal-surah-title" class="gold-text quran-font text-md"></h3>
-          <p id="modal-surah-info" class="modal-info"></p>
+        <!-- قسم سلسلة الأجر وشجرة الدعوة -->
+        <div id="tab-chain" class="hidden space-y-4">
+            
+            <div class="bg-emerald-50 dark:bg-emerald-950 p-4 rounded-xl border border-emerald-200 dark:border-emerald-800 text-center">
+                <h2 class="text-lg font-bold text-emerald-800 dark:text-emerald-300">🔗 سلسلة الأجر وشجرة الدعوة</h2>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">«الدَّالُّ عَلَى الْخَيْرِ كَفَاعِلِهِ» — شاهد أثر دعوتك ومَن انضم بسببك!</p>
+            </div>
+
+            <!-- بطاقة شجرة الأجر الخاصة بك -->
+            <div class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 rounded-xl shadow-lg space-y-3">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-medium opacity-90">شجرة الأجر الخاصة بك:</span>
+                    <span id="tree-rank" class="bg-white/20 text-white text-xs px-2.5 py-0.5 rounded-full font-bold">بداية الغيث 🌱</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-center pt-1">
+                    <div class="bg-white/10 p-2 rounded-lg">
+                        <div class="text-xs opacity-80">دعواتك المباشرة</div>
+                        <div id="direct-invites" class="text-xl font-bold">0</div>
+                    </div>
+                    <div class="bg-white/10 p-2 rounded-lg">
+                        <div class="text-xs opacity-80">السلسلة الممتدة من بعدك</div>
+                        <div id="total-tree" class="text-xl font-bold">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- بطاقة إدخال الاسم والدعوة -->
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-3">
+                <div class="space-y-2">
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400">اسمك لتسجيل دورك بالسلسلة:</label>
+                    <input type="text" id="user-name" placeholder="أدخل اسمك هنا" class="w-full text-sm p-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:border-emerald-500">
+                </div>
+
+                <button onclick="joinAndInvite()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm py-2.5 rounded-lg shadow flex justify-center items-center gap-2">
+                    <span>إتمام وِرْدك ودعوة صديق 📲</span>
+                </button>
+            </div>
+
+            <!-- سجل السلسلة المباشر -->
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                <h3 class="text-sm font-bold text-slate-700 dark:text-slate-300 mb-3">📜 الأعضاء المنضمون للسلسلة:</h3>
+                <div id="chain-history" class="space-y-2 text-xs">
+                    <!-- تعبئة السلسلة برمجياً -->
+                </div>
+            </div>
+
         </div>
-        <button onclick="closeModal('reader-modal')" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div id="modal-surah-body" class="modal-body quran-font">جاري التحميل...</div>
+
+    </main>
+
+    <!-- نافذة قراءة السورة -->
+    <div id="reader-modal" class="hidden fixed inset-0 bg-black/70 flex justify-center items-center p-4 z-50">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg h-[80vh] rounded-2xl flex flex-col p-4 shadow-xl">
+            <div class="flex justify-between items-center border-b pb-2 dark:border-slate-700">
+                <h3 id="modal-title" class="font-bold text-lg text-emerald-700 dark:text-emerald-400">اسم السورة</h3>
+                <button onclick="closeReader()" class="text-slate-400 hover:text-red-500 font-bold text-lg px-2">✕</button>
+            </div>
+            <div id="modal-content" class="quran-text flex-1 overflow-y-auto p-4 text-center leading-loose text-2xl space-y-4">
+                جاري تحميل الآيات...
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- نافذة إنشاء دوري جديد (Modal) -->
-  <div id="create-league-modal" class="modal">
-    <div class="modal-content league-modal-size">
-      <h3 class="gold-text mb-3 text-md font-bold">إنشاء دوري منافسة جديد</h3>
-      <label class="input-label">اسم الدوري:</label>
-      <input type="text" id="league-name-input" placeholder="مثال: دوري سورة البقرة" class="input-field">
-      <label class="input-label">الحد الأقصى للاعبين:</label>
-      <select id="league-max-players" class="input-field">
-        <option value="4">4 لاعبين</option>
-        <option value="8" selected>8 لاعبين</option>
-        <option value="16">16 لاعب</option>
-      </select>
-      <div class="modal-footer">
-        <button onclick="closeModal('create-league-modal')" class="btn-gray">إلغاء</button>
-        <button onclick="submitCreateLeague()" class="btn-gold">إنشاء الدوري</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- مشغل الصوتيات السفلي الثابت -->
-  <div id="audio-player" class="audio-bar">
-    <div class="flex-gap align-center">
-      <i class="fa-solid fa-volume-high icon-gold"></i>
-      <span id="audio-title" class="audio-title">جاري التلاوة...</span>
-    </div>
-    <div class="flex-gap">
-      <button onclick="toggleAudio()" class="audio-ctrl-btn"><i id="play-icon" class="fa-solid fa-pause"></i></button>
-      <button onclick="stopAudio()" class="audio-close-btn"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-  </div>
-
-  <!-- شريط التنقل السفلي -->
-  <nav>
-    <button onclick="switchTab('quran')" id="nav-quran" class="nav-btn active">
-      <i class="fa-solid fa-book-quran"></i>
-      <span>المصحف</span>
-    </button>
-    <button onclick="switchTab('competitions')" id="nav-competitions" class="nav-btn">
-      <i class="fa-solid fa-trophy"></i>
-      <span>المسابقات</span>
-    </button>
-    <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn">
-      <i class="fa-solid fa-gear"></i>
-      <span>الإعدادات</span>
-    </button>
-  </nav>
-
-  <!-- الكود البرمجي ومنطق التطبيق (JavaScript) -->
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDoKSSImyyywVVUN9RMNV131wf-FHPQ1Qg",
-      authDomain: "wird2026-8c813.firebaseapp.com",
-      databaseURL: "https://wird2026-8c813-default-rtdb.firebaseio.com",
-      projectId: "wird2026-8c813",
-      storageBucket: "wird2026-8c813.firebasestorage.app",
-      messagingSenderId: "563035214741",
-      appId: "1:563035214741:web:eb9ccf2adc189b8ad61c9c"
-    };
-
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    const auth = firebase.auth();
-    const db = firebase.database();
-
-    let surahsData = [], isIshaBypassed = false, currentAudio = null, currentUser = null, leagues = [];
-
-    document.addEventListener('DOMContentLoaded', () => {
-      fetchSurahs();
-      startIshaTimer();
-      
-      auth.onAuthStateChanged((user) => {
-        if (user) {
-          currentUser = { 
-            id: user.uid, 
-            name: user.displayName || 'مستخدم وِرْد', 
-            email: user.email, 
-            photo: user.photoURL || '' 
-          };
-          document.getElementById('logged-out-view').style.display = 'none';
-          document.getElementById('logged-in-view').style.display = 'block';
-          document.getElementById('profile-name').innerText = currentUser.name;
-          document.getElementById('profile-email').innerText = currentUser.email;
-          if(currentUser.photo) {
-            document.getElementById('profile-img').src = currentUser.photo;
-            document.getElementById('user-avatar-container').innerHTML = `<img src="${cur          if(currentUser.photo) {
-            document.getElementById('profile-img').src = currentUser.photo;
-            document.getElementById('user-avatar-container').innerHTML = `<img src="${currentUser.photo}">`;
-          }
-          document.getElementById('user-status-text').innerText = currentUser.name;
-          db.ref('users/' + currentUser.uid).set(currentUser);
-          loadRealtimeLeagues();
-          loadFriends();
-        } else {
-          currentUser = null;
-          document.getElementById('logged-out-view').style.display = 'block';
-          document.getElementById('logged-in-view').style.display = 'none';
-          document.getElementById('user-status-text').innerText = "زائر غير مسجل";
-          document.getElementById('user-avatar-container').innerHTML = "و";
-          renderLeagues();
+    <script>
+        function switchTab(tabName) {
+            document.getElementById('tab-quran').classList.add('hidden');
+            document.getElementById('tab-athkar').classList.add('hidden');
+            document.getElementById('tab-chain').classList.add('hidden');
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
         }
-      });
-    });
 
-    // المصادقة
-    function loginWithGoogle() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider).catch((error) => {
-        alert("خطأ في تسجيل الدخول: " + error.message);
-      });
-    }
-
-    function logoutGoogle() { 
-      auth.signOut(); 
-    }
-
-    // إدارة الدوريات
-    function loadRealtimeLeagues() {
-      db.ref('leagues').on('value', (snapshot) => {
-        const data = snapshot.val();
-        leagues = data ? Object.values(data) : [];
-        renderLeagues();
-      });
-    }
-
-    function submitCreateLeague() {
-      if (!currentUser) return alert('يرجى تسجيل الدخول أولاً.');
-      const name = document.getElementById('league-name-input').value.trim();
-      const max = parseInt(document.getElementById('league-max-players').value);
-      if (!name) return alert('يرجى إدخال اسم الدوري');
-
-      const ref = db.ref('leagues').push();
-      ref.set({
-        id: ref.key, 
-        name: name, 
-        creatorId: currentUser.id, 
-        creatorName: currentUser.name, 
-        maxPlayers: max,
-        participants: { [currentUser.id]: { id: currentUser.id, name: currentUser.name, status: 'approved' } },
-        pendingRequests: {}
-      }).then(() => {
-        closeModal('create-league-modal');
-        document.getElementById('league-name-input').value = '';
-        alert('تم إنشاء الدوري بنجاح!');
-      });
-    }
-
-    function requestJoinLeague(id) {
-      if (!currentUser) return alert('سجل دخولك أولاً للمشاركة.');
-      db.ref(`leagues/${id}/pendingRequests/${currentUser.id}`).set({ id: currentUser.id, name: currentUser.name })
-        .then(() => alert('تم إرسال طلب الانضمام بنجاح.'));
-    }
-
-    // إدارة الأصدقاء
-    function sendFriendRequest() {
-      if (!currentUser) return alert('سجل دخولك أولاً لإضافة الأصدقاء.');
-      const email = document.getElementById('friend-email-input').value.trim();
-      if (!email) return alert('أدخل البريد الإلكتروني لصديقك');
-      
-      db.ref('users').orderByChild('email').equalTo(email).once('value', snap => {
-        const users = snap.val();
-        if (!users) return alert('المستخدم غير موجود في قاعدة البيانات.');
-        const fId = Object.keys(users)[0];
-        if (fId === currentUser.id) return alert('لا يمكنك إضافة نفسك.');
-        
-        db.ref(`friends/${currentUser.id}/${fId}`).set({ email, name: users[fId].name }).then(() => {
-          document.getElementById('friend-email-input').value = '';
-          alert('تمت إضافة الصديق بنجاح!');
-        });
-      });
-    }
-
-    function loadFriends() {
-      if (!currentUser) return;
-      db.ref(`friends/${currentUser.id}`).on('value', snap => {
-        const friends = snap.val();
-        const box = document.getElementById('friends-list');
-        if (!friends) { 
-          box.innerHTML = '<p class="text-xs gray-text">لا يوجد أصدقاء مضافين حالياً.</p>'; 
-          return; 
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
         }
-        box.innerHTML = Object.values(friends).map(f => `
-          <div style="background:var(--card-bg); padding:8px 12px; border-radius:8px; margin-bottom:6px; font-size:12px; display:flex; justify-content:space-between; align-items:center; border:1px solid var(--border-color);">
-            <span class="gold-text font-bold">${f.name}</span>
-            <span class="gray-text text-xs">${f.email}</span>
-          </div>
-        `).join('');
-      });
-    }
 
-    // جلب القرآن الكريم
-    async function fetchSurahs() {
-      try {
-        const res = await fetch('https://api.alquran.cloud/v1/surah');
-        const data = await res.json();
-        surahsData = data.data;
-        renderSurahs(surahsData);
-      } catch (e) {
-        document.getElementById('surah-list').innerHTML = '<div style="color:red; text-align:center; grid-column:1/-1;">تعذر جلب السور، تحقق من اتصال الإنترنت.</div>';
-      }
-    }
+        // الأذكار
+        let zekrIndex = 0;
+        let zekrRemaining = 3;
+        const azhkarList = [
+            { text: "أصبحنا وأصبح الملك لله، والحمد لله، لا إله إلا الله وحده لا شريك له.", count: 3 },
+            { text: "اللهم إني أسألك العافية في الدنيا والآخرة.", count: 3 },
+            { text: "رضيت بالله رباً، وبالإسلام ديناً، وبمحمد صلى الله عليه وسلم نبياً.", count: 3 }
+        ];
 
-    function renderSurahs(list) {
-      document.getElementById('surah-list').innerHTML = list.map(s => `
-        <div class="surah-card">
-          <div onclick="openSurahReader(${s.number}, '${s.name}', ${s.numberOfAyahs})" style="flex:1; cursor:pointer;">
-            <span class="text-xs gold-text font-bold">سورة رقم ${s.number}</span>
-            <h4 class="quran-font" style="font-size:19px; margin:2px 0;">${s.name}</h4>
-            <p class="text-xs gray-text">${s.revelationType === 'Meccan' ? 'مكية' : 'مدنية'} - ${s.numberOfAyahs} آية</p>
-          </div>
-          <button onclick="playSurahAudio(${s.number}, '${s.name}')" class="play-btn" title="استماع لتلاوة السورة"><i class="fa-solid fa-play" style="font-size:12px;"></i></button>
-        </div>
-      `).join('');
-    }
-
-    async function openSurahReader(num, name, count) {
-      openModal('reader-modal');
-      document.getElementById('modal-surah-title').innerText = `سورة ${name}`;
-      document.getElementById('modal-surah-info').innerText = `عدد الآيات: ${count}`;
-      document.getElementById('modal-surah-body').innerText = 'جاري تحميل الآيات الشريفة...';
-      try {
-        const res = await fetch(`https://api.alquran.cloud/v1/surah/${num}`);
-        const data = await res.json();
-        let html = num !== 9 ? '<div style="text-align:center; color:var(--gold); font-family:\'Amiri\',serif; margin-bottom:18px; font-size:24px;">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>' : '';
-        data.data.ayahs.forEach(a => { 
-          html += `${a.text} <span class="gold-text" style="font-size:15px;">﴿${a.numberInSurah}﴾</span> `; 
-        });
-        document.getElementById('modal-surah-body').innerHTML = html;
-      } catch (e) {
-        document.getElementById('modal-surah-body').innerText = 'خطأ في تحميل نص السورة.';
-      }
-    }
-
-    function renderLeagues() {
-      const myBox = document.getElementById('my-leagues-list');
-      const availBox = document.getElementById('available-leagues-list');
-      if (!currentUser) { 
-        myBox.innerHTML = '<p class="text-sm gray-text">سجل دخولك لعرض دورياتك.</p>'; 
-        availBox.innerHTML = ''; 
-        return; 
-      }
-
-      const mine = leagues.filter(l => l.creatorId === currentUser.id || (l.participants && l.participants[currentUser.id]));
-      const avail = leagues.filter(l => !mine.includes(l));
-
-      myBox.innerHTML = mine.length === 0 ? '<p class="text-sm gray-text">ليس لديك دوريات مشتركة حالياً</p>' : mine.map(l => `
-        <div class="league-item">
-          <span class="gold-text font-bold">${l.name}</span>
-          <span class="text-xs gray-text">منشئ الدوري: ${l.creatorName}</span>
-        </div>
-      `).join('');
-
-      availBox.innerHTML = avail.length === 0 ? '<p class="text-sm gray-text">لا توجد دوريات متاحة حالياً</p>' : avail.map(l => `
-        <div class="league-item">
-          <div>
-            <span class="font-bold text-sm">${l.name}</span>
-            <span class="text-xs gray-text display-block">منشئ الدوري: ${l.creatorName}</span>
-          </div>
-          <button onclick="requestJoinLeague('${l.id}')" class="btn-gold" style="font-size:11px; padding:5px 10px;">انضمام</button>
-        </div>
-      `).join('');
-    }
-
-    // عداد وعمل صلاة العشاء
-    function startIshaTimer() {
-      setInterval(() => {
-        if (isIshaBypassed) return;
-        const now = new Date(), target = new Date();
-        target.setHours(20, 0, 0, 0); // الساعة 8 مساءً افتراضياً وقت العشاء
-        let diff = target - now;
-        if (diff <= 0 || now.getHours() >= 20 || now.getHours() < 4) {
-          document.getElementById('isha-locked-view').style.display = 'none';
-          document.getElementById('isha-unlocked-view').style.display = 'block';
-        } else {
-          document.getElementById('isha-locked-view').style.display = 'block';
-          document.getElementById('isha-unlocked-view').style.display = 'none';
-          let h = Math.floor(diff/3600000).toString().padStart(2,'0');
-          let m = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
-          let s = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
-          document.getElementById('isha-countdown').innerText = `${h}:${m}:${s}`;
+        function decrementZekr() {
+            if (zekrRemaining > 1) {
+                zekrRemaining--;
+            } else {
+                zekrIndex = (zekrIndex + 1) % azhkarList.length;
+                zekrRemaining = azhkarList[zekrIndex].count;
+            }
+            document.getElementById('zekr-text').innerText = azhkarList[zekrIndex].text;
+            document.getElementById('zekr-count').innerText = "الباقي: " + zekrRemaining;
         }
-      }, 1000);
-    }
 
-    function toggleIshaLock() {
-      isIshaBypassed = !isIshaBypassed;
-      document.getElementById('bypass-text').innerText = isIshaBypassed ? "إلغاء التجربة" : "تجربة العشاء";
-      document.getElementById('isha-locked-view').style.display = isIshaBypassed ? 'none' : 'block';
-      document.getElementById('isha-unlocked-view').style.display = isIshaBypassed ? 'block' : 'none';
-    }
+        // قائمة أسماء السور بديلة بأسماء نظيفة ومصنفة بدقة تامة لتجنب أي تشويه
+        const cleanSurahNames = [
+            "الفاتحة", "البقرة", "آل عمران", "النساء", "المائدة", "الأنعام", "الأعراف", "الأنفال", "التوبة", "يونس",
+            "هود", "يوسف", "الرعد", "إبراهيم", "الحجر", "النحل", "الإسراء", "الكهف", "مريم", "طه",
+            "الأنبياء", "الحج", "المؤمنون", "النور", "الفرقان", "الشعراء", "النمل", "القصص", "العنكبوت", "الروم",
+            "لقمان", "السجدة", "الأحزاب", "سبأ", "فاطر", "يس", "الصافات", "ص", "الزمر", "غافر",
+            "فصلت", "الشورى", "الزخرف", "الدخان", "الجاثية", "الأحقاف", "محمد", "الفتح", "الحجرات", "ق",
+            "الذاريات", "الطور", "النجم", "القمر", "الرحمن", "الواقعة", "الحديد", "المجادلة", "الحشر", "الممتحنة",
+            "الصف", "الجُمُعَة", "المنافقون", "التغابن", "الطلاق", "التحريم", "الملك", "القلم", "الحاقة", "المعارج",
+            "نوح", "الجن", "المزمل", "المدثر", "القيامة", "الإنسان", "المرسلات", "النبأ", "النازعات", "عبس",
+            "التكوير", "الانفطار", "المطففين", "الانشقاق", "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد",
+            "الشمس", "الليل", "الضحى", "الشرح", "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات",
+            "القارعة", "التكاثر", "العصر", "الهُمَزَة", "الفيل", "قريش", "الماعون", "الكوثر", "الكافرون", "النصر",
+            "المسد", "الإخلاص", "الفلق", "الناس"
+        ];
 
-    // مشغل الصوتيات
-    function playSurahAudio(num, name) {
-      const reciter = document.getElementById('reciter-select').value;
-      if (currentAudio) currentAudio.pause();
-      currentAudio = new Audio(`https://cdn.islamic.network/quran/audio-surah/128/${reciter}/${num}.mp3`);
-      document.getElementById('audio-title').innerText = `تلاوة سورة ${name}`;
-      document.getElementById('audio-player').classList.add('active');
-      currentAudio.play().catch(e => alert("تعذر تشغيل الملف الصوتي حالياً."));
-    }
+        // جلب قائمة السور لعرضها بأسماء واضحة وصحيحة 100%
+        async function loadSurahs() {
+            const listContainer = document.getElementById('surah-list');
+            try {
+                const res = await fetch('https://api.alquran.cloud/v1/surah');
+                const data = await res.json();
+                listContainer.innerHTML = '';
+                data.data.forEach(surah => {
+                    // استخدام القائمة النظيفة المباشرة حسب رقم السورة
+                    const cleanName = cleanSurahNames[surah.number - 1] || surah.englishName;
+                    const btn = document.createElement('div');
+                    btn.className = "bg-white dark:bg-slate-800 p-3.5 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 flex justify-between items-center cursor-pointer hover:border-emerald-500 transition-all";
+                    btn.innerHTML = `<div class="flex items-center gap-3"><span class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200 flex items-center justify-center font-bold text-xs">${surah.number}</span><span class="font-bold text-slate-800 dark:text-slate-100 text-base">سُورَةُ ${cleanName}</span></div><span class="text-xs text-slate-500 dark:text-slate-400 font-medium">${surah.numberOfAyahs} آية</span>`;
+                    btn.onclick = () => openSurah(surah.number, `سُورَةُ ${cleanName}`);
+                    listContainer.appendChild(btn);
+                });
+            } catch (e) {
+                listContainer.innerHTML = "<p class='text-red-500 text-center'>تحقق من اتصال الإنترنت لجلب فهرس السور.</p>";
+            }
+        }
 
-    function toggleAudio() {
-      if (!currentAudio) return;
-      if (currentAudio.paused) { 
-        currentAudio.play(); 
-        document.getElementById('play-icon').className = 'fa-solid fa-pause'; 
-      } else { 
-        currentAudio.pause(); 
-        document.getElementById('play-icon').className = 'fa-solid fa-play'; 
-      }
-    }
+        // فتح وعرض السورة بدون استخدام رموز عثمانية تسبب مربعات غريبة
+        async function openSurah(number, name) {
+            document.getElementById('modal-title').innerText = name;
+            document.getElementById('modal-content').innerText = "جاري تحميل السورة...";
+            document.getElementById('reader-modal').classList.remove('hidden');
 
-    function stopAudio() { 
-      if (currentAudio) currentAudio.pause(); 
-      document.getElementById('audio-player').classList.remove('active'); 
-    }
+            try {
+                const res = await fetch(`https://api.alquran.cloud/v1/surah/${number}/quran-simple`);
+                const data = await res.json();
+                
+                let ayahsHtml = "";
+                if (number !== 1 && number !== 9) {
+                    ayahsHtml += `<div class="text-emerald-600 dark:text-emerald-400 mb-4 text-xl">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>`;
+                }
 
-    function filterSurahs() {
-      const q = document.getElementById('quran-search').value.trim();
-      renderSurahs(surahsData.filter(s => s.name.includes(q) || s.number.toString() === q));
-    }
+                data.data.ayahs.forEach(ayah => {
+                    let text = ayah.text;
+                    if (number !== 1 && number !== 9 && ayah.numberInSurah === 1) {
+                        text = text.replace("بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ", "").trim();
+                    }
+                    ayahsHtml += `<span>${text}</span> <span class="text-emerald-600 dark:text-emerald-400 text-lg mx-1">﴿${ayah.numberInSurah}﴾</span> `;
+                });
 
-    // التنقل والنوافذ
-    function switchTab(name) {
-      document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-      document.getElementById(`tab-${name}`).classList.add('active');
-      document.getElementById(`nav-${name}`).classList.add('active');
-    }
+                document.getElementById('modal-content').innerHTML = ayahsHtml;
+            } catch (e) {
+                document.getElementById('modal-content').innerText = "تعذر تحميل السورة، تأكد من اتصال الإنترنت.";
+            }
+        }
 
-    function openModal(id) { document.getElementById(id).classList.add('active'); }
-    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-    function toggleDarkMode() { document.body.classList.toggle('dark'); }
-  </script>
+        function closeReader() {
+            document.getElementById('reader-modal').classList.add('hidden');
+        }
+
+        // إدارة السلسلة وشجرة الأجر
+        function getMyUserId() {
+            let id = localStorage.getItem('wird_my_id');
+            if (!id) {
+                id = 'user_' + Math.random().toString(36).substr(2, 6);
+                localStorage.setItem('wird_my_id', id);
+            }
+            return id;
+        }
+
+        function loadChainData() {
+            let myId = getMyUserId();
+            let chain = JSON.parse(localStorage.getItem('wird_chain_v2') || '[]');
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const inviterId = urlParams.get('invited_by');
+
+            if (inviterId && !localStorage.getItem('wird_registered')) {
+                localStorage.setItem('wird_parent_id', inviterId);
+            }
+
+            if (chain.length === 0) {
+                chain.push({ id: 'root', name: 'المؤسس الأول', parent: null });
+                localStorage.setItem('wird_chain_v2', JSON.stringify(chain));
+            }
+
+            renderChainAndTree(chain, myId);
+        }
+
+        function renderChainAndTree(chain, myId) {
+            const historyContainer = document.getElementById('chain-history');
+            
+            let directInvites = chain.filter(item => item.parent === myId).length;
+            
+            function getTreeCount(parentId) {
+                let count = 0;
+                let children = chain.filter(item => item.parent === parentId);
+                count += children.length;
+                children.forEach(child => {
+                    count += getTreeCount(child.id);
+                });
+                return count;
+            }
+            let totalTree = getTreeCount(myId);
+
+            document.getElementById('direct-invites').innerText = directInvites;
+            document.getElementById('total-tree').innerText = totalTree;
+
+            let rankBadge = document.getElementById('tree-rank');
+            if (totalTree >= 10) rankBadge.innerText = 'غابة أجر متصلة 🌳';
+            else if (totalTree >= 3) rankBadge.innerText = 'شجرة مباركة 🌴';
+            else rankBadge.innerText = 'بداية الغيث 🌱';
+
+            historyContainer.innerHTML = chain.map((member, index) => `
+                <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200 flex items-center justify-center font-bold text-xs">${index + 1}</span>
+                        <span class="font-medium text-slate-700 dark:text-slate-200">${member.name}</span>
+                    </div>
+                    ${member.id === myId ? '<span class="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded">أنت</span>' : ''}
+                </div>
+            `).join('');
+        }
+
+        function joinAndInvite() {
+            const nameInput = document.getElementById('user-name');
+            const userName = nameInput.value.trim();
+
+            if (!userName) {
+                alert("يرجى كتابة اسمك للبدء ودعوة غيرك!");
+                return;
+            }
+
+            let myId = getMyUserId();
+            let parentId = localStorage.getItem('wird_parent_id') || 'root';
+            let chain = JSON.parse(localStorage.getItem('wird_chain_v2') || '[]');
+
+            if (!chain.some(item => item.id === myId)) {
+                chain.push({ id: myId, name: userName, parent: parentId });
+                localStorage.setItem('wird_chain_v2', JSON.stringify(chain));
+                localStorage.setItem('wird_registered', 'true');
+            }
+
+            renderChainAndTree(chain, myId);
+
+            const shareUrl = `${window.location.origin}${window.location.pathname}?invited_by=${myId}`;
+            const message = `✨ هل تعلم أن أجر القارئ يصله، ويصلك مثله إذا كنت السبب؟\n\nأنا (${userName}) أكملتُ وردي اليوم عبر تطبيق "وِرْد" وفتحتُ لك باباً جديداً للأجر 🔗.\nانضم واقرأ وردك من هذا الرابط ليمتد الأجر بيننا جميعاً:\n${shareUrl}`;
+
+            if (navigator.share) {
+                navigator.share({ title: 'تطبيق وِرْد - سلسلة الأجر', text: message, url: shareUrl }).catch(() => {});
+            } else {
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
+            }
+
+            nameInput.value = '';
+        }
+
+        loadSurahs();
+        loadChainData();
+    </script>
 </body>
-</html>
+  </html>
   
