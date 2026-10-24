@@ -503,7 +503,6 @@
             }
         };
 
-        // 🌟 دالة توليد الأسئلة لحظياً من Gemini API
         async function fetchAIQuestions() {
             document.getElementById('question-text').innerText = "🤖 جاري توليد أسئلة قرآنية فريدة عبر الذكاء الاصطناعي...";
             document.getElementById('options-container').innerHTML = "";
@@ -539,8 +538,8 @@
                 activeQuestions = [
                     { q: "ما هي أطول سورة في القرآن الكريم؟", options: ["سورة النساء", "سورة البقرة", "سورة آل عمران"], correct: 1 },
                     { q: "ما هي السورة التي تسمى عروس القرآن؟", options: ["سورة الرحمن", "سورة يس", "سورة الملك"], correct: 0 }
-                ]        ];
-        renderQuestion(0, activeChallengeMatchId);
+                ];
+                renderQuestion(0, activeChallengeMatchId);
     }
 }
 
